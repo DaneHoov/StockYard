@@ -1,0 +1,86 @@
+.signup-form__title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.signup-form__input-container {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.signup-form {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.label {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  transition: all 0.2s ease;
+  pointer-events: none;
+  color: #cccccc; /* Change color as needed */
+}
+
+input:focus + .label,
+.label.active {
+  top: -10px;
+  left: 10px;
+  font-size: 12px;
+  color: #000;
+}
+
+.signup-form button[type="submit"] {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  margin-top: 20px;
+  background-color: #f0b478;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.signup-form button[type="submit"]:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+.show-password-btn {
+  position: absolute;
+  right: 10px;
+  top: 25%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #cccccc;
+}
+
+.show-password-button:hover {
+  color: #000;
+}
+
+.error {
+  color: #f0b478; /* Adjust styling for error messages */
+  font-size: 12px;
+}

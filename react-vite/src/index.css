@@ -1,1 +1,113 @@
 /* TODO: Add sitewide styles */
+* {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #a0b48c;
+}
+
+html {
+  font-size: 0.875rem;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.container__header {
+  margin-bottom: 1rem;
+}
+
+container h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  margin-bottom: 1rem;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.site-btn.primary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  background-color: #f0b478;
+  color: black;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.site-btn.primary:hover,
+.site-btn.danger:hover {
+  background-color: #141414;
+  color: white;
+}
+
+.site-btn.secondary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  background-color: white;
+  color: #f0b478;
+  border: 2px solid #f0f0b4;
+  border-radius: 0.25rem;
+  padding: 0.625rem 1.25rem;
+  max-width: 200px;
+  transition: all 0.2s ease-in-out;
+}
+
+.site-btn.secondary:hover {
+  background-color: #141414;
+  color: white;
+}
+
+.site-btn.danger {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  background-color: #141414;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.625rem 1.25rem;
+  max-width: 200px;
+  transition: all 0.2s ease-in-out;
+}
+
+.site-btn:disabled {
+  background-color: #cccccc; /* Gray background for disabled */
+  color: #999999; /* Dark gray text for disabled */
+  cursor: not-allowed; /* Not-allowed cursor for disabled buttons */
+  opacity: 0.7; /* Slightly transparent effect */
+}
+
+.site-btn:disabled:hover {
+  background-color: #cccccc; /* No hover effect for disabled */
+  cursor: not-allowed; /* Maintain not-allowed cursor */
+}
+
+.primary {
+  color: #7b3f00;
+  font-style: bold;
+  font-weight: bolder;
+}
