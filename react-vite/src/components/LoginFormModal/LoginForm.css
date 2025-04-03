@@ -1,0 +1,100 @@
+.login-form-container {
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0.75rem;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.login-form__demo-user {
+  align-self: center;
+  font-size: 1.1rem;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-decoration: underline;
+  color: #171af5;
+  cursor: pointer;
+}
+
+.login-form__title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.login-form__input-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input:focus {
+  outline: 3px solid #f0f0b4;
+  box-shadow: 0 8px 4px rgba(0, 0, 0, 0.2);
+}
+
+label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+  color: #999;
+}
+
+input:focus + label,
+label.active {
+  top: -20px;
+  left: 10px;
+  font-size: 14px;
+  color: #000;
+}
+
+button[type="submit"] {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  margin-top: 20px;
+  background-color: #f0b478;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+button[type="submit"]:disabled {
+  background-color: #cccccc; /* Gray background for disabled button */
+  color: #999999; /* Dark gray text for disabled button */
+  cursor: not-allowed; /* Not-allowed cursor for disabled button */
+  opacity: 0.7; /* Slightly transparent effect */
+}
+
+button[type="submit"]:disabled:hover {
+  background-color: #cccccc; /* No hover effect for disabled button */
+  cursor: not-allowed; /* Maintain not-allowed cursor */
+}
+
+.login-form__error {
+  font-size: 14px;
+  color: #f0b478;
+  text-align: center;
+}
