@@ -10,66 +10,91 @@ function LoginFormModal() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
-  const minUserChars = 4;
-  const minPassChars = 6;
 
+  const resetForm = () => {
+    setCredential("");
+    setPassword("");
+    setErrors({});
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors({});
     return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
+      .then(() => {
+        resetForm();
+        closeModal()
+      })
       .catch(async (res) => {
         const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
+        if (data?.errors?.credential) {
+          setErrors({ credential: data.errors.credential });
+        } else {
+          setErrors({ credential: "The provided credentials were invalid." });
         }
       });
   };
 
-  const handleDemoLogin = () => {
-    return dispatch(sessionActions.login({ credential: 'demoUser', password: 'password' }))
-      .then(closeModal)
-      .catch(async (res) => {
-        const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-        }
-      });
-  };
-
-  const isButtonDisabled = credential.length < minUserChars || password.length < minPassChars;
+  // Reset the form on unmount
+  useEffect(() => {
+    return () => resetForm();
+  }, []);
 
   return (
-    <div className="login-form-container">
-    <div className="login-form">
-      <h1 className="login-form__title">Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="login-form__input-container">
+    <div className="login-modal-container">
+      <h1>Log In</h1>
+
+      {errors.credential && (
+        <div className="error-container">
+          <p>{errors.credential}</p>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} id="login-form">
+        <div className="email">
           <input
             type="text"
             value={credential}
+            placeholder="Username or Email"
             onChange={(e) => setCredential(e.target.value)}
-            required
           />
-          <label className={credential ? 'active' : ''}>Username or Email</label>
         </div>
-        <div className="login-form__input-container">
+
+        <div className="password">
           <input
             type="password"
             value={password}
+            placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
-          <label className={password ? 'active' : ''}>Password</label>
         </div>
-        {errors.credential && (
-          <p className="login-form__error">{errors.credential}</p>
-        )}
-        <button type="submit" disabled={isButtonDisabled}>Log In</button>
+
+        <div className="log-in-button-div">
+          <button
+            disabled={credential.length < 4 || password.length < 6}
+            className="login-button"
+            type="submit"
+          >
+            Log In
+          </button>
+        </div>
       </form>
-      <button className="login-form__demo-user" onClick={handleDemoLogin}>Log In as Demo User</button>
-    </div>
+
+      <div className="demo-user-div">
+        <button
+          type="button"
+          className="demo-user-button"
+          onClick={() => {
+            setCredential("FakeUser1");
+            setPassword("password2");
+            setTimeout(() => {
+              document.getElementById("login-form").requestSubmit();
+            }, 0);
+          }}
+        >
+          Demo User
+        </button>
+      </div>
     </div>
   );
 }
