@@ -23,3 +23,10 @@ def user(id):
     """
     user = User.query.get(id)
     return user.to_dict()
+
+# route to get all stocks
+# route to get all stocks for a user
+# route to get user's portfolio
+# route to get user's accounts
+# route to get user's watchlist
+# route to get user's transactions
