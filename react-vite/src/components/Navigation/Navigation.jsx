@@ -1,7 +1,6 @@
-import { NavLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import ProfileButton from './ProfileButton';
-import { GiHouse } from "react-icons/gi";
+import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import ProfileButton from "./ProfileButton";
 import "./Navigation.css";
 
 function Navigation({ isLoaded }) {
@@ -12,17 +11,34 @@ function Navigation({ isLoaded }) {
       <nav className="navbar">
         <div className="nav-left">
           <NavLink to="/" className="home-logo">
-            <GiHouse size={35} color="#000000" />
+            <i
+              className="fa-solid fa-piggy-bank"
+              style={{ fontSize: "24px", color: "#91c274", marginLeft: "10px" }}
+            ></i>
           </NavLink>
-          <NavLink to="/" className="title">Stay Haven</NavLink>
+          <NavLink to="/" className="title">
+            StockYard
+          </NavLink>
         </div>
         <div className="nav-right">
           {sessionUser && (
-            <div className="new-spot-link">
-              <NavLink to="/api/spots" className="create-link">
-                Create a New Spot
-              </NavLink>
-            </div>
+            <>
+              <div className="nav-link">
+                <NavLink to="/trade" className="create-link">
+                  Trade
+                </NavLink>
+              </div>
+              <div className="nav-link">
+                <NavLink to="/watchlist" className="create-link">
+                  Watchlist
+                </NavLink>
+              </div>
+              <div className="nav-link">
+                <NavLink to="/portfolio" className="create-link">
+                  Portfolio
+                </NavLink>
+              </div>
+            </>
           )}
           <div className="profile-btn-wrapper">
             {isLoaded && <ProfileButton user={sessionUser} />}

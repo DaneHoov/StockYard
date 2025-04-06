@@ -1,4 +1,6 @@
 /* TODO: Add sitewide styles */
+@import "~@fortawesome/fontawesome-free/css/all.css";
+
 * {
   font-family: "Inter", sans-serif;
   margin: 0;
