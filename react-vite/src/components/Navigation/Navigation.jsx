@@ -21,28 +21,41 @@ function Navigation({ isLoaded }) {
           </NavLink>
         </div>
         <div className="nav-right">
-          {sessionUser && (
+          {sessionUser ? (
             <>
               <div className="nav-link">
-                <NavLink to="/trade" className="create-link">
+                <NavLink to="/trade" className="create-link ">
                   Trade
                 </NavLink>
               </div>
               <div className="nav-link">
-                <NavLink to="/watchlist" className="create-link">
+                <NavLink to="/watchlist" className="create-link ">
                   Watchlist
                 </NavLink>
               </div>
               <div className="nav-link">
-                <NavLink to="/portfolio" className="create-link">
+                <NavLink to="/portfolio" className="create-link ">
                   Portfolio
+                </NavLink>
+              </div>
+              <div className="profile-btn-wrapper">
+                {isLoaded && <ProfileButton user={sessionUser} />}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="nav-link">
+                <NavLink to="/login" className="auth-link">
+                  Log In
+                </NavLink>
+              </div>
+              <div className="nav-link">
+                <NavLink to="/signup" className="auth-link">
+                  Sign Up
                 </NavLink>
               </div>
             </>
           )}
-          <div className="profile-btn-wrapper">
-            {isLoaded && <ProfileButton user={sessionUser} />}
-          </div>
         </div>
       </nav>
     </div>

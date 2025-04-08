@@ -7,6 +7,7 @@ import configureStore from "./redux/store";
 import { router } from "./router";
 import * as sessionActions from "./redux/session";
 import "./index.css";
+import { ModalProvider } from "./context/Modal";
 
 const store = configureStore();
 
@@ -17,8 +18,10 @@ if (import.meta.env.MODE !== "production") {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ReduxProvider store={store}>
+    <ModalProvider>
+      <ReduxProvider store={store}>
       <RouterProvider router={router} />
     </ReduxProvider>
+    </ModalProvider>
   </React.StrictMode>
 );
