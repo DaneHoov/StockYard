@@ -9,7 +9,18 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <h1>Trading & Investing</h1>,
+        element: (
+          <>
+            <h1>Trading & Investing</h1>,
+            <p>
+              StockYard offers real-time data, powerful tools, and expert
+              <br />
+              insights to help you make informed decisions. Start building your
+              <br />
+              financial future today with StockYard.
+            </p>
+          </>
+        ),
       },
       {
         path: "login",
