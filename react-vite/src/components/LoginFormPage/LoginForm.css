@@ -1,0 +1,72 @@
+.login-page {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    font-family: "Helvetica Neue", sans-serif;
+}
+
+/* Left side (image) */
+.left-pane {
+    flex: 1;
+    background-image: url("https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=1350&q=80");
+    background-size: cover;
+    background-position: center;
+}
+
+  /* Right side (login form) */
+.right-pane {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f6fa;
+}
+
+/* Form card styling */
+.auth-card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+.auth-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #0052cc;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.auth-form button:hover {
+    background-color: #003d99;
+}
+
+.error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
