@@ -4,7 +4,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import * as sessionActions from "../../redux/session";
 import OpenModalMenuItem from "./OpenModalMenuItem";
-import LoginFormMPage from "../LoginFormPage";
+import LoginFormPage from "../LoginFormPage";
 import SignupFormPage from "../SignupFormPage";
 import { HiBars3 } from "react-icons/hi2";
 import "./ProfileButton.css";
