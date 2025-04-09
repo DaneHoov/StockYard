@@ -1,10 +1,4 @@
-"""Recreate portfolios table
 
-Revision ID: 4f75527468fa
-Revises: 
-Create Date: 2025-04-09 17:09:55.021535
-
-"""
 from alembic import op
 import sqlalchemy as sa
 

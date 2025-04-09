@@ -1,0 +1,62 @@
+.portfolio-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f4f5f7;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .portfolio-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  }
+
+  .balance {
+    font-size: 2rem;
+    color: #28a745;
+    margin: 0.5rem 0 0;
+  }
+
+  .portfolio-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .portfolio-actions input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+  }
+
+  .portfolio-actions button {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .portfolio-actions button:hover {
+    background-color: #0056b3;
+  }
+
+  .portfolio-actions .danger {
+    background-color: #dc3545;
+  }
+
+  .portfolio-actions .danger:hover {
+    background-color: #a71d2a;
+  }
