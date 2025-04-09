@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-// import { getPortfolioThunk, createPortfolioThunk, updatePortfolioThunk, deletePortfolioThunk } from '../../redux/portfolio';
 import './Portfolio.css';
-
 
 export default function Portfolio() {
   const user = useSelector(state => state.session.user);
