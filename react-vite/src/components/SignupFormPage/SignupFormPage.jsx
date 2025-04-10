@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, Link } from "react-router-dom";
 import { thunkSignup } from "../../redux/session";
+import { FaFacebookF } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 import "./SignupForm.css";
 
 function SignupFormPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const sessionUser = useSelector((state) => state.session.user);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [countryCode, setCountryCode] = useState("+1");
+  const [phone, setPhone] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [errors, setErrors] = useState({});
 
   if (sessionUser) return <Navigate to="/" replace={true} />;
@@ -19,18 +21,15 @@ function SignupFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      return setErrors({
-        confirmPassword:
-          "Confirm Password field must be the same as the Password field",
-      });
+    if (!agreed) {
+      return setErrors({ agreement: "You must agree to the terms and privacy policy." });
     }
 
     const serverResponse = await dispatch(
       thunkSignup({
-        email,
-        username,
-        password,
+        email: phone + "@demo.com",
+        username: phone,
+        password: verificationCode,
       })
     );
 
@@ -46,49 +45,69 @@ function SignupFormPage() {
       <div className="left-pane" />
       <div className="right-pane">
         <div className="signup-card">
-          <h1 className="signup-title">Create Your Account</h1>
+          <h1 className="signup-title">Sign Up with Your Phone Number</h1>
           <form onSubmit={handleSubmit} className="signup-form">
-            <input
-              type="text"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            {errors.email && <p className="error">{errors.email}</p>}
+            <label htmlFor="phone">Phone Number</label>
+            <div className="input-with-dropdown">
+              <select value={countryCode} onChange={(e) => setCountryCode(e.target.value)}>
+                <option value="+1">🇺🇸 +1 (US)</option>
+                <option value="+81">🇯🇵 +81 (JP)</option>
+                <option value="+44">🇬🇧 +44 (UK)</option>
+                <option value="+91">🇮🇳 +91 (IN)</option>
+              </select>
+              <input
+                type="text"
+                id="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-            {errors.username && <p className="error">{errors.username}</p>}
+            <label htmlFor="verification">Verification Code</label>
+            <div className="input-with-button">
+              <input
+                type="text"
+                id="verification"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                required
+              />
+              <button type="button" className="send-code-btn">Send Code</button>
+            </div>
 
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            {errors.password && <p className="error">{errors.password}</p>}
+            <label className="agreement">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+              />
+              I have read and agreed to <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </label>
+            {errors.agreement && <p className="error">{errors.agreement}</p>}
 
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            {errors.confirmPassword && (
-              <p className="error">{errors.confirmPassword}</p>
-            )}
+            <button type="submit">Next</button>
 
-            {errors.server && <p className="error">{errors.server}</p>}
+            <p className="login-link">
+              Already have an account? <Link to="/login">Log in</Link>
+            </p>
 
-            <button type="submit">Sign Up</button>
+            <div className="social-buttons">
+              <button
+                type="button"
+                className="social-button facebook"
+                onClick={() => navigate("/login")}
+              >
+                <FaFacebookF style={{ marginRight: "8px" }} /> Facebook
+              </button>
+              <button
+                type="button"
+                className="social-button google"
+                onClick={() => navigate("/login")}
+              >
+                <FcGoogle style={{ marginRight: "8px" }} /> Google
+              </button>
+            </div>
           </form>
         </div>
       </div>

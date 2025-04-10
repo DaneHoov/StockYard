@@ -35,17 +35,84 @@
   margin-bottom: 30px;
 }
 
-.signup-form input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  box-sizing: border-box;
+.signup-form {
+  display: flex;
+  flex-direction: column;
 }
 
-.signup-form button {
+.signup-form label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  margin-top: 15px;
+}
+
+.input-with-dropdown {
+  display: flex;
+  gap: 8px;
+}
+
+.input-with-dropdown select {
+  width: 35%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+}
+
+.input-with-dropdown input {
+  width: 65%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.input-with-button {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.input-with-button input {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.send-code-btn {
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  background-color: #f0b478;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.send-code-btn:hover {
+  background-color: #de9b55;
+}
+
+.agreement {
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.agreement a {
+  color: #0077cc;
+  text-decoration: none;
+}
+
+.agreement a:hover {
+  text-decoration: underline;
+}
+
+.signup-form button[type="submit"] {
+  margin-top: 20px;
   width: 100%;
   padding: 12px;
   background-color: #f0b478;
@@ -57,13 +124,66 @@
   transition: background-color 0.2s;
 }
 
-.signup-form button:hover {
+.signup-form button[type='submit']:hover {
   background-color: #de9b55;
 }
 
 .error {
   color: #e74c3c;
   font-size: 0.9rem;
-  margin-top: -10px;
-  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+.login-link {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.login-link a {
+  color: #0077cc;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.social-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.facebook {
+  background-color: #4267B2;
+  color: white;
+}
+
+.facebook:hover {
+  background-color: #365899;
+}
+
+.google {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+}
+
+.google:hover {
+  background-color: #f0f0f0;
 }
