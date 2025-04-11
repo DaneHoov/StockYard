@@ -41,77 +41,94 @@ function SignupFormPage() {
   };
 
   return (
-    <div className="signup-page">
-      <div className="left-pane" />
-      <div className="right-pane">
-        <div className="signup-card">
-          <h1 className="signup-title">Sign Up with Your Phone Number</h1>
-          <form onSubmit={handleSubmit} className="signup-form">
-            <label htmlFor="phone">Phone Number</label>
-            <div className="input-with-dropdown">
-              <select value={countryCode} onChange={(e) => setCountryCode(e.target.value)}>
-                <option value="+1">🇺🇸 +1 (US)</option>
-                <option value="+81">🇯🇵 +81 (JP)</option>
-                <option value="+44">🇬🇧 +44 (UK)</option>
-                <option value="+91">🇮🇳 +91 (IN)</option>
-              </select>
-              <input
-                type="text"
-                id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-              />
-            </div>
-
-            <label htmlFor="verification">Verification Code</label>
-            <div className="input-with-button">
-              <input
-                type="text"
-                id="verification"
-                value={verificationCode}
-                onChange={(e) => setVerificationCode(e.target.value)}
-                required
-              />
-              <button type="button" className="send-code-btn">Send Code</button>
-            </div>
-
-            <label className="agreement">
-              <input
-                type="checkbox"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-              />
-              I have read and agreed to <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-            </label>
-            {errors.agreement && <p className="error">{errors.agreement}</p>}
-
-            <button type="submit">Next</button>
-
-            <p className="login-link">
-              Already have an account? <Link to="/login">Log in</Link>
-            </p>
-
-            <div className="social-buttons">
-              <button
-                type="button"
-                className="social-button facebook"
-                onClick={() => navigate("/login")}
-              >
-                <FaFacebookF style={{ marginRight: "8px" }} /> Facebook
-              </button>
-              <button
-                type="button"
-                className="social-button google"
-                onClick={() => navigate("/login")}
-              >
-                <FcGoogle style={{ marginRight: "8px" }} /> Google
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+<div className="signup-page">
+  <div className="left-pane">
+    <div className="intro-text">
+      <h2>Start Trading with StockYard</h2>
+      <p>Invest in Stocks, ETFs, Futures & More.</p>
+      <p>Zero commissions on eligible trades*</p>
+      <p style={{ fontSize: "0.75rem", marginTop: "10px" }}>
+        *Exchange and regulatory fees may apply. See our pricing page for details.
+        <br />
+        *Options trading involves risk and may result in losses exceeding your initial investment.
+        Learn more at our Policy Center.
+      </p>
     </div>
+    <img
+      src="https://miro.medium.com/v2/resize:fit:800/0*ZsP_ceihYyp14CNx.jpg"
+      alt="Stock market illustration"
+    />
+  </div>
+
+  <div className="right-pane">
+    <div className="signup-card">
+      <h1 className="signup-title">Sign Up with Your Phone Number</h1>
+      <form onSubmit={handleSubmit} className="signup-form">
+        <label htmlFor="phone">Phone Number</label>
+        <div className="input-with-dropdown">
+          <select value={countryCode} onChange={(e) => setCountryCode(e.target.value)}>
+            <option value="+1">+1 (US)</option>
+            <option value="+81">🇯🇵 +81 (JP)</option>
+            <option value="+44">🇬🇧 +44 (UK)</option>
+            <option value="+91">🇮🇳 +91 (IN)</option>
+          </select>
+          <input
+            type="text"
+            id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+        </div>
+
+        <label htmlFor="verification">Verification Code</label>
+        <div className="input-with-button">
+          <input
+            type="text"
+            id="verification"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
+            required
+          />
+          <button type="button" className="send-code-btn">Send Code</button>
+        </div>
+
+        <label className="agreement">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+          />
+          I have read and agreed to <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </label>
+        {errors.agreement && <p className="error">{errors.agreement}</p>}
+
+        <button type="submit">Next</button>
+
+        <p className="login-link">
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
+
+        <div className="social-buttons">
+          <button
+            type="button"
+            className="social-button facebook"
+            onClick={() => navigate("/login")}
+          >
+            <FaFacebookF style={{ marginRight: "8px" }} /> Facebook
+          </button>
+          <button
+            type="button"
+            className="social-button google"
+            onClick={() => navigate("/login")}
+          >
+            <FcGoogle style={{ marginRight: "8px" }} /> Google
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
   );
 }
 
