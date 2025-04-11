@@ -8,9 +8,10 @@ class Portfolio(db.Model):
     balance = db.Column(db.Float, default=0.0)
 
     user = db.relationship('User', back_populates='portfolios')
+    transactions = db.relationship('Transaction', back_populates='portfolio', cascade='all, delete-orphan')
 
     def __repr__(self):
-        return f'<Portfolio {self.name}>'
+        return f'<Portfolio id={self.id}, user_id={self.user_id}, balance={self.balance}>'
     def __init__(self, user_id, balance=0.0):
         self.user_id = user_id
         self.balance = balance
