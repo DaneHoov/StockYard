@@ -8,6 +8,8 @@ class Watchlist(db.Model):
     name = db.Column(db.String(50), nullable=False)
 
     user = db.relationship('User', back_populates='watchlists')
+    watchlist_stocks = db.relationship('WatchlistStock', back_populates='watchlist')
+
     stocks = db.relationship(
         'Stock',
         secondary='watchlist_stock',
@@ -16,7 +18,3 @@ class Watchlist(db.Model):
 
     def __repr__(self):
         return f'<Watchlist {self.id}>'
-
-    def __init__(self, user_id, name):
-        self.user_id = user_id
-        self.name = name

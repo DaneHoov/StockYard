@@ -9,6 +9,7 @@ class Portfolio(db.Model):
 
     user = db.relationship('User', back_populates='portfolios')
     transactions = db.relationship('Transaction', back_populates='portfolio', cascade='all, delete-orphan')
+    stocks = db.relationship('Stock', back_populates='portfolio')
 
     def __repr__(self):
         return f'<Portfolio id={self.id}, user_id={self.user_id}, balance={self.balance}>'

@@ -6,9 +6,7 @@ class WatchlistStock(db.Model):
     stock_id = db.Column(db.Integer, db.ForeignKey('stocks.id'), primary_key=True)
 
     watchlist = db.relationship('Watchlist')
+    stock = db.relationship('Stock', back_populates='watchlist_stocks')
 
     def __repr__(self):
         return f'<WatchlistStock {self.watchlist_id}, {self.stock_id}>'
-    def __init__(self, watchlist_id, stock_id):
-        self.watchlist_id = watchlist_id
-        self.stock_id = stock_id

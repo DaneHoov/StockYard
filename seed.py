@@ -9,24 +9,52 @@ def seed_data():
 
         # Create users
         user1 = User(username="DemoUser", email="ex@mple.com", password="password")
-
-
         db.session.add(user1)
         db.session.commit()
+
+
 
         # Portfolios
         portfolio1 = Portfolio(user_id=user1.id)
         db.session.add(portfolio1)
+        db.session.flush()
 
         # Stocks
-        stock1 = Stock(ticker="AAPL", name="Apple Inc.", price=190.42, exchange="NASDAQ", sector="Technology")
-        stock2 = Stock(ticker="GOOGL", name="Alphabet Inc.", price=155.37, exchange="NASDAQ", sector="Technology")
+        stock1 = Stock(
+            portfolio_id=portfolio1.id,
+            ticker="AAPL",
+            name="Apple Inc.",
+            price=190.42,
+            exchange="NASDAQ",
+            sector="Technology"
+            )
+        stock2 = Stock(
+            portfolio_id=portfolio1.id,
+            ticker="GOOGL",
+            name="Alphabet Inc.",
+            price=155.37,
+            exchange="NASDAQ",
+            sector="Technology"
+                       )
         db.session.add_all([stock1, stock2])
         db.session.commit()
 
         # Transactions
-        tx1 = Transaction(portfolio_id=portfolio1.id, stock_id=stock1.id, transaction_type='buy', quantity=10, price_per_share=190.42)
-        tx2 = Transaction(portfolio_id=portfolio1.id, stock_id=stock2.id, transaction_type='sell', quantity=5, price_per_share=155.37)
+        tx1 = Transaction(
+            portfolio_id=portfolio1.id,
+            stock_id=stock1.id,
+            transaction_type='buy',
+            user_id=user1.id,
+            quantity=10,
+            price_per_share=190.42
+            )
+        tx2 = Transaction(
+            portfolio_id=portfolio1.id,
+            stock_id=stock2.id,
+            transaction_type='sell',
+            user_id=user1.id,
+            quantity=5,
+            price_per_share=155.37)
         db.session.add_all([tx1, tx2])
 
         # Watchlists
@@ -44,4 +72,3 @@ def seed_data():
 
 if __name__ == "__main__":
     seed_data()
-

@@ -17,12 +17,3 @@ class Transaction(db.Model):
 
     def __repr__(self):
         return f'<Transaction {self.id}>'
-
-    def __init__(self, portfolio_id, stock_id, transaction_type, quantity, price_per_share):
-        self.portfolio_id = portfolio_id
-        self.stock_id = stock_id
-        self.transaction_type = transaction_type
-        self.user_id = None  # This should be set when the transaction is created
-        self.quantity = quantity
-        self.price_per_share = price_per_share
-        self.total_cost = quantity * price_per_share
