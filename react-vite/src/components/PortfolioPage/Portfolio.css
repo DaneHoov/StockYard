@@ -8,6 +8,31 @@
     text-align: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
+  .portforlio-tabs {
+    display:flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .portfolio-tabs button {
+    padding: 10px 20px;
+  border-radius: 8px;
+  border: 2px solid #91c274;
+  background: transparent;
+  color: #333;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+
+}
+
+.portfolio-tabs button.active,
+.portfolio-tabs button:hover {
+    background-color: #91c274;
+    color: white;
+}
+
 
   .portfolio-card {
     background: white;
@@ -43,7 +68,7 @@
     font-size: 1rem;
     border: none;
     border-radius: 8px;
-    background-color: #007bff;
+    background-color: #91c274;
     color: white;
     cursor: pointer;
     transition: background 0.3s ease;
@@ -58,5 +83,24 @@
   }
 
   .portfolio-actions .danger:hover {
-    background-color: #a71d2a;
+    background-color: #91c274;
   }
+
+
+.stocks-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.stocks-table th,
+.stocks-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.stocks-table th {
+  background-color: #91c274;
+  color: white;
+}
