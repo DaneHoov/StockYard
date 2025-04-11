@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { FaUserCircle } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
-import * as sessionActions from '../../store/session';
-import OpenModalMenuItem from './OpenModalMenuItem';
-import LoginFormModal from '../LoginFormModal';
-import SignupFormModal from '../SignupFormModal';
+import { useState, useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { FaUserCircle } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import * as sessionActions from "../../redux/session";
+import OpenModalMenuItem from "./OpenModalMenuItem";
+import LoginFormPage from "../LoginFormPage";
+import SignupFormPage from "../SignupFormPage";
 import { HiBars3 } from "react-icons/hi2";
-import './ProfileButton.css'
+import "./ProfileButton.css";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ function ProfileButton({ user }) {
       }
     };
 
-    document.addEventListener('click', closeMenu);
+    document.addEventListener("click", closeMenu);
 
     return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
@@ -40,60 +40,60 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
-    navigate('/') // Navigates to home page after logging out
+    navigate("/"); // Navigates to home page after logging out
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
   return (
     <>
-      <button onClick={toggleMenu} className='profile-button'>
-        <div className='menu'>
+      <button onClick={toggleMenu} className="profile-button">
+        <div className="menu">
           <HiBars3 size={30} />
         </div>
-        <div className='user'>
-          <FaUserCircle size={30}/>
+        <div className="user">
+          <FaUserCircle size={30} />
         </div>
       </button>
 
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
-          <div className="options">
-            <div>Hello, {user.firstName}</div>
-            <div>{user.email}</div>
-          </div>
-          <hr />
-          <div className="manage-div">
-            <div>
-              <Link to="/api/spots/current" className="manage-link">
-                Manage Spots
-              </Link>
+            <div className="options">
+              <div>Hello, {user.firstName}</div>
+              <div>{user.email}</div>
             </div>
-            <div>
-              <Link to="/api/reviews/current" className="manage-link">
-                Manage Reviews
-              </Link>
+            <hr />
+            <div className="manage-div">
+              <div>
+                <Link to="/api/spots/current" className="manage-link">
+                  Manage Spots
+                </Link>
+              </div>
+              <div>
+                <Link to="/api/reviews/current" className="manage-link">
+                  Manage Reviews
+                </Link>
+              </div>
             </div>
-          </div>
-          <hr />
-          <div className="logout-button-div">
-            <button className="logout-button" onClick={logout}>
-              Log Out
-            </button>
-          </div>
-        </>
+            <hr />
+            <div className="logout-button-div">
+              <button className="logout-button" onClick={logout}>
+                Log Out
+              </button>
+            </div>
+          </>
         ) : (
           <>
             <OpenModalMenuItem
               itemText="Log In"
               onItemClick={closeMenu}
-              modalComponent={<LoginFormModal />}
+              modalComponent={<LoginFormPage />}
             />
             <OpenModalMenuItem
               itemText="Sign Up"
               onItemClick={closeMenu}
-              modalComponent={<SignupFormModal />}
+              modalComponent={<SignupFormPage />}
             />
           </>
         )}
