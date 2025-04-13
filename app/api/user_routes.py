@@ -17,18 +17,31 @@ def users():
 
 @user_routes.route('/<int:id>')
 @login_required
-def user(id):
+def user(user_id):
     """
     Query for a user by id and returns that user in a dictionary
     """
-    result = User.query.get(id)
+    result = User.query.get(user_id)
     return result.to_dict()
 
-# route to get all stocks
-
-
-# route to get all stocks for a user
-# route to get user's portfolio
-# route to get user's accounts
-# route to get user's watchlist
-# route to get user's transactions
+# Portfolio
+#   Users should be able to view their portfolio.
+#   Users should be able to create a new portfolio.
+#   Users should be able to update their portfolio (add fake money).
+#   Users should be able to delete their portfolio (selling stocks).
+# Stock Details
+#   Users should be able to view details of selected stocks.
+#   Users should be able to purchase stocks and add them to their portfolio.
+#   Users should be able to update the amount of stocks they want to purchase.
+#   Users should be able to delete stocks from their order.
+# Watchlist
+#   Users should be able to view all of their watched stocks.
+#   Users should be able to add a stock to their watchlist.
+#   Users should be able to remove a stock from their watchlist.
+# Search
+#   Users should be able to search for a stock by name.
+#   Users should be able to view the results of their search.
+# Bonus: Transactions
+#   Users should be able to view their transaction history.
+#   Users should be able to "order" stocks at a certain time/frequency.
+#   Users should be able to cancel transactions.
