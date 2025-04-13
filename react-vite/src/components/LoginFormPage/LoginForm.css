@@ -20,17 +20,18 @@
 
   .auth-card {
     background: white;
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
+    padding-top: 200px;
   }
 
   .auth-title {
     text-align: left;
     margin-bottom: 3rem;
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
 
   .simple-toggle {
@@ -94,17 +95,18 @@
   .auth-form button[type="submit"] {
     width: 100%;
     padding: 0.8rem;
-    background-color: #007bff;
+    background-color: #81c784;
     color: white;
     font-size: 1rem;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     margin-top: 1rem;
+    margin-bottom: 5px;
   }
 
   .auth-form button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #4dbe52;
   }
 
   .forgot-links {

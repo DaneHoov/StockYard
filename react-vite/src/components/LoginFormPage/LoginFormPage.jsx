@@ -126,7 +126,6 @@ function LoginFormPage() {
               <>
                 <input
                   type="text"
-                  placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -155,10 +154,10 @@ function LoginFormPage() {
               </div>
             )}
 
+            <label htmlFor="Password">Password</label>
             <div className="password-field">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
