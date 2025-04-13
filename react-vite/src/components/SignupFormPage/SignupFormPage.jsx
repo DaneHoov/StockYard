@@ -110,23 +110,19 @@ function SignupFormPage() {
             Learn more at our Policy Center.
           </p>
           <img
-      // src="https://miro.medium.com/v2/resize:fit:800/0*ZsP_ceihYyp14CNx.jpg"
-      src="https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=1350&q=80"
-      alt="Stock market illustration"
-    />
+            src="https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=1350&q=80"
+            alt="Stock market illustration"
+          />
         </div>
       </div>
 
       <div className="right-pane">
-        <div className="signup-card">
+        <div className="signup-container">
           <h1 className="signup-title">Sign Up with Your Phone Number</h1>
           <form onSubmit={handleSubmit} className="signup-form">
             <label htmlFor="phone">Phone Number</label>
             <div className="input-with-dropdown">
-              <select
-                value={countryCode}
-                onChange={(e) => setCountryCode(e.target.value)}
-              >
+              <select value={countryCode} onChange={(e) => setCountryCode(e.target.value)}>
                 {countryOptions.map((option) => (
                   <option key={option.code} value={option.code}>
                     {option.code} {option.name}
