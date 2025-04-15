@@ -1,10 +1,14 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileButton from "./ProfileButton";
 import "./Navigation.css";
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
+  const location = useLocation();
+
+  const isAuthPage =
+    location.pathname === "/login" || location.pathname === "/signup";
 
   return (
     <div>
@@ -20,43 +24,45 @@ function Navigation({ isLoaded }) {
             StockYard
           </NavLink>
         </div>
-        <div className="nav-right">
-          {sessionUser ? (
-            <>
-              <div className="nav-link">
-                <NavLink to="/trade" className="create-link ">
-                  Trade
-                </NavLink>
-              </div>
-              <div className="nav-link">
-                <NavLink to="/watchlist" className="create-link ">
-                  Watchlist
-                </NavLink>
-              </div>
-              <div className="nav-link">
-                <NavLink to="/portfolio" className="create-link ">
-                  Portfolio
-                </NavLink>
-              </div>
-              <div className="profile-btn-wrapper">
-                {isLoaded && <ProfileButton user={sessionUser} />}
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="nav-link">
-                <NavLink to="/login" className="auth-link">
-                  Log In
-                </NavLink>
-              </div>
-              <div className="nav-link">
-                <NavLink to="/signup" className="auth-link">
-                  Sign Up
-                </NavLink>
-              </div>
-            </>
-          )}
-        </div>
+        {!isAuthPage && (
+          <div className="nav-right">
+            {sessionUser ? (
+              <>
+                <div className="nav-link">
+                  <NavLink to="/trade" className="create-link ">
+                    Trade
+                  </NavLink>
+                </div>
+                <div className="nav-link">
+                  <NavLink to="/watchlist" className="create-link ">
+                    Watchlist
+                  </NavLink>
+                </div>
+                <div className="nav-link">
+                  <NavLink to="/portfolio" className="create-link ">
+                    Portfolio
+                  </NavLink>
+                </div>
+                <div className="profile-btn-wrapper">
+                  {isLoaded && <ProfileButton user={sessionUser} />}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="nav-link">
+                  <NavLink to="/login" className="auth-link">
+                    Log In
+                  </NavLink>
+                </div>
+                <div className="nav-link">
+                  <NavLink to="/signup" className="auth-link">
+                    Sign Up
+                  </NavLink>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </nav>
     </div>
   );
