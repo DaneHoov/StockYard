@@ -42,7 +42,7 @@ export default function Portfolio() {
     <div className="portfolio-container">
       <h1>{user.username}&#39;s Portfolio</h1>
       {portfolio ? (
-        <>
+        <div>
           <div className="portfolio-card">
             <h2>Cash Balance</h2>
             <p className="balance">${portfolio.cash_balance.toFixed(2)}</p>
@@ -60,9 +60,9 @@ export default function Portfolio() {
               Delete Portfolio
             </button>
           </div>
-        </>
+        </div>
       ) : (
-        <>
+        <div>
           <p>You don’t have a portfolio yet.</p>
           <button
             onClick={async () => {
