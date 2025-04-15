@@ -19,19 +19,17 @@
   }
 
   .auth-card {
-    background: white;
     padding: 1rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
-    padding-top: 200px;
+    padding-top: 150px; /* moves login lower */
   }
 
   .auth-title {
     text-align: left;
     margin-bottom: 3rem;
     font-size: 2rem;
+    font-weight: 600;
   }
 
   .simple-toggle {

@@ -65,7 +65,7 @@
   padding: 1rem;
   width: 100%;
   max-width: 500px;
-  padding-top: 200px;  /* Moves the signup form higher */
+  padding-top: 150px;  /* Moves the signup form lower */
 }
 
 .signup-title {
