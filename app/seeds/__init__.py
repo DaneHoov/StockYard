@@ -1,3 +1,4 @@
+
 from flask.cli import AppGroup
 from .users import seed_users, undo_users
 from .portfolios import seed_portfolios, undo_portfolios
@@ -18,13 +19,20 @@ def seed():
         # Make sure to add all your other model's undo functions below
         undo_users()
     seed_users()
-    seed_portfolios()
+
     # Add other seed functions here
+    @seed_commands.command('portfolio')
+def seed_portfolio():
+
+    seed_portfolios()
 
 
 # Creates the `flask seed undo` command
 @seed_commands.command('undo')
 def undo():
-    undo_portfolios()
     undo_users()
     # Add other undo functions here
+    @seed_commands.command('undo_portfolio')
+def undo_portfolio():
+
+    undo_portfolios()
