@@ -35,17 +35,26 @@ export default function Portfolio() {
     setPortfolio(null);
   };
 
-  if (!user) return <h2>Please log in to view your portfolio.</h2>;
-  if (loading) return <h2>Loading portfolio...</h2>;
+  if (!sessionUser) return <p>Please log in to view your portfolio.</p>;
 
   return (
     <div className="portfolio-container">
       <h1>{user.username}&#39;s Portfolio</h1>
       {portfolio ? (
         <>
-          <div className="portfolio-card">
-            <h2>Cash Balance</h2>
-            <p className="balance">${portfolio.cash_balance.toFixed(2)}</p>
+          <div className="tab-switcher">
+            <button
+              className={tab === 'funds' ? 'active-tab' : ''}
+              onClick={() => setTab('funds')}
+            >
+              Funds
+            </button>
+            <button
+              className={tab === 'stocks' ? 'active-tab' : ''}
+              onClick={() => setTab('stocks')}
+            >
+              Stocks
+            </button>
           </div>
 
           <div className="portfolio-actions">
@@ -62,7 +71,7 @@ export default function Portfolio() {
           </div>
         </>
       ) : (
-        <>
+        <div className="no-portfolio">
           <p>You don’t have a portfolio yet.</p>
           <button
             onClick={async () => {
@@ -73,7 +82,7 @@ export default function Portfolio() {
           >
             Create Portfolio
           </button>
-        </>
+        </div>
       )}
     </div>
   );
