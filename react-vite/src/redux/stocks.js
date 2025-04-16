@@ -6,7 +6,7 @@ const setStocks = (stocks) => ({
 });
 
 export const fetchStocks = () => async (dispatch) => {
-  const response = await fetch("/api/stocks/");
+  const response = await fetch("/api/stocks");
   if (response.ok) {
     const data = await response.json();
     dispatch(setStocks(data));
