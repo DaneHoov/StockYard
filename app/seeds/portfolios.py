@@ -1,15 +1,10 @@
-from app.models import db, Portfolio, environment, SCHEMA
-from sqlalchemy.sql import text
+from app.models import db, Portfolio
 
 def seed_portfolios():
-    portfolio1 = Portfolio(user_id=1, balance=10000.0)
-    portfolio2 = Portfolio(user_id=2, balance=5000.0)
-    db.session.add_all([portfolio1, portfolio2])
+    portfolio1 = Portfolio(user_id=1)
+    db.session.add(portfolio1)
     db.session.commit()
 
 def undo_portfolios():
-    if environment == "production":
-        db.session.execute(f"TRUNCATE table {SCHEMA}.portfolios RESTART IDENTITY CASCADE;")
-    else:
-        db.session.execute(text("DELETE FROM portfolios"))
+    db.session.execute("DELETE FROM portfolios")
     db.session.commit()
