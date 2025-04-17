@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-import Trade from "../components/Trade";
-import Watchlist from "../components/Watchlist";
-import Portfolio from "../components/Portfolio";
+import Trade from "../components/TradePage/Trade";
+import Watchlist from "../components/WatchlistPage/Watchlist";
+import Portfolio from "../components/PortfolioPage/Portfolio";
 import LoginFormPage from "../components/LoginFormPage";
 import SignupFormPage from "../components/SignupFormPage";
 import Layout from "./Layout";
