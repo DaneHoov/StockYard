@@ -166,3 +166,25 @@
     margin-top: -0.4rem;
     margin-bottom: 0.4rem;
   }
+
+  .demo-button {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .demo-button button {
+    padding: 0.6rem;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #555;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .demo-button button:hover {
+    background-color: #333;
+  }
