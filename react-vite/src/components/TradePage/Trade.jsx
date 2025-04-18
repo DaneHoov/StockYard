@@ -4,17 +4,15 @@ import { fetchStocks } from "../../redux/stocks";
 import {
   thunkAddToWatchlist,
   thunkRemoveFromWatchlist,
-} from "../../redux/watchlist";
-import {
   thunkAddToPortfolio,
   thunkRemoveFromPortfolio,
-} from "../../redux/portfolio";
+} from "../../redux/session";
 import "./Trade.css";
 
 function Trade() {
   const dispatch = useDispatch();
   const stocks = useSelector((state) => state.stocks);
-  const watchlist = useSelector((state) => state.watchlist);
+  const watchlist = useSelector((state) => state.session.watchlist);
   const sessionUser = useSelector((state) => state.session.user);
 
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -91,8 +89,12 @@ function Trade() {
             <thead>
               <tr>
                 <th>Symbol</th>
+                <th>Name</th>
                 <th>Price</th>
                 <th>Change</th>
+                <th>% Change</th>
+                <th>Open</th>
+                <th>Prev Close</th>
                 <th>Actions</th>
               </tr>
             </thead>
