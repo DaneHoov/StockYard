@@ -111,3 +111,47 @@ container h1 {
   font-style: bold;
   font-weight: bolder;
 }
+.landing-center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+
+  background-image: url('https://sdmntprnorthcentralus.oaiusercontent.com/files/00000000-a230-622f-aff4-476915892bf9/raw?se=2025-04-18T20%3A48%3A21Z&sp=r&sv=2024-08-04&sr=b&scid=d571aff1-e7e2-5007-acf5-d1cdcb811301&skoid=de76bc29-7017-43d4-8d90-7a49512bae0f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-18T19%3A27%3A10Z&ske=2025-04-19T19%3A27%3A10Z&sks=b&skv=2024-08-04&sig=iB1/9JEk8gmLdQK4HPifx8dQMntcsrKWM3RjbZN6dfg%3D');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  color: white; /* Makes text visible on dark background */
+  backdrop-filter: brightness(0.85); /* optional */
+}
+
+.landing-center h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.landing-center p {
+  font-size: 1.2rem;
+  color: white;
+  line-height: 1.6;
+}
+
+.landing-center::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* dark overlay */
+  z-index: 0;
+}
+
+.landing-center > * {
+  position: relative;
+  z-index: 1;
+}
