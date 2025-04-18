@@ -8,7 +8,8 @@ class Portfolio(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    balance = db.Column(db.Float, default=0.0)
+    balance = db.Column(db.Float, nullable=True)
+    stocks = db.relationship('Stock', back_populates='portfolio')
 
     user = db.relationship('User', back_populates='portfolios')
     transactions = db.relationship('Transaction', back_populates='portfolio', cascade='all, delete-orphan')
