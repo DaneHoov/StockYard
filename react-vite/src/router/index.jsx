@@ -29,16 +29,12 @@ export const router = createBrowserRouter([
       { path: "/watchlist", element: <Watchlist /> },
       { path: "/portfolio", element: <Portfolio /> },
       {
-        path: "login",
+        path: "/login",
         element: <LoginFormPage />,
       },
       {
-        path: "signup",
+        path: "/signup",
         element: <SignupFormPage />,
-      },
-      {
-        path: "portfolio",
-        element: <Portfolio />,
       },
     ],
   },
