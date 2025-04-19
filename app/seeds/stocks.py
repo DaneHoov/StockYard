@@ -1,4 +1,5 @@
 from app.models import db, Stock
+from sqlalchemy.sql import text
 
 def seed_stocks():
     stock1 = Stock(ticker="AAPL", name="Apple Inc.", price=190.42, exchange="NASDAQ", sector="Technology")
@@ -7,5 +8,5 @@ def seed_stocks():
     db.session.commit()
 
 def undo_stocks():
-    db.session.execute("DELETE FROM stocks")
+    db.session.execute(text("DELETE FROM stocks"))
     db.session.commit()

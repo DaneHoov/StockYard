@@ -1,4 +1,5 @@
 from app.models import db, Watchlist
+from sqlalchemy.sql import text
 
 def seed_watchlists():
     watchlist1 = Watchlist(user_id=1, name="Tech Stocks")
@@ -9,5 +10,5 @@ def seed_watchlists():
     db.session.add_all([watchlist1, watchlist2, watchlist3, watchlist4])
     db.session.commit()
 def undo_watchlists():
-    db.session.execute("DELETE FROM watchlists")
+    db.session.execute(text("DELETE FROM watchlists"))
     db.session.commit()
