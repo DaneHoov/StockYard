@@ -74,39 +74,28 @@ const Portfolio = () => {
             </div>
           )}
 
-          {tab === 'stocks' && (
-            <div className="stocks-tab">
-              <h2>Stock Holdings (Mock)</h2>
-              <table className="stocks-table">
-                <thead>
-                  <tr>
-                    <th>Symbol</th>
-                    <th>Company</th>
-                    <th>Shares</th>
-                    <th>Price</th>
-                    <th>Total Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>AAPL</td>
-                    <td>Apple Inc.</td>
-                    <td>10</td>
-                    <td>$175.00</td>
-                    <td>$1,750.00</td>
-                  </tr>
-                  <tr>
-                    <td>TSLA</td>
-                    <td>Tesla Inc.</td>
-                    <td>5</td>
-                    <td>$240.00</td>
-                    <td>$1,200.00</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          )}
-        </>
+{tab === 'stocks' && (
+  <div className="stocks-tab">
+    <h2>Stock Holdings</h2>
+    <table className="stocks-table">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Company</th>
+          <th>Shares</th>
+          <th>Price</th>
+          <th>Total Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colSpan="5">No stocks in your portfolio yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+)}
+  </>
       ) : (
         <div className="no-portfolio">
           <p>You don’t have a portfolio yet.</p>
