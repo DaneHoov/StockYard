@@ -13,8 +13,8 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: (
-          <>
-            <h1>Trading & Investing</h1>,
+          <div className="landing-center">
+            <h1>Trading & Investing</h1>
             <p>
               StockYard offers real-time data, powerful tools, and expert
               <br />
@@ -22,8 +22,8 @@ export const router = createBrowserRouter([
               <br />
               financial future today with StockYard.
             </p>
-          </>
-        ),
+          </div>
+        )
       },
       { path: "/trade", element: <Trade /> },
       { path: "/watchlist", element: <Watchlist /> },
