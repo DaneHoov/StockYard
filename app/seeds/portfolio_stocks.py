@@ -1,5 +1,6 @@
 from app.models import db, PortfolioStock
 from datetime import datetime
+from sqlalchemy.sql import text
 
 def seed_portfolio_stocks():
     portfolio_stock1 = PortfolioStock(portfolio_id=1, stock_id=1, quantity=10, purchase_price=190.42, purchase_date=datetime(2023, 10, 1))
@@ -7,6 +8,7 @@ def seed_portfolio_stocks():
     db.session.add_all([portfolio_stock1, portfolio_stock2])
     db.session.commit()
 
+
 def undo_portfolio_stocks():
-    db.session.execute("DELETE FROM portfolio_stocks")
+    db.session.execute(text("DELETE FROM portfolio_stocks"))
     db.session.commit()

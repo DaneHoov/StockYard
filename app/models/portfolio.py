@@ -14,7 +14,9 @@ class Portfolio(db.Model):
         unique=True
     )
     balance = db.Column(db.Float, default=0.0, nullable=False)
-
+    user = db.relationship('User', back_populates='portfolios')
+    portfolio_stocks = db.relationship('PortfolioStock', back_populates='portfolio', cascade='all, delete-orphan')
+    transactions = db.relationship('Transaction', back_populates='portfolio', cascade='all, delete-orphan')
     def to_dict(self):
         return {
             "id": self.id,

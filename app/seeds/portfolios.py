@@ -1,4 +1,5 @@
 from app.models import db, Portfolio
+from sqlalchemy.sql import text
 
 def seed_portfolios():
     portfolio1 = Portfolio(user_id=1)
@@ -6,5 +7,5 @@ def seed_portfolios():
     db.session.commit()
 
 def undo_portfolios():
-    db.session.execute("DELETE FROM portfolios")
+    db.session.execute(text("DELETE FROM portfolios"))
     db.session.commit()
