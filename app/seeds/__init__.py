@@ -15,32 +15,31 @@ seed_commands = AppGroup('seed')
 
 @seed_commands.command('all')
 def seed():
-    undo_users()
+    undo_watchlist_stocks()
+    undo_transactions()
     undo_portfolio_stocks()
+    undo_watchlists()
     undo_portfolios()
     undo_stocks()
-    undo_transactions()
-    undo_watchlists()
-    undo_watchlist_stocks()
+    undo_users()
 
     seed_users()
-    seed_portfolio_stocks()
-    seed_portfolios()
     seed_stocks()
-    seed_transactions()
+    seed_portfolios()
     seed_watchlists()
+    seed_portfolio_stocks()
     seed_watchlist_stocks()
+    seed_transactions()
     # Add other seed functions here
 
 
 @seed_commands.command('undo')
 def undo():
-    undo_portfolios()
-    undo_users()
+    undo_watchlist_stocks()
+    undo_transactions()
     undo_portfolio_stocks()
+    undo_watchlists()
     undo_portfolios()
     undo_stocks()
-    undo_transactions()
-    undo_watchlists()
-    undo_watchlist_stocks()
+    undo_users()
     # Add other undo functions here
