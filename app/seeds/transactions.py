@@ -1,5 +1,6 @@
 from app.models import db, Transaction
 from datetime import datetime
+from sqlalchemy.sql import text
 
 def seed_transactions():
     transaction1 = Transaction(
@@ -21,5 +22,5 @@ def seed_transactions():
     db.session.add_all([transaction1, transaction2])
     db.session.commit()
 def undo_transactions():
-    db.session.execute("DELETE FROM transactions")
+    db.session.execute(text("DELETE FROM transactions"))
     db.session.commit()
