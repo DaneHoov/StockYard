@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { FaUserCircle } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import * as sessionActions from "../../redux/session";
-import OpenModalMenuItem from "./OpenModalMenuItem";
-import LoginFormPage from "../LoginFormPage";
-import SignupFormPage from "../SignupFormPage";
 import { HiBars3 } from "react-icons/hi2";
+import { useNavigate } from "react-router-dom";
+import * as sessionActions from "../../redux/session";
 import "./ProfileButton.css";
 
 function ProfileButton({ user }) {
@@ -16,7 +13,7 @@ function ProfileButton({ user }) {
   const ulRef = useRef();
 
   const toggleMenu = (e) => {
-    e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
+    e.stopPropagation(); // Prevent bubbling up to document
     setShowMenu(!showMenu);
   };
 
@@ -24,7 +21,7 @@ function ProfileButton({ user }) {
     if (!showMenu) return;
 
     const closeMenu = (e) => {
-      if (!ulRef.current.contains(e.target)) {
+      if (!ulRef.current || !ulRef.current.contains(e.target)) {
         setShowMenu(false);
       }
     };
@@ -34,16 +31,14 @@ function ProfileButton({ user }) {
     return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
 
-  const closeMenu = () => setShowMenu(false);
-
   const logout = (e) => {
     e.preventDefault();
-    dispatch(sessionActions.logout());
-    closeMenu();
-    navigate("/"); // Navigates to home page after logging out
+    dispatch(sessionActions.thunkLogout());
+    setShowMenu(false);
+    navigate("/"); // Redirect to home page after logout
   };
 
-  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+  const ulClassName = `profile-dropdown${showMenu ? "" : " hidden"}`;
 
   return (
     <>
@@ -60,21 +55,8 @@ function ProfileButton({ user }) {
         {user ? (
           <>
             <div className="options">
-              <div>Hello, {user.firstName}</div>
+              <div>Hello, {user.username}</div>
               <div>{user.email}</div>
-            </div>
-            <hr />
-            <div className="manage-div">
-              <div>
-                <Link to="/api/spots/current" className="manage-link">
-                  Manage Spots
-                </Link>
-              </div>
-              <div>
-                <Link to="/api/reviews/current" className="manage-link">
-                  Manage Reviews
-                </Link>
-              </div>
             </div>
             <hr />
             <div className="logout-button-div">
@@ -85,16 +67,12 @@ function ProfileButton({ user }) {
           </>
         ) : (
           <>
-            <OpenModalMenuItem
-              itemText="Log In"
-              onItemClick={closeMenu}
-              modalComponent={<LoginFormPage />}
-            />
-            <OpenModalMenuItem
-              itemText="Sign Up"
-              onItemClick={closeMenu}
-              modalComponent={<SignupFormPage />}
-            />
+            <li>
+              <button onClick={() => navigate("/login")}>Log In</button>
+            </li>
+            <li>
+              <button onClick={() => navigate("/signup")}>Sign Up</button>
+            </li>
           </>
         )}
       </ul>
