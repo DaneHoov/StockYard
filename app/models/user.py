@@ -14,6 +14,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
 
+    # Relationships
     portfolios = db.relationship('Portfolio', back_populates='user', cascade='all, delete-orphan')
     watchlists = db.relationship('Watchlist', back_populates='user', cascade='all, delete-orphan')
     transactions = db.relationship('Transaction', back_populates='user', cascade='all, delete-orphan')
@@ -34,5 +35,8 @@ class User(db.Model, UserMixin):
         return {
             'id': self.id,
             'username': self.username,
-            'email': self.email
+            'email': self.email,
+            'portfolios': [portfolio.to_dict_basic() for portfolio in self.portfolios],
+            'watchlists': [watchlist.to_dict_basic() for watchlist in self.watchlists],
+            'transactions': [transaction.to_dict_basic() for transaction in self.transactions]
         }

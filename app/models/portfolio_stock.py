@@ -1,5 +1,3 @@
-# models/portfolio_stock.py
-
 from .db import db
 
 class PortfolioStock(db.Model):
@@ -12,5 +10,17 @@ class PortfolioStock(db.Model):
     purchase_price = db.Column(db.Float)
     purchase_date = db.Column(db.DateTime)
 
+    # Relationships
     portfolio = db.relationship('Portfolio', back_populates='portfolio_stocks')
     stock = db.relationship('Stock', back_populates='portfolio_stocks')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'portfolio_id': self.portfolio_id,
+            'stock_id': self.stock_id,
+            'quantity': self.quantity,
+            'purchase_price': self.purchase_price,
+            'purchase_date': self.purchase_date.isoformat() if self.purchase_date else None,
+            'stock': self.stock.to_dict_basic()
+        }
