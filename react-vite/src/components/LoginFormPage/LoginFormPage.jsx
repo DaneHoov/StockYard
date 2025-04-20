@@ -92,14 +92,21 @@ function LoginFormPage() {
   };
 
   const handleDemoLogin = async () => {
-    const demoCredential = 'demo@aa.io';
-    const demoPassword = 'password';
-    const serverResponse = await dispatch(thunkLogin({ email: demoCredential, password: demoPassword }));
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'demo@aa.io',
+        password: 'password',
+      }),
+    });
 
-    if (serverResponse) {
-      setErrors(serverResponse);
+    if (response.ok) {
+      const user = await response.json();
+      console.log('Logged in as:', user);
+      // Redirect or update UI
     } else {
-      navigate("/portfolio");
+      console.error('Failed to log in as demo user');
     }
   };
 
