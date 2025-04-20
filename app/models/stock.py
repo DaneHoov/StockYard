@@ -25,3 +25,11 @@ class Stock(db.Model):
             'sector': self.sector,
             'price': self.price,
         }
+
+    def to_dict_basic(self):
+        return {
+            'id': self.id,
+            'ticker': self.ticker,
+            'name': self.name,
+            'price': self.price,
+        }
