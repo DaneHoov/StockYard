@@ -1,14 +1,8 @@
 """rebuild db
 
-<<<<<<<< HEAD:migrations/versions/20250420_101404_rebuild_db.py
-Revision ID: 4f2fadd1640e
+Revision ID: 14b08c5271b9
 Revises: 
-Create Date: 2025-04-20 10:14:04.887011
-========
-Revision ID: fc5e1af1c38a
-Revises: 
-Create Date: 2025-04-20 11:57:08.244870
->>>>>>>> brandon:migrations/versions/20250420_115708_rebuild_db.py
+Create Date: 2025-04-20 12:02:44.658620
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/20250420_101404_rebuild_db.py
-revision = '4f2fadd1640e'
-========
-revision = 'fc5e1af1c38a'
->>>>>>>> brandon:migrations/versions/20250420_115708_rebuild_db.py
+revision = '14b08c5271b9'
 down_revision = None
 branch_labels = None
 depends_on = None
