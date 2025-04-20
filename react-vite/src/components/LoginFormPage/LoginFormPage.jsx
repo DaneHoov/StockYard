@@ -5,6 +5,7 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import { FaFacebookF } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { getCSRFToken } from '../../utils/csrf';
 import "./LoginForm.css";
 
 const countryOptions = [
@@ -92,9 +93,14 @@ function LoginFormPage() {
   };
 
   const handleDemoLogin = async () => {
-    const response = await fetch('/login', {
+    const csrfToken = await getCSRFToken();
+
+    const response = await fetch('/api/auth/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
       body: JSON.stringify({
         email: 'demo@aa.io',
         password: 'password',
@@ -104,11 +110,13 @@ function LoginFormPage() {
     if (response.ok) {
       const user = await response.json();
       console.log('Logged in as:', user);
-      // Redirect or update UI
+      navigate('/portfolio');
     } else {
-      console.error('Failed to log in as demo user');
+      const errorText = await response.text(); // for debugging
+      console.error('Failed to log in as demo user', errorText);
     }
   };
+
 
   return (
     <div className="login-page">

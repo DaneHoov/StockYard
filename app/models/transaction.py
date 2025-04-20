@@ -32,3 +32,14 @@ class Transaction(db.Model):
             'status': self.status,
             'date': self.date.isoformat(),
         }
+
+    def to_dict_basic(self):
+        return {
+            'id': self.id,
+            "ticker": self.stock.ticker if self.stock else None,
+            'quantity': self.quantity,
+            'price': self.price,
+            'type': self.transaction_type,
+            'date': self.date.isoformat() if self.date else None,
+            'portfolio_id': self.portfolio_id
+        }
