@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
+    phone = db.Column(db.String(15), nullable=True, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
 
     # Relationships
@@ -36,6 +37,7 @@ class User(db.Model, UserMixin):
             'id': self.id,
             'username': self.username,
             'email': self.email,
+            'phone': self.phone,
             'portfolios': [portfolio.to_dict_basic() for portfolio in self.portfolios],
             'watchlists': [watchlist.to_dict_basic() for watchlist in self.watchlists],
             'transactions': [transaction.to_dict_basic() for transaction in self.transactions]
