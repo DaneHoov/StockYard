@@ -69,10 +69,27 @@ function SignupFormPage() {
   const [countryCode, setCountryCode] = useState("+1");
   const [phone, setPhone] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
+  const [codeSent, setCodeSent] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [errors, setErrors] = useState({});
 
   if (sessionUser) return <Navigate to="/" replace={true} />;
+
+  const handleSendCode = async () => {
+    const response = await fetch("/api/auth/send-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: `${countryCode}${phone}` }),
+    });
+
+    if (response.ok) {
+      setCodeSent(true);
+      alert("Verification code sent! Use '123456' for demo purposes.");
+    } else {
+      const data = await response.json();
+      setErrors({ phone: data.error });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,9 +100,8 @@ function SignupFormPage() {
 
     const serverResponse = await dispatch(
       thunkSignup({
-        email: phone + "@demo.com",
-        username: phone,
-        password: verificationCode,
+        phone: `${countryCode}${phone}`,
+        verification_code: verificationCode,
       })
     );
 
@@ -147,8 +163,12 @@ function SignupFormPage() {
                 onChange={(e) => setVerificationCode(e.target.value)}
                 required
               />
-              <button type="button" className="send-code-btn">Send Code</button>
+              <button type="button" className="send-code-btn" onClick={handleSendCode}
+            disabled={!phone || codeSent}>Send Code</button>
             </div>
+
+            {errors.phone && <p className="error">{errors.phone}</p>}
+            {errors.verification_code && <p className="error">{errors.verification_code}</p>}
 
             <label className="agreement">
               <input

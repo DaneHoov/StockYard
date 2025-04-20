@@ -1,8 +1,8 @@
 """rebuild db
 
-Revision ID: e6f090cd3dcc
+Revision ID: fc5e1af1c38a
 Revises: 
-Create Date: 2025-04-20 02:22:42.746174
+Create Date: 2025-04-20 11:57:08.244870
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e6f090cd3dcc'
+revision = 'fc5e1af1c38a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,9 +32,11 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=40), nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
+    sa.Column('phone', sa.String(length=15), nullable=True),
     sa.Column('hashed_password', sa.String(length=255), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('phone'),
     sa.UniqueConstraint('username')
     )
     op.create_table('portfolios',

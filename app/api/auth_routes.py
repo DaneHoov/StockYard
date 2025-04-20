@@ -49,19 +49,43 @@ def sign_up():
     """
     Creates a new user and logs them in
     """
-    form = SignUpForm()
-    form['csrf_token'].data = request.cookies['csrf_token']
-    if form.validate_on_submit():
-        user = User(
-            username=form.data['username'],
-            email=form.data['email'],
-            password=form.data['password']
-        )
-        db.session.add(user)
-        db.session.commit()
-        login_user(user)
-        return user.to_dict()
-    return form.errors, 401
+    data = request.get_json()
+    phone = data.get('phone')
+    verification_code = data.get('verification_code')
+
+    # Simulate a verification code for demo purposes
+    expected_code = "123456"  # Hardcoded for demo
+
+    if verification_code != expected_code:
+        return {"error": "Invalid verification code."}, 400
+
+    # Check if the phone number (email) is already in use
+    if User.query.filter(User.username == phone).first():
+        return {"error": "Phone number is already in use."}, 400
+
+    # Create the user
+    user = User(username=phone, email=f"{phone}@demo.com", phone=phone, password="defaultpassword123")
+    db.session.add(user)
+    db.session.commit()
+    login_user(user)
+    return user.to_dict()
+
+@auth_routes.route('/send-code', methods=['POST'])
+def send_verification_code():
+    """
+    Simulates sending a verification code to the user's phone number
+    """
+    data = request.get_json()
+    phone = data.get('phone')
+
+    if not phone:
+        return {"error": "Phone number is required."}, 400
+
+    # Simulate sending a verification code
+    verification_code = "123456"  # Hardcoded for demo
+    print(f"Verification code for {phone}: {verification_code}")
+
+    return {"message": "Verification code sent successfully."}, 200
 
 
 @auth_routes.route('/unauthorized')

@@ -60,24 +60,58 @@ function Trade() {
     ).toFixed(2)})`;
   };
 
-  const handleAddToWatchlist = (stock) => {
-    dispatch(thunkAddToWatchlist(stock));
+  const handleAddToWatchlist = async (stock) => {
+    try {
+      await dispatch(thunkAddToWatchlist(stock));
+      alert(`${stock.symbol} has been added to your watchlist.`);
+    } catch (error) {
+      console.error("Failed to add to watchlist:", error);
+      alert("Failed to add to watchlist. Please try again.");
+    }
   };
 
-  const handleRemoveFromWatchlist = (stockSymbol) => {
-    dispatch(thunkRemoveFromWatchlist(stockSymbol));
+  const handleRemoveFromWatchlist = async (stockSymbol) => {
+    try {
+      await dispatch(thunkRemoveFromWatchlist(stockSymbol));
+      alert(`${stockSymbol} has been removed from your watchlist.`);
+    } catch (error) {
+      console.error("Failed to remove from watchlist:", error);
+      alert("Failed to remove from watchlist. Please try again.");
+    }
   };
 
   const isStockInWatchlist = (stockSymbol) => {
     return watchlist.some((stock) => stock.symbol === stockSymbol);
   };
 
-  const handleAddToPortfolio = (stock) => {
-    dispatch(thunkAddToPortfolio(stock));
+  const handleAddToPortfolio = async (stock) => {
+    try {
+      const quantity = prompt(`Enter the quantity of ${stock.symbol} to add:`);
+      if (!quantity || isNaN(quantity) || quantity <= 0) {
+        alert("Invalid quantity. Please enter a positive number.");
+        return;
+      }
+      await dispatch(thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) }));
+      alert(`${quantity} shares of ${stock.symbol} have been added to your portfolio.`);
+    } catch (error) {
+      console.error("Failed to add to portfolio:", error);
+      alert("Failed to add to portfolio. Please try again.");
+    }
   };
 
-  const handleSellStock = (stock) => {
-    dispatch(thunkRemoveFromPortfolio(stock.symbol));
+  const handleSellStock = async (stock) => {
+    try {
+      const quantity = prompt(`Enter the quantity of ${stock.symbol} to sell:`);
+      if (!quantity || isNaN(quantity) || quantity <= 0) {
+        alert("Invalid quantity. Please enter a positive number.");
+        return;
+      }
+      await dispatch(thunkRemoveFromPortfolio({ symbol: stock.symbol, quantity: parseInt(quantity) }));
+      alert(`${quantity} shares of ${stock.symbol} have been sold.`);
+    } catch (error) {
+      console.error("Failed to sell stock:", error);
+      alert("Failed to sell stock. Please try again.");
+    }
   };
 
   return (

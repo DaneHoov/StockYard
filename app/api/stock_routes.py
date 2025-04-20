@@ -117,9 +117,19 @@ def delete_stock_from_portfolio(portfolio_id, stock_id):
 @stock_routes.route('/portfolio/<string:symbol>', methods=['DELETE'])
 @login_required
 def remove_from_portfolio(symbol):
-    stock = Portfolio.query.filter_by(user_id=current_user.id, symbol=symbol).first()
-    if stock:
-        db.session.delete(stock)
+    portfolio_id = request.args.get('portfolio_id')  # Ensure you pass the portfolio ID
+    if not portfolio_id:
+        return {"error": "Portfolio ID is required"}, 400
+
+    # Query the PortfolioStock model to find the stock in the portfolio
+    portfolio_stock = PortfolioStock.query.join(Stock).filter(
+        PortfolioStock.portfolio_id == portfolio_id,
+        Stock.ticker == symbol
+    ).first()
+
+    if portfolio_stock:
+        db.session.delete(portfolio_stock)
         db.session.commit()
-        return {"message": f"Stock {symbol} removed from portfolio"}
-    return {"error": "Stock not found in portfolio"}, 404
+        return {"message": "Stock removed from portfolio"}, 200
+    else:
+        return {"error": "Stock not found in portfolio"}, 404
