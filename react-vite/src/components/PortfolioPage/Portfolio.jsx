@@ -6,8 +6,9 @@ import './Portfolio.css';
 const Portfolio = () => {
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.session.user);
-  const portfolio = useSelector((state) => sessionUser ? state.portfolio[sessionUser.id] : null
-);
+  const portfolio = useSelector((state) =>
+    sessionUser && state.portfolio ? state.portfolio[sessionUser.id] : null
+  );
 
   const [tab, setTab] = useState('funds');
   const [amount, setAmount] = useState('');
