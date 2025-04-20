@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStocks } from "../../redux/stocks";
+import { addStockToPortfolioThunk } from "../../redux/portfolio";
+
 import {
   thunkAddToWatchlist,
   thunkRemoveFromWatchlist,
-  thunkAddToPortfolio,
   thunkRemoveFromPortfolio,
 } from "../../redux/session";
 import "./Trade.css";
+
 
 function Trade() {
   const dispatch = useDispatch();
@@ -91,13 +93,21 @@ function Trade() {
         alert("Invalid quantity. Please enter a positive number.");
         return;
       }
-      await dispatch(thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) }));
+
+      await dispatch(
+        addStockToPortfolioThunk(sessionUser.id, {
+          stock_id: stock.id,
+          quantity: parseInt(quantity),
+        })
+      );
+
       alert(`${quantity} shares of ${stock.symbol} have been added to your portfolio.`);
     } catch (error) {
       console.error("Failed to add to portfolio:", error);
       alert("Failed to add to portfolio. Please try again.");
     }
   };
+
 
   const handleSellStock = async (stock) => {
     try {

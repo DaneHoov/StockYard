@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_login import login_required, current_user
-from app.models import db, Portfolio
+from app.models import db, Portfolio, PortfolioStock
 
 portfolio_routes = Blueprint('portfolio', __name__)
 
@@ -45,3 +45,37 @@ def delete_portfolio(user_id):
     db.session.delete(portfolio)
     db.session.commit()
     return {"message": "Portfolio deleted successfully."}
+
+
+@portfolio_routes.route('/<int:user_id>/stocks', methods=['POST'])
+@login_required
+def add_to_portfolio(user_id):
+    data = request.get_json()
+    stock_id = data.get('stock_id')
+    quantity = data.get('quantity', 1)
+
+    if not stock_id:
+        return {'error': 'Stock ID is required'}, 400
+
+    portfolio = Portfolio.query.filter_by(user_id=user_id).first()
+    if not portfolio:
+        return {'error': 'Portfolio not found'}, 404
+
+    # Check if the stock already exists in the portfolio
+    portfolio_stock = PortfolioStock.query.filter_by(
+        portfolio_id=portfolio.id,
+        stock_id=stock_id
+    ).first()
+
+    if portfolio_stock:
+        portfolio_stock.quantity += quantity
+    else:
+        new_entry = PortfolioStock(
+            portfolio_id=portfolio.id,
+            stock_id=stock_id,
+            quantity=quantity
+        )
+        db.session.add(new_entry)
+
+    db.session.commit()
+    return portfolio.to_dict()
