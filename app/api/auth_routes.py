@@ -35,6 +35,7 @@ def login():
     return form.errors, 401
 
 
+
 @auth_routes.route('/logout')
 def logout():
     """

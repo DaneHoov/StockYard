@@ -110,7 +110,7 @@ function LoginFormPage() {
     if (response.ok) {
       const user = await response.json();
       console.log('Logged in as:', user);
-      navigate('/portfolio');
+      navigate('/portfolio', {replace: true});
     } else {
       const errorText = await response.text(); // for debugging
       console.error('Failed to log in as demo user', errorText);
