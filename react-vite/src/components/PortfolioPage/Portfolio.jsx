@@ -34,15 +34,16 @@ const Portfolio = () => {
     dispatch(deletePortfolioThunk(sessionUser.id));
   };
 
-  if (!sessionUser) return <p>Please log in to view your portfolio.</p>;
+  if (!sessionUser) return <p>Loading user...</p>;
+  if (!portfolio) return <p>Loading portfolio...</p>;
 
   return (
     <div className="portfolio-container">
       <h1>{`${sessionUser.username}'s Portfolio`}</h1>
 
-      {portfolio ? (
+
         <>
-          <div className="tab-switcher">
+          <div className="portfolio-tabs">
             <button
               className={tab === 'funds' ? 'active-tab' : ''}
               onClick={() => setTab('funds')}
@@ -59,7 +60,7 @@ const Portfolio = () => {
 
           {tab === 'funds' && (
             <div className="funds-tab">
-              <h2>Available Cash: ${portfolio.balance.toFixed(2)}</h2>
+              <h2>Available Cash: ${portfolio?.balance?.toFixed(2) || '0.00' }</h2>
               <form onSubmit={handleAddFunds}>
                 <input
                   type="number"
@@ -98,7 +99,7 @@ const Portfolio = () => {
   </div>
 )}
   </>
-      ) : (
+  {!portfolio && (
         <div className="no-portfolio">
           <p>You don’t have a portfolio yet.</p>
           <button onClick={handleCreate}>Create Portfolio</button>
