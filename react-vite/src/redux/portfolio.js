@@ -34,6 +34,20 @@ export const createPortfolioThunk = (portfolioData) => async (dispatch) => {
   }
 };
 
+export const addStockToPortfolioThunk = (userId, stock) => async (dispatch) => {
+  const res = await fetch(`/api/portfolio/${userId}/stocks`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(stock),
+  });
+
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(setPortfolio(data)); // or dispatch(setPortfolio(data));
+  }
+};
+
+
 export const updatePortfolioThunk =
   (userId, updateData) => async (dispatch) => {
     const res = await fetch(`/api/portfolio/${userId}`, {
