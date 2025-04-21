@@ -156,20 +156,19 @@ function Trade() {
                   <td>{stock.change}</td>
                   <td>
                     {isStockInWatchlist(stock.symbol) ? (
-                      <button
-                        onClick={() => handleRemoveFromWatchlist(stock.symbol)}
+                      <button className="remove-from-watchlist" onClick={() => handleRemoveFromWatchlist(stock.symbol)}
                       >
                         Remove from Watchlist
                       </button>
                     ) : (
-                      <button onClick={() => handleAddToWatchlist(stock)}>
+                      <button className="add-to-watchlist" onClick={() => handleAddToWatchlist(stock)}>
                         Add to Watchlist
                       </button>
                     )}
-                    <button onClick={() => handleAddToPortfolio(stock)}>
+                    <button className="add-to-portfolio" onClick={() => handleAddToPortfolio(stock)}>
                       Add to Portfolio
                     </button>
-                    <button onClick={() => handleSellStock(stock)}>Sell</button>
+                    <button className="sell-button" onClick={() => handleSellStock(stock)}>Sell</button>
                   </td>
                 </tr>
               ))}
