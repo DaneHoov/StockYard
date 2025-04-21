@@ -95,6 +95,7 @@ function Trade() {
         return;
       }
 
+
       await dispatch(
         addStockToPortfolioThunk(sessionUser.id, {
           stock_id: stock.id,

@@ -42,8 +42,13 @@ export const addStockToPortfolioThunk = (userId, stock) => async (dispatch) => {
   });
 
   if (res.ok) {
-    const data = await res.json();
-    dispatch(setPortfolio(data)); // or dispatch(setPortfolio(data));
+    const updatedPortfolio = await res.json();
+    dispatch(setPortfolio(updatedPortfolio));
+    return updatedPortfolio;
+  } else {
+    const error = await res.json();
+    console.error("❌ Portfolio add error:", error);
+    return error;
   }
 };
 
