@@ -93,7 +93,12 @@ def remove_from_watchlist(stock_id):
 def add_to_portfolio():
     data = request.json
     stock_id = data.get('stock_id')
-    quantity = data.get('quantity', 1)  # Default quantity to 1 if not provided
+    quantity = data.get('quantity', 1)
+
+     # Validate the payload
+    if not stock_id:
+        print("❌ Missing stock_id in request")  # Debugging log
+        return {"error": "Stock ID is required"}, 400
 
     # Ensure the stock exists
     stock = Stock.query.get(stock_id)
@@ -109,9 +114,11 @@ def add_to_portfolio():
     portfolio_stock = PortfolioStock.query.filter_by(portfolio_id=portfolio.id, stock_id=stock.id).first()
     if portfolio_stock:
         portfolio_stock.quantity += quantity
+        print(f"Updated stock ID {stock_id} in portfolio ID {portfolio.id} with quantity {portfolio_stock.quantity}")  # Debug log
     else:
         portfolio_stock = PortfolioStock(portfolio_id=portfolio.id, stock_id=stock.id, quantity=quantity)
         db.session.add(portfolio_stock)
+        print(f"Added stock ID {stock_id} to portfolio ID {portfolio.id} with quantity {quantity}")  # Debug log
 
     db.session.commit()
     return {"message": "Stock added to portfolio"}

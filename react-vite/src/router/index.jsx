@@ -4,6 +4,8 @@ import Watchlist from "../components/WatchlistPage/Watchlist";
 import Portfolio from "../components/PortfolioPage/Portfolio";
 import LoginFormPage from "../components/LoginFormPage";
 import SignupFormPage from "../components/SignupFormPage";
+import TermsConditions from "../components/TermsConditionsPage/TermsConditions";
+import PrivacyPolicy from "../components/PrivacyPolicyPage/PrivacyPolicy";
 import Layout from "./Layout";
 
 export const router = createBrowserRouter([
@@ -35,6 +37,14 @@ export const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignupFormPage />,
+      },
+      {
+        path: "/terms",
+        element: <TermsConditions />,
+      },
+      {
+        path: "/privacy",
+        element: <PrivacyPolicy />,
       },
     ],
   },

@@ -153,17 +153,24 @@ export const thunkRemoveFromWatchlist =
         }
     };
 
-export const thunkAddToPortfolio = (stock) => async (dispatch, getState) => {
+export const thunkAddToPortfolio = (stockId, quantity) => async (dispatch, getState) => {
     const { user } = getState().session;
     if (!user) return;
 
     const response = await fetch("/api/stocks/portfolio", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(stock),
+        body: JSON.stringify({
+            stock_id: stockId,
+            quantity,
+        }),
     });
     if (response.ok) {
+        const stock = await response.json();
         dispatch(addToPortfolio(stock));
+        dispatch(thunkAddToPortfolio(user.id));
+    } else {
+        console.error("Failed to add stock to portfolio")
     }
 };
 
