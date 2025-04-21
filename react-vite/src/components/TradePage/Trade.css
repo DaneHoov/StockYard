@@ -222,3 +222,123 @@
 .trade-table th {
   background-color: #f4f4f4;
 }
+
+.active-row {
+  background-color: #91c274;
+  color: white;
+}
+
+/* Button Styling */
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* Add to Watchlist Button */
+.add-to-watchlist {
+  background-color: #3498db;
+  color: white;
+}
+
+.add-to-watchlist:hover {
+  background-color: #2980b9;
+}
+
+/* Add to Portfolio Button */
+.add-to-portfolio {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.add-to-portfolio:hover {
+  background-color: #27ae60;
+}
+
+/* Sell Button */
+.sell-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.sell-button:hover {
+  background-color: #c0392b;
+}
+
+/* Sidebar Styling */
+.sidebar {
+  width: 400px;
+  background-color: white;
+  border-left: 1px solid #ddd;
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 30px;
+}
+
+.sidebar-content {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.sidebar .side-option {
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.sidebar .side-option.active {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.sidebar .side-option:not(.active) {
+  background-color: #ccc;
+  color: #333;
+}
+
+.sidebar .side-option:hover {
+  background-color: #27ae60;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .trade-container {
+    padding: 15px;
+  }
+
+  .trade-table th,
+  .trade-table td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  button {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
