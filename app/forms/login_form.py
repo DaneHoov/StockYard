@@ -6,10 +6,14 @@ from app.models import User
 
 def user_exists(form, field):
     # Checking if user exists
-    email = field.data
-    user = User.query.filter(User.email == email).first()
+    identifier = field.data
+    if identifier.isdigit():  # If the identifier is a phone number
+        user = User.query.filter(User.phone == identifier).first()
+    else:  # Otherwise, treat it as an email
+        user = User.query.filter(User.email == identifier).first()
+
     if not user:
-        raise ValidationError('Email provided not found.')
+        raise ValidationError('No such user exists.')
 
 
 def password_matches(form, field):

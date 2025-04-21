@@ -19,7 +19,6 @@ const countryOptions = [
   { code: "+32", name: "Belgium" },
   { code: "+55", name: "Brazil" },
   { code: "+359", name: "Bulgaria" },
-  { code: "+1", name: "Canada" },
   { code: "+86", name: "China" },
   { code: "+57", name: "Colombia" },
   { code: "+420", name: "Czech Republic" },
@@ -81,13 +80,12 @@ function LoginFormPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const identifier = isEmailLogin ? email : `${phone}@demo.com`;
+    const identifier = isEmailLogin ? email : `${countryCode}${phone}`;
     const serverResponse = await dispatch(thunkLogin({ email: identifier, password }));
 
     if (serverResponse) {
       setErrors(serverResponse);
     } else {
-      console.log("Navigating!")
       navigate("/portfolio");
     }
   };
