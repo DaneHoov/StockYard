@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import db, Watchlist, Portfolio, PortfolioStock, Stock
+from app.models import db, WatchlistStock, Portfolio, PortfolioStock, Stock
 
 stock_routes = Blueprint('stocks', __name__)
 
@@ -19,11 +19,12 @@ def get_stocks():
 
 @stock_routes.route('/<string:symbol>', methods=['GET'])
 def get_stock_details(symbol):
-    stock = Stock.query.filter_by(symbol=symbol.upper()).first()
+    stock = Stock.query.filter_by(ticker=symbol.upper()).first()
     if not stock:
         return jsonify({'error': 'Stock not found'}), 404
 
     return jsonify(stock.to_dict())
+
 
 @stock_routes.route('/search', methods=['GET'])
 def search_stocks():
@@ -51,10 +52,41 @@ def search_stocks():
 @login_required
 def add_to_watchlist():
     data = request.json
-    stock = Watchlist(user_id=current_user.id, symbol=data['symbol'])
-    db.session.add(stock)
+    print("Request payload:", data)  # Debugging log
+    stock_id = data.get('stock_id')
+
+    if not stock_id:
+        return {"error": "Stock ID is required"}, 400
+
+    existing = WatchlistStock.query.filter_by(watchlist_id=current_user.id, stock_id=stock_id).first()
+    if existing:
+        print("Stock already in watchlist:", existing)  # Debugging log
+        return {"message": "Stock already in watchlist"}, 200
+
+    new_watchlist_stock = WatchlistStock(watchlist_id=current_user.id, stock_id=stock_id)
+    db.session.add(new_watchlist_stock)
     db.session.commit()
-    return {"message": "Stock added to watchlist"}
+    print("Stock added to watchlist:", new_watchlist_stock)  # Debugging log
+    return {"message": "Stock added to watchlist"}, 201
+
+
+@stock_routes.route('/watchlist/<int:stock_id>', methods=['DELETE'])
+@login_required
+def remove_from_watchlist(stock_id):
+    print(f"Attempting to remove stock ID {stock_id} for user {current_user.id}")  # Debug log
+
+    # Find the matching WatchlistStock entry using watchlist_id
+    watch_item = WatchlistStock.query.filter_by(watchlist_id=current_user.id, stock_id=stock_id).first()
+
+    if not watch_item:
+        print("Stock not found in watchlist")  # Debug log
+        return jsonify({'error': 'Stock not found in watchlist'}), 404
+
+    db.session.delete(watch_item)
+    db.session.commit()
+    print(f"Removed stock ID {stock_id} from watchlist")  # Debug log
+    return jsonify({'message': 'Stock removed from watchlist'}), 200
+
 
 @stock_routes.route('/portfolio', methods=['POST'])
 @login_required

@@ -92,7 +92,22 @@ export const thunkAddToWatchlist = (stock) => async (dispatch, getState) => {
     const { user } = getState().session;
     if (!user) return;
 
-    console.log("Sending payload:", { stock_id: stock.id }); // Debugging log
+    // Fetch the stock ID if it's missing
+    if (!stock.id) {
+        const response = await fetch(`/api/stocks/${stock.symbol}`);
+        if (response.ok) {
+            const data = await response.json();
+            stock.id = data.id; // Add the fetched ID to the stock object
+        } else if (response.status === 404) {
+            console.error("Stock not found");
+            alert("Failed to add to watchlist: Stock not found.");
+            return;
+        } else {
+            console.error("Failed to fetch stock ID");
+            alert("Failed to add to watchlist: Unable to fetch stock ID.");
+            return;
+        }
+    }
 
     const response = await fetch("/api/stocks/watchlist", {
         method: "POST",
@@ -105,21 +120,30 @@ export const thunkAddToWatchlist = (stock) => async (dispatch, getState) => {
         alert(data.message);
     } else {
         const error = await response.json();
-        console.error("Error response:", error); // Debugging log
         alert(error.error || "Failed to add to watchlist.");
     }
 };
 
 export const thunkRemoveFromWatchlist =
-    (stockSymbol) => async (dispatch, getState) => {
+    (stockId) => async (dispatch, getState) => {
+        if (!stockId) {
+            console.error("Missing stock ID for removal!");
+            return;
+        }
+
+        console.log("Removing stock with ID:", stockId); // Debugging log
         const { user } = getState().session;
         if (!user) return;
 
-        const response = await fetch(`/api/stocks/watchlist/${stockSymbol}`, {
+        const response = await fetch(`/api/stocks/watchlist/${stockId}`, {
             method: "DELETE",
         });
         if (response.ok) {
-            dispatch(removeFromWatchlist(stockSymbol));
+            dispatch(removeFromWatchlist(stockId));
+        } else {
+            const error = await response.json();
+            console.error("Failed to remove from watchlist:", error);
+            throw new Error(error.error || "Failed to remove from watchlist.");
         }
     };
 
@@ -167,7 +191,7 @@ function sessionReducer(state = sessionInitialState, action) {
             return {
                 ...state,
                 watchlist: state.watchlist.filter(
-                    (stock) => stock.symbol !== action.payload
+                    (stock) => stock.id !== action.payload
                 ),
             };
         case ADD_TO_PORTFOLIO:
