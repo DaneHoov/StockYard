@@ -106,15 +106,21 @@ function Trade() {
         return;
       }
 
+      // Fetch the stock ID if it's missing
+    if (!stock.id) {
+      const response = await fetch(`/api/stocks/${stock.symbol}`);
+      if (response.ok) {
+        const data = await response.json();
+        stock.id = data.id; // Add the fetched ID to the stock object
+      } else {
+        alert("Failed to fetch stock ID. Cannot add to portfolio.");
+        console.error("Failed to fetch stock ID for:", stock);
+        return;
+      }
+    }
 
-      await dispatch(
-        addStockToPortfolioThunk(sessionUser.id, {
-          stock_id: stock.id,
-          quantity: parseInt(quantity),
-        })
-      );
-
-      alert(`${quantity} shares of ${stock.symbol} have been added to your portfolio.`);
+      await dispatch(thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) }));
+      // alert(`${quantity} shares of ${stock.symbol} have been added to your portfolio.`);
     } catch (error) {
       console.error("Failed to add to portfolio:", error);
       alert("Failed to add to portfolio. Please try again.");

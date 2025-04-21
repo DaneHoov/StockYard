@@ -92,10 +92,11 @@ def remove_from_watchlist(stock_id):
 @login_required
 def add_to_portfolio():
     data = request.json
-    stock_id = data.get('stock_id')
-    quantity = data.get('quantity', 1)
+    print("📦 Received JSON data:", data)  # Debugging log
 
-     # Validate the payload
+    stock_id = data.get('stock_id')
+    quantity = data.get('quantity', 1)  # Default quantity to 1 if not provided
+
     if not stock_id:
         print("❌ Missing stock_id in request")  # Debugging log
         return {"error": "Stock ID is required"}, 400
@@ -103,22 +104,24 @@ def add_to_portfolio():
     # Ensure the stock exists
     stock = Stock.query.get(stock_id)
     if not stock:
+        print("❌ Stock not found:", stock_id)  # Debugging log
         return {"error": "Stock not found"}, 404
 
     # Ensure the user has a portfolio
     portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
     if not portfolio:
+        print("❌ Portfolio not found for user:", current_user.id)  # Debugging log
         return {"error": "Portfolio not found"}, 404
 
     # Add or update the stock in the portfolio
     portfolio_stock = PortfolioStock.query.filter_by(portfolio_id=portfolio.id, stock_id=stock.id).first()
     if portfolio_stock:
         portfolio_stock.quantity += quantity
-        print(f"Updated stock ID {stock_id} in portfolio ID {portfolio.id} with quantity {portfolio_stock.quantity}")  # Debug log
+        print(f"✅ Updated stock ID {stock_id} in portfolio ID {portfolio.id} with quantity {portfolio_stock.quantity}")  # Debugging log
     else:
         portfolio_stock = PortfolioStock(portfolio_id=portfolio.id, stock_id=stock.id, quantity=quantity)
         db.session.add(portfolio_stock)
-        print(f"Added stock ID {stock_id} to portfolio ID {portfolio.id} with quantity {quantity}")  # Debug log
+        print(f"✅ Added stock ID {stock_id} to portfolio ID {portfolio.id} with quantity {quantity}")  # Debugging log
 
     db.session.commit()
     return {"message": "Stock added to portfolio"}
