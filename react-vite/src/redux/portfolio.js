@@ -54,7 +54,7 @@ export const addStockToPortfolioThunk = (userId, stock) => async (dispatch) => {
 
 
 export const updatePortfolioThunk =
-  (userId, updateData) => async (dispatch) => {
+  (userId, updateData,) => async (dispatch) => {
     const res = await fetch(`/api/portfolio/${userId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
