@@ -14,6 +14,7 @@ function Portfolio() {
   const [showFunds, setShowFunds] = useState(true);
   const [addAmount, setAddAmount] = useState("");
 
+
   useEffect(() => {
     if (sessionUser) {
       dispatch(getPortfolioThunk(sessionUser.id));
