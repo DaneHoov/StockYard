@@ -223,6 +223,10 @@
   background-color: #f4f4f4;
 }
 
+.trade-table td button {
+  margin: 5px;
+}
+
 .active-row {
   background-color: #91c274;
   color: white;
@@ -251,6 +255,16 @@ button:hover {
 
 .add-to-watchlist:hover {
   background-color: #2980b9;
+}
+
+/* Remove from Watchlisst Button */
+.remove-from-watchlist {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.remove-from-watchlist:hover {
+  background-color: #c0392b;
 }
 
 /* Add to Portfolio Button */
