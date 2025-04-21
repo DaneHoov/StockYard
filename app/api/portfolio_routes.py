@@ -51,10 +51,12 @@ def delete_portfolio(user_id):
 @login_required
 def add_to_portfolio(user_id):
     data = request.get_json()
+    print("📦 Received JSON data:", data)
     stock_id = data.get('stock_id')
     quantity = data.get('quantity', 1)
 
     if not stock_id:
+        print("❌ Missing stock_id in request")
         return {'error': 'Stock ID is required'}, 400
 
     portfolio = Portfolio.query.filter_by(user_id=user_id).first()
