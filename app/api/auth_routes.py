@@ -28,9 +28,22 @@ def login():
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
         # Add the user to the session, we are logged in!
-        user = User.query.filter(User.email == form.data['email']).first()
-        login_user(user)
-        return user.to_dict()
+        identifier = form.data['email']  # This can be an email or phone number
+        password = form.data['password']
+
+        # Check if the identifier is a phone number (starts with '+' and is numeric)
+        if identifier.startswith('+') and identifier[1:].isdigit():
+            user = User.query.filter(User.phone == identifier).first()
+            print(f"Queried user by phone: {user}")
+        else:
+            user = User.query.filter(User.email == identifier).first()
+            print(f"Queried user by email: {user}")
+
+        if user and user.check_password(password):
+            login_user(user)
+            print(f"User logged in: {user}")
+            return user.to_dict()
+
     print("Form errors:", form.errors)
     return form.errors, 401
 
