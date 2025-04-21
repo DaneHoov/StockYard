@@ -4,7 +4,7 @@ from app.models import db, WatchlistStock
 
 watchlist_routes = Blueprint('watchlist', __name__)
 
-@watchlist_routes.route('/', methods=['GET'])
+@watchlist_routes.route('/watchlist', methods=['GET'])
 @login_required
 def get_watchlist():
     watchlist = WatchlistStock.query.filter_by(user_id=current_user.id).all()
@@ -15,7 +15,7 @@ def get_watchlist():
     } for item in watchlist])
 
 
-@watchlist_routes.route('/', methods=['POST'])
+@watchlist_routes.route('/watchlist', methods=['POST'])
 @login_required
 def add_to_watchlist():
     data = request.get_json()
@@ -35,7 +35,7 @@ def add_to_watchlist():
     return jsonify({'message': 'Stock added to watchlist'}), 201
 
 
-@watchlist_routes.route('/<int:stock_id>', methods=['DELETE'])
+@watchlist_routes.route('/watchlist/<int:stock_id>', methods=['DELETE'])
 @login_required
 def remove_from_watchlist(stock_id):
     watch_item = WatchlistStock.query.filter_by(user_id=current_user.id, stock_id=stock_id).first()
