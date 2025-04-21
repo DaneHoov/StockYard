@@ -70,6 +70,24 @@ def add_to_watchlist():
     return {"message": "Stock added to watchlist"}, 201
 
 
+@stock_routes.route('/watchlist/<int:stock_id>', methods=['DELETE'])
+@login_required
+def remove_from_watchlist(stock_id):
+    print(f"Attempting to remove stock ID {stock_id} for user {current_user.id}")  # Debug log
+
+    # Find the matching WatchlistStock entry using watchlist_id
+    watch_item = WatchlistStock.query.filter_by(watchlist_id=current_user.id, stock_id=stock_id).first()
+
+    if not watch_item:
+        print("Stock not found in watchlist")  # Debug log
+        return jsonify({'error': 'Stock not found in watchlist'}), 404
+
+    db.session.delete(watch_item)
+    db.session.commit()
+    print(f"Removed stock ID {stock_id} from watchlist")  # Debug log
+    return jsonify({'message': 'Stock removed from watchlist'}), 200
+
+
 @stock_routes.route('/portfolio', methods=['POST'])
 @login_required
 def add_to_portfolio():
