@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWatchlist } from "../../redux/session";
 import { fetchStocks } from "../../redux/stocks";
-import { addStockToPortfolioThunk } from "../../redux/portfolio";
+// import { addStockToPortfolioThunk } from "../../redux/portfolio";
 
 import {
   thunkAddToWatchlist,
   thunkRemoveFromWatchlist,
+  thunkAddToPortfolio,
   thunkRemoveFromPortfolio,
 } from "../../redux/session";
 import "./Trade.css";
