@@ -31,7 +31,7 @@ def update_portfolio(user_id):
 
     data = request.get_json()
     add_cash = data.get('add_cash', 0.0)
-    portfolio.cash_balance += float(add_cash)
+    portfolio.balance += float(add_cash)
     db.session.commit()
     return portfolio.to_dict()
 

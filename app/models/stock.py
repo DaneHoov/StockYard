@@ -10,6 +10,7 @@ class Stock(db.Model):
     price = db.Column(db.Float, nullable=False)
     sector = db.Column(db.String(50), nullable=False)
 
+
     # Relationships
     transactions = db.relationship('Transaction', back_populates='stock')
     portfolio_stocks = db.relationship('PortfolioStock', back_populates='stock')
@@ -24,6 +25,7 @@ class Stock(db.Model):
             'exchange': self.exchange,
             'sector': self.sector,
             'price': self.price,
+
         }
 
     def to_dict_basic(self):
