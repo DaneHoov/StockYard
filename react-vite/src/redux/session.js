@@ -38,13 +38,16 @@ export const thunkAuthenticate = () => async (dispatch) => {
     if (response.ok) {
         const data = await response.json();
         if (data.errors) {
+            console.error("Authentication errors:", data.errors); // Debugging log
             return;
         }
 
-        dispatch(setUser(data));
+        // Only set the user if valid credentials exist
+        if (data.id) {
+            dispatch(setUser(data));
+        }
     }
 };
-
 export const thunkLogin =
     ({ email, password }) =>
     async (dispatch) => {
@@ -59,6 +62,7 @@ export const thunkLogin =
             dispatch(setUser(data));
         } else if (response.status < 500) {
             const errorMessages = await response.json();
+            console.error("Login errors:", errorMessages); // Debugging log
             return errorMessages;
         } else {
             return { server: "Something went wrong. Please try again" };
