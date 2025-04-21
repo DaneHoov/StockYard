@@ -1,14 +1,7 @@
-
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import './TermsConditions.css'; // Make sure this matches your actual file structure
 
 const TermsPage = () => {
-  const navigate = useNavigate();
 
-  const handleAgree = () => {
-    navigate('/');
-  };
 
   return (
     <div className="terms-container">

@@ -8,9 +8,10 @@ portfolio_routes = Blueprint('portfolio', __name__)
 @login_required
 def get_portfolio(user_id):
     portfolio = Portfolio.query.filter_by(user_id=user_id).first()
-    if portfolio:
-        return portfolio.to_dict()
-    return {"message": "Portfolio not found."}, 404
+    if not portfolio:
+        return {"message": "Portfolio not found."}, 404
+
+    return portfolio.to_dict()
 
 
 @portfolio_routes.route('/', methods=['POST'])

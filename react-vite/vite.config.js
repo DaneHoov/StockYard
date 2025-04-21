@@ -16,5 +16,8 @@ export default defineConfig((mode) => ({
     proxy: {
       "/api": "http://127.0.0.1:8000",
     },
+    fs: {
+      allow: ['..'], // Allow serving files from one level up (e.g., node_modules)
+  },
   },
 }));
