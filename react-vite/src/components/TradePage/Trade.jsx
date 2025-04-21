@@ -72,10 +72,11 @@ function Trade() {
     }
   };
 
-  const handleRemoveFromWatchlist = async (stockSymbol) => {
+  const handleRemoveFromWatchlist = async (stock) => {
     try {
-      await dispatch(thunkRemoveFromWatchlist(stockSymbol));
-      alert(`${stockSymbol} has been removed from your watchlist.`);
+      console.log("Removing stock:", stock); // Debugging log
+      await dispatch(thunkRemoveFromWatchlist(stock.id));
+      alert(`${stock.symbol} has been removed from your watchlist.`);
     } catch (error) {
       console.error("Failed to remove from watchlist:", error);
       alert("Failed to remove from watchlist. Please try again.");
@@ -83,7 +84,7 @@ function Trade() {
   };
 
   const isStockInWatchlist = (stockSymbol) => {
-    return watchlist.some((stock) => stock.symbol === stockSymbol);
+    return watchlist.find((stock) => stock.symbol === stockSymbol);
   };
 
   const handleAddToPortfolio = async (stock) => {
@@ -156,7 +157,7 @@ function Trade() {
                   <td>{stock.change}</td>
                   <td>
                     {isStockInWatchlist(stock.symbol) ? (
-                      <button className="remove-from-watchlist" onClick={() => handleRemoveFromWatchlist(stock.symbol)}
+                      <button className="remove-from-watchlist" onClick={() => handleRemoveFromWatchlist(stock)}
                       >
                         Remove from Watchlist
                       </button>

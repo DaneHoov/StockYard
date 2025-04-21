@@ -125,15 +125,25 @@ export const thunkAddToWatchlist = (stock) => async (dispatch, getState) => {
 };
 
 export const thunkRemoveFromWatchlist =
-    (stockSymbol) => async (dispatch, getState) => {
+    (stockId) => async (dispatch, getState) => {
+        if (!stockId) {
+            console.error("Missing stock ID for removal!");
+            return;
+        }
+
+        console.log("Removing stock with ID:", stockId); // Debugging log
         const { user } = getState().session;
         if (!user) return;
 
-        const response = await fetch(`/api/stocks/watchlist/${stockSymbol}`, {
+        const response = await fetch(`/api/stocks/watchlist/${stockId}`, {
             method: "DELETE",
         });
         if (response.ok) {
-            dispatch(removeFromWatchlist(stockSymbol));
+            dispatch(removeFromWatchlist(stockId));
+        } else {
+            const error = await response.json();
+            console.error("Failed to remove from watchlist:", error);
+            throw new Error(error.error || "Failed to remove from watchlist.");
         }
     };
 
@@ -181,7 +191,7 @@ function sessionReducer(state = sessionInitialState, action) {
             return {
                 ...state,
                 watchlist: state.watchlist.filter(
-                    (stock) => stock.symbol !== action.payload
+                    (stock) => stock.id !== action.payload
                 ),
             };
         case ADD_TO_PORTFOLIO:
