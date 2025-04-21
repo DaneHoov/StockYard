@@ -204,7 +204,6 @@ function Trade() {
                     <button className="add-to-portfolio" onClick={() => handleAddToPortfolio(stock)}>
                       Add to Portfolio
                     </button>
-                    <button className="sell-button" onClick={() => handleSellStock(stock)}>Sell</button>
                   </td>
                 </tr>
               ))}
@@ -328,7 +327,9 @@ function Trade() {
                     className={`trade-button ${
                       selectedSide === "Buy" ? "buy" : "sell"
                     }`}
-                    onClick={() => handleBuyStock(selectedStock, quantity)}
+                    onClick={() => selectedSide === "Buy"
+                      ? handleBuyStock(selectedStock, quantity)
+                      : handleSellStock(selectedStock, quantity)}
                   >
                     {selectedSide} ({selectedStock.symbol})
                   </button>
