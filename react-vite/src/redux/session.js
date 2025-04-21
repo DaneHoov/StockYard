@@ -1,5 +1,6 @@
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
+const SET_WATCHLIST = "session/SET_WATCHLIST";
 const ADD_TO_WATCHLIST = "session/addToWatchlist";
 const REMOVE_FROM_WATCHLIST = "session/removeFromWatchlist";
 const ADD_TO_PORTFOLIO = "session/addToPortfolio";
@@ -12,6 +13,11 @@ const setUser = (user) => ({
 
 const removeUser = () => ({
     type: REMOVE_USER,
+});
+
+const setWatchlist = (watchlist) => ({
+    type: SET_WATCHLIST,
+    payload: watchlist,
 });
 
 const addToWatchlist = (stock) => ({
@@ -92,6 +98,19 @@ export const thunkLogout = () => async (dispatch) => {
         method: "POST",
     });
     dispatch(removeUser());
+};
+
+export const fetchWatchlist = () => async (dispatch, getState) => {
+    const { user } = getState().session;
+    if (!user) return;
+
+    const response = await fetch("/api/stocks/watchlist");
+    if (response.ok) {
+        const data = await response.json();
+        dispatch(setWatchlist(data)); // Update the Redux state with the fetched watchlist
+    } else {
+        console.error("Failed to fetch watchlist");
+    }
 };
 
 export const thunkAddToWatchlist = (stock) => async (dispatch, getState) => {
@@ -195,6 +214,11 @@ function sessionReducer(state = sessionInitialState, action) {
             return { ...state, user: action.payload };
         case REMOVE_USER:
             return { ...state, user: null, watchlist: [], portfolio: [] };
+        case SET_WATCHLIST:
+            return {
+                ...state,
+                watchlist: action.payload,
+            };
         case ADD_TO_WATCHLIST:
             return {
                 ...state,

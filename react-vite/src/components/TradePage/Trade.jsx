@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchWatchlist } from "../../redux/session";
 import { fetchStocks } from "../../redux/stocks";
 import { addStockToPortfolioThunk } from "../../redux/portfolio";
 
@@ -27,6 +28,7 @@ function Trade() {
 
   useEffect(() => {
     dispatch(fetchStocks());
+    dispatch(fetchWatchlist());
   }, [dispatch]);
 
   const toggleSidebar = () => {
@@ -73,9 +75,16 @@ function Trade() {
   };
 
   const handleRemoveFromWatchlist = async (stock) => {
+    const match = watchlist.find((item) => item.symbol === stock.symbol);
+    if (!match || !match.id) {
+      console.error("Stock ID is missing for removal:", stock);
+      alert("Failed to remove from watchlist: Missing stock ID.");
+      return;
+    }
+
     try {
       console.log("Removing stock:", stock); // Debugging log
-      await dispatch(thunkRemoveFromWatchlist(stock.id));
+      await dispatch(thunkRemoveFromWatchlist(match.id));
       alert(`${stock.symbol} has been removed from your watchlist.`);
     } catch (error) {
       console.error("Failed to remove from watchlist:", error);
@@ -84,7 +93,9 @@ function Trade() {
   };
 
   const isStockInWatchlist = (stockSymbol) => {
-    return watchlist.find((stock) => stock.symbol === stockSymbol);
+    const result = watchlist.find((stock) => stock.symbol === stockSymbol);
+    console.log(`Checking if ${stockSymbol} is in watchlist:`, result);
+    return result;
   };
 
   const handleAddToPortfolio = async (stock) => {
