@@ -2,9 +2,17 @@ from app.models import db, Stock
 from sqlalchemy.sql import text
 
 def seed_stocks():
-    stock1 = Stock(ticker="AAPL", name="Apple Inc.", price=190.42, exchange="NASDAQ", sector="Technology")
-    stock2 = Stock(ticker="GOOGL", name="Alphabet Inc.", price=155.37, exchange="NASDAQ", sector="Technology")
-    db.session.add_all([stock1, stock2])
+    stocks = [
+        Stock(ticker="AAPL", name="Apple Inc.", price=175.64, exchange="NASDAQ", sector="Technology"),
+        Stock(ticker="GOOG", name="Alphabet Inc.", price=135.12, exchange="NASDAQ", sector="Technology"),
+        Stock(ticker="MSFT", name="Microsoft Corp.", price=320.45, exchange="NASDAQ", sector="Technology"),
+        Stock(ticker="AMZN", name="Amazon.com Inc.", price=135.67, exchange="NASDAQ", sector="Consumer Discretionary"),
+        Stock(ticker="NVDA", name="NVIDIA Corp.", price=450.23, exchange="NASDAQ", sector="Technology"),
+        Stock(ticker="TSLA", name="Tesla Inc.", price=245.12, exchange="NASDAQ", sector="Consumer Discretionary"),
+        Stock(ticker="PLTR", name="Palantir Technologies", price=17.45, exchange="NYSE", sector="Technology"),
+    ]
+
+    db.session.add_all(stocks)
     db.session.commit()
 
 def undo_stocks():
