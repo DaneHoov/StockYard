@@ -5,7 +5,7 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import { FaFacebookF } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { getCSRFToken } from '../../utils/csrf';
+// import { getCSRFToken } from '../../utils/csrf';
 import "./LoginForm.css";
 
 const countryOptions = [
@@ -91,27 +91,15 @@ function LoginFormPage() {
   };
 
   const handleDemoLogin = async () => {
-    const csrfToken = await getCSRFToken();
+    const serverResponse = await dispatch(
+      thunkLogin({ email: "demo@aa.io", password: "password" })
+    );
 
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken
-      },
-      body: JSON.stringify({
-        email: 'demo@aa.io',
-        password: 'password',
-      }),
-    });
-
-    if (response.ok) {
-      const user = await response.json();
-      console.log('Logged in as:', user);
-      navigate('/portfolio');
+    if (serverResponse) {
+      console.error("Failed to log in as demo user:", serverResponse);
+      alert("Failed to log in as demo user. Please try again.");
     } else {
-      const errorText = await response.text(); // for debugging
-      console.error('Failed to log in as demo user', errorText);
+      navigate("/portfolio");
     }
   };
 
