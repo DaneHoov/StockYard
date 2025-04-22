@@ -29,6 +29,18 @@ def create_watchlist():
     db.session.commit()
     return new_watchlist.to_dict(), 201
 
+@watchlist_routes.route('/<int:watchlist_id>', methods=['DELETE'])
+@login_required
+def delete_watchlist(watchlist_id):
+    watchlist = Watchlist.query.filter_by(id=watchlist_id, user_id=current_user.id).first()
+
+    if not watchlist:
+        return jsonify({'error': 'Watchlist not found'}), 404
+
+    db.session.delete(watchlist)
+    db.session.commit()
+    return jsonify({'message': 'Watchlist deleted successfully'}), 200
+
 
 # @watchlist_routes.route('/watchlist', methods=['POST'])
 # @login_required
