@@ -7,6 +7,8 @@ import SignupFormPage from "../components/SignupFormPage";
 import TermsConditions from "../components/TermsConditionsPage/TermsConditions";
 import PrivacyPolicy from "../components/PrivacyPolicyPage/PrivacyPolicy";
 import Layout from "./Layout";
+import WatchlistList from "../components/WatchlistPage/WatchlistList";
+import Watchlist from "../components/WatchlistPage/Watchlist";
 
 export const router = createBrowserRouter([
   {
@@ -25,7 +27,7 @@ export const router = createBrowserRouter([
               financial future today with StockYard.
             </p>
           </div>
-        )
+        ),
       },
       { path: "/trade", element: <Trade /> },
       { path: "/watchlist", element: <Watchlist /> },
@@ -45,6 +47,14 @@ export const router = createBrowserRouter([
       {
         path: "/privacy",
         element: <PrivacyPolicy />,
+      },
+      {
+        path: "/watchlists",
+        element: <WatchlistList />,
+      },
+      {
+        path: "/watchlist/:id",
+        element: <Watchlist />,
       },
     ],
   },
