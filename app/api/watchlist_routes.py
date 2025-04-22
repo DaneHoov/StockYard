@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import db, WatchlistStock
+from app.models import db, WatchlistStock, Watchlist
 
 watchlist_routes = Blueprint('watchlist', __name__)
 
@@ -15,7 +15,7 @@ def get_watchlist():
         'change': item.stock.change,
     } for item in watchlist])
 
-@watchlist_routes.route('/', methods=['POST'])
+@watchlist_routes.route('/create', methods=['POST'])
 @login_required
 def create_watchlist():
     if not current_user.is_authenticated:
@@ -26,6 +26,11 @@ def create_watchlist():
 
     if not name:
         return jsonify({'error': 'Watchlist name is required'}), 400
+
+    # Check for duplicate watchlist name
+    existing_watchlist = Watchlist.query.filter_by(user_id=current_user.id, name=name).first()
+    if existing_watchlist:
+        return jsonify({'error': 'A watchlist with this name already exists'}), 400
 
     new_watchlist = Watchlist(user_id=current_user.id, name=name)
     db.session.add(new_watchlist)
