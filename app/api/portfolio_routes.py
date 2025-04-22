@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_login import login_required, current_user
-from app.models import db, Portfolio
+from app.models import db, Portfolio, PortfolioStock
 
 portfolio_routes = Blueprint('portfolio', __name__)
 
@@ -8,9 +8,10 @@ portfolio_routes = Blueprint('portfolio', __name__)
 @login_required
 def get_portfolio(user_id):
     portfolio = Portfolio.query.filter_by(user_id=user_id).first()
-    if portfolio:
-        return portfolio.to_dict()
-    return {"message": "Portfolio not found."}, 404
+    if not portfolio:
+        return {"message": "Portfolio not found."}, 404
+
+    return portfolio.to_dict()
 
 
 @portfolio_routes.route('/', methods=['POST'])
@@ -31,7 +32,7 @@ def update_portfolio(user_id):
 
     data = request.get_json()
     add_cash = data.get('add_cash', 0.0)
-    portfolio.cash_balance += float(add_cash)
+    portfolio.balance += float(add_cash)
     db.session.commit()
     return portfolio.to_dict()
 
@@ -45,3 +46,39 @@ def delete_portfolio(user_id):
     db.session.delete(portfolio)
     db.session.commit()
     return {"message": "Portfolio deleted successfully."}
+
+
+@portfolio_routes.route('/<int:user_id>/stocks', methods=['POST'])
+@login_required
+def add_to_portfolio(user_id):
+    data = request.get_json()
+    print("📦 Received JSON data:", data)
+    stock_id = data.get('stock_id')
+    quantity = data.get('quantity', 1)
+
+    if not stock_id:
+        print("❌ Missing stock_id in request")
+        return {'error': 'Stock ID is required'}, 400
+
+    portfolio = Portfolio.query.filter_by(user_id=user_id).first()
+    if not portfolio:
+        return {'error': 'Portfolio not found'}, 404
+
+    # Check if the stock already exists in the portfolio
+    portfolio_stock = PortfolioStock.query.filter_by(
+        portfolio_id=portfolio.id,
+        stock_id=stock_id
+    ).first()
+
+    if portfolio_stock:
+        portfolio_stock.quantity += quantity
+    else:
+        new_entry = PortfolioStock(
+            portfolio_id=portfolio.id,
+            stock_id=stock_id,
+            quantity=quantity
+        )
+        db.session.add(new_entry)
+
+    db.session.commit()
+    return portfolio.to_dict()

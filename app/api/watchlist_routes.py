@@ -15,6 +15,41 @@ def get_watchlist():
         'change': item.stock.change,
     } for item in watchlist])
 
+@watchlist_routes.route('/', methods=['POST'])
+@login_required
+def create_watchlist():
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'User is not authenticated'}), 401
+
+    data = request.json
+    name = data.get('name')
+
+    if not name:
+        return jsonify({'error': 'Watchlist name is required'}), 400
+
+    new_watchlist = Watchlist(user_id=current_user.id, name=name)
+    db.session.add(new_watchlist)
+    db.session.commit()
+    return new_watchlist.to_dict(), 201
+
+@watchlist_routes.route('/<int:watchlist_id>', methods=['DELETE'])
+@login_required
+def delete_watchlist(watchlist_id):
+    watchlist = Watchlist.query.filter_by(id=watchlist_id, user_id=current_user.id).first()
+
+    if not watchlist:
+        return jsonify({'error': 'Watchlist not found'}), 404
+
+    db.session.delete(watchlist)
+    db.session.commit()
+    return jsonify({'message': 'Watchlist deleted successfully'}), 200
+
+@watchlist_routes.route('/', methods=['GET'])
+@login_required
+def get_watchlists():
+    watchlists = Watchlist.query.filter_by(user_id=current_user.id).all()
+    return jsonify([watchlist.to_dict() for watchlist in watchlists])
+
 
 # @watchlist_routes.route('/watchlist', methods=['POST'])
 # @login_required

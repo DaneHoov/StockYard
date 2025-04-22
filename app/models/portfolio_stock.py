@@ -22,5 +22,5 @@ class PortfolioStock(db.Model):
             'quantity': self.quantity,
             'purchase_price': self.purchase_price,
             'purchase_date': self.purchase_date.isoformat() if self.purchase_date else None,
-            'stock': self.stock.to_dict_basic()
+            'stock': self.stock.to_dict()
         }

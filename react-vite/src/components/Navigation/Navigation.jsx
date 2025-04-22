@@ -44,7 +44,9 @@ function Navigation({ isLoaded }) {
                   </NavLink>
                 </div>
                 <div className="profile-btn-wrapper">
-                  {isLoaded && sessionUser && <ProfileButton user={sessionUser} />}
+                  {isLoaded && sessionUser && (
+                    <ProfileButton user={sessionUser} />
+                  )}
                 </div>
               </>
             ) : (

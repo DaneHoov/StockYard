@@ -176,7 +176,7 @@ function SignupFormPage() {
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
               />
-              I have read and agreed to <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+              I have read and agreed to <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>
             </label>
             {errors.agreement && <p className="error">{errors.agreement}</p>}
 

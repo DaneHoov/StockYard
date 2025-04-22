@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWatchlist } from "../../redux/session";
 import { fetchStocks } from "../../redux/stocks";
+// import { addStockToPortfolioThunk } from "../../redux/portfolio";
+
 import {
   thunkAddToWatchlist,
   thunkRemoveFromWatchlist,
@@ -105,19 +107,21 @@ function Trade() {
       }
 
       // Fetch the stock ID if it's missing
-    if (!stock.id) {
-      const response = await fetch(`/api/stocks/${stock.symbol}`);
-      if (response.ok) {
-        const data = await response.json();
-        stock.id = data.id; // Add the fetched ID to the stock object
-      } else {
-        alert("Failed to fetch stock ID. Cannot add to portfolio.");
-        console.error("Failed to fetch stock ID for:", stock);
-        return;
+      if (!stock.id) {
+        const response = await fetch(`/api/stocks/${stock.symbol}`);
+        if (response.ok) {
+          const data = await response.json();
+          stock.id = data.id; // Add the fetched ID to the stock object
+        } else {
+          alert("Failed to fetch stock ID. Cannot add to portfolio.");
+          console.error("Failed to fetch stock ID for:", stock);
+          return;
+        }
       }
-    }
 
-      await dispatch(thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) }));
+      await dispatch(
+        thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) })
+      );
       // alert(`${quantity} shares of ${stock.symbol} have been added to your portfolio.`);
     } catch (error) {
       console.error("Failed to add to portfolio:", error);
@@ -132,31 +136,16 @@ function Trade() {
         alert("Invalid quantity. Please enter a positive number.");
         return;
       }
-      await dispatch(thunkRemoveFromPortfolio({ symbol: stock.symbol, quantity: parseInt(quantity) }));
+      await dispatch(
+        thunkRemoveFromPortfolio({
+          symbol: stock.symbol,
+          quantity: parseInt(quantity),
+        })
+      );
       alert(`${quantity} shares of ${stock.symbol} have been sold.`);
     } catch (error) {
       console.error("Failed to sell stock:", error);
       alert("Failed to sell stock. Please try again.");
-    }
-  };
-
-  const handleBuyStock = async (stock, quantity) => {
-    if (!stock) {
-      alert("Please select a stock to buy.");
-      return;
-    }
-
-    if (!quantity || isNaN(quantity) || quantity <= 0) {
-      alert("Invalid quantity. Please enter a positive number.");
-      return;
-    }
-
-    try {
-      await dispatch(thunkAddToPortfolio({ ...stock, quantity }));
-      alert(`${quantity} shares of ${stock.symbol} have been purchased.`);
-    } catch (error) {
-      console.error("Failed to buy stock:", error);
-      alert("Failed to buy stock. Please try again.");
     }
   };
 
@@ -192,16 +181,24 @@ function Trade() {
                   <td>{stock.change}</td>
                   <td>
                     {isStockInWatchlist(stock.symbol) ? (
-                      <button className="remove-from-watchlist" onClick={() => handleRemoveFromWatchlist(stock)}
+                      <button
+                        className="remove-from-watchlist"
+                        onClick={() => handleRemoveFromWatchlist(stock)}
                       >
                         Remove from Watchlist
                       </button>
                     ) : (
-                      <button className="add-to-watchlist" onClick={() => handleAddToWatchlist(stock)}>
+                      <button
+                        className="add-to-watchlist"
+                        onClick={() => handleAddToWatchlist(stock)}
+                      >
                         Add to Watchlist
                       </button>
                     )}
-                    <button className="add-to-portfolio" onClick={() => handleAddToPortfolio(stock)}>
+                    <button
+                      className="add-to-portfolio"
+                      onClick={() => handleAddToPortfolio(stock)}
+                    >
                       Add to Portfolio
                     </button>
                   </td>
@@ -228,7 +225,7 @@ function Trade() {
                 <div className="side-bar">
                   <div
                     className={`side-option ${
-                      selectedSide === "Buy" ? "active" : ""
+                      selectedSide === "Buy" ? "active buy" : ""
                     }`}
                     onClick={() => setSelectedSide("Buy")}
                   >
@@ -236,7 +233,7 @@ function Trade() {
                   </div>
                   <div
                     className={`side-option ${
-                      selectedSide === "Sell" ? "active" : ""
+                      selectedSide === "Sell" ? "active sell" : ""
                     }`}
                     onClick={() => setSelectedSide("Sell")}
                   >
@@ -327,9 +324,6 @@ function Trade() {
                     className={`trade-button ${
                       selectedSide === "Buy" ? "buy" : "sell"
                     }`}
-                    onClick={() => selectedSide === "Buy"
-                      ? handleBuyStock(selectedStock, quantity)
-                      : handleSellStock(selectedStock, quantity)}
                   >
                     {selectedSide} ({selectedStock.symbol})
                   </button>
