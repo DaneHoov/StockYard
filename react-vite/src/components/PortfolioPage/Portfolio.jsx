@@ -85,7 +85,7 @@ function Portfolio() {
                   </tr>
                 </thead>
                 <tbody>
-                  {portfolio.portfolio_stocks.map((entry) => (
+                  {portfolio.portfolio_stocks?.map((entry) => (
                     <tr key={entry.id}>
                       <td>{entry.stock.symbol}</td>
                       <td>{entry.stock.company_name}</td>
