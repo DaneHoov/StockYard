@@ -139,6 +139,7 @@ export const thunkCreateWatchlist = (name) => async (dispatch) => {
 export const thunkDeleteWatchlist = (watchlistId) => async (dispatch) => {
   const response = await fetch(`/api/watchlist/${watchlistId}`, {
     method: "DELETE",
+    credentials: "include",
   });
 
   if (response.ok) {
@@ -150,7 +151,10 @@ export const thunkDeleteWatchlist = (watchlistId) => async (dispatch) => {
 };
 
 export const thunkFetchWatchlists = () => async (dispatch) => {
-  const response = await fetch("/api/watchlist");
+  const response = await fetch("/api/watchlist", {
+    method: "GET",
+    credentials: "include",
+  });
 
   if (response.ok) {
     const watchlists = await response.json();
@@ -176,7 +180,6 @@ export const fetchWatchlist = () => async (dispatch, getState) => {
 export const thunkAddToWatchlist = (stock) => async (dispatch, getState) => {
   const { user } = getState().session;
   if (!user) return;
-
 
   if (!stock.id) {
     const response = await fetch(`/api/stocks/${stock.symbol}`);
