@@ -12,7 +12,6 @@ import {
 } from "../../redux/session";
 import "./Trade.css";
 
-
 function Trade() {
   const dispatch = useDispatch();
   const stocks = useSelector((state) => state.stocks);
@@ -108,26 +107,27 @@ function Trade() {
       }
 
       // Fetch the stock ID if it's missing
-    if (!stock.id) {
-      const response = await fetch(`/api/stocks/${stock.symbol}`);
-      if (response.ok) {
-        const data = await response.json();
-        stock.id = data.id; // Add the fetched ID to the stock object
-      } else {
-        alert("Failed to fetch stock ID. Cannot add to portfolio.");
-        console.error("Failed to fetch stock ID for:", stock);
-        return;
+      if (!stock.id) {
+        const response = await fetch(`/api/stocks/${stock.symbol}`);
+        if (response.ok) {
+          const data = await response.json();
+          stock.id = data.id; // Add the fetched ID to the stock object
+        } else {
+          alert("Failed to fetch stock ID. Cannot add to portfolio.");
+          console.error("Failed to fetch stock ID for:", stock);
+          return;
+        }
       }
-    }
 
-      await dispatch(thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) }));
+      await dispatch(
+        thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) })
+      );
       // alert(`${quantity} shares of ${stock.symbol} have been added to your portfolio.`);
     } catch (error) {
       console.error("Failed to add to portfolio:", error);
       alert("Failed to add to portfolio. Please try again.");
     }
   };
-
 
   const handleSellStock = async (stock) => {
     try {
@@ -136,7 +136,12 @@ function Trade() {
         alert("Invalid quantity. Please enter a positive number.");
         return;
       }
-      await dispatch(thunkRemoveFromPortfolio({ symbol: stock.symbol, quantity: parseInt(quantity) }));
+      await dispatch(
+        thunkRemoveFromPortfolio({
+          symbol: stock.symbol,
+          quantity: parseInt(quantity),
+        })
+      );
       alert(`${quantity} shares of ${stock.symbol} have been sold.`);
     } catch (error) {
       console.error("Failed to sell stock:", error);
@@ -176,19 +181,26 @@ function Trade() {
                   <td>{stock.change}</td>
                   <td>
                     {isStockInWatchlist(stock.symbol) ? (
-                      <button className="remove-from-watchlist" onClick={() => handleRemoveFromWatchlist(stock)}
+                      <button
+                        className="remove-from-watchlist"
+                        onClick={() => handleRemoveFromWatchlist(stock)}
                       >
                         Remove from Watchlist
                       </button>
                     ) : (
-                      <button className="add-to-watchlist" onClick={() => handleAddToWatchlist(stock)}>
+                      <button
+                        className="add-to-watchlist"
+                        onClick={() => handleAddToWatchlist(stock)}
+                      >
                         Add to Watchlist
                       </button>
                     )}
-                    <button className="add-to-portfolio" onClick={() => handleAddToPortfolio(stock)}>
+                    <button
+                      className="add-to-portfolio"
+                      onClick={() => handleAddToPortfolio(stock)}
+                    >
                       Add to Portfolio
                     </button>
-                    <button className="sell-button" onClick={() => handleSellStock(stock)}>Sell</button>
                   </td>
                 </tr>
               ))}
@@ -213,7 +225,7 @@ function Trade() {
                 <div className="side-bar">
                   <div
                     className={`side-option ${
-                      selectedSide === "Buy" ? "active" : ""
+                      selectedSide === "Buy" ? "active buy" : ""
                     }`}
                     onClick={() => setSelectedSide("Buy")}
                   >
@@ -221,7 +233,7 @@ function Trade() {
                   </div>
                   <div
                     className={`side-option ${
-                      selectedSide === "Sell" ? "active" : ""
+                      selectedSide === "Sell" ? "active sell" : ""
                     }`}
                     onClick={() => setSelectedSide("Sell")}
                   >

@@ -324,19 +324,19 @@ button:hover {
   transition: all 0.3s ease;
 }
 
-.sidebar .side-option.active {
+.sidebar .side-option.active.buy {
   background-color: #2ecc71;
+  color: white;
+}
+
+.sidebar .side-option.active.sell {
+  background-color: #e74c3c;
   color: white;
 }
 
 .sidebar .side-option:not(.active) {
   background-color: #ccc;
   color: #333;
-}
-
-.sidebar .side-option:hover {
-  background-color: #27ae60;
-  color: white;
 }
 
 /* Responsive Design */
