@@ -122,6 +122,7 @@ export const thunkCreateWatchlist = (name) => async (dispatch) => {
   const response = await fetch("/api/watchlist", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({ name }),
   });
 
@@ -166,7 +167,7 @@ export const fetchWatchlist = () => async (dispatch, getState) => {
   const response = await fetch("/api/watchlist");
   if (response.ok) {
     const data = await response.json();
-    dispatch(setWatchlist(data)); // Update the Redux state with the fetched watchlist
+    dispatch(setWatchlist(data));
   } else {
     console.error("Failed to fetch watchlist");
   }
@@ -176,12 +177,12 @@ export const thunkAddToWatchlist = (stock) => async (dispatch, getState) => {
   const { user } = getState().session;
   if (!user) return;
 
-  // Fetch the stock ID if it's missing
+
   if (!stock.id) {
     const response = await fetch(`/api/stocks/${stock.symbol}`);
     if (response.ok) {
       const data = await response.json();
-      stock.id = data.id; // Add the fetched ID to the stock object
+      stock.id = data.id;
     } else if (response.status === 404) {
       console.error("Stock not found");
       alert("Failed to add to watchlist: Stock not found.");

@@ -14,10 +14,14 @@ export default defineConfig((mode) => ({
   server: {
     open: true,
     proxy: {
-      "/api": "http://127.0.0.1:8000",
+      "/api": {
+        target: "http://127.0.0.1:8000",
+        changeOrigin: true,
+        secure: false,
+      },
     },
     fs: {
-      allow: ['..'], // Allow serving files from one level up (e.g., node_modules)
-  },
+      allow: [".."], // Allow serving files from one level up (e.g., node_modules)
+    },
   },
 }));

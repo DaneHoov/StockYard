@@ -18,6 +18,9 @@ def get_watchlist():
 @watchlist_routes.route('/', methods=['POST'])
 @login_required
 def create_watchlist():
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'User is not authenticated'}), 401
+
     data = request.json
     name = data.get('name')
 

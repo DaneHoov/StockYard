@@ -44,6 +44,11 @@ function WatchlistList() {
     }
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setNewWatchlistName(""); // Clear the input field
+  };
+
   return (
     <div className="watchlist-list-container">
       <h1 style={{ marginBottom: "20px" }}>Your Watchlists</h1>
@@ -89,13 +94,11 @@ function WatchlistList() {
             <button
               onClick={handleCreateWatchlist}
               className="modal-create-button"
+              disabled={!newWatchlistName.trim()}
             >
               Create
             </button>
-            <button
-              onClick={() => setShowModal(false)}
-              className="modal-cancel-button"
-            >
+            <button onClick={handleCloseModal} className="modal-cancel-button">
               Cancel
             </button>
           </div>
