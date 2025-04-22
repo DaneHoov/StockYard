@@ -41,6 +41,12 @@ def delete_watchlist(watchlist_id):
     db.session.commit()
     return jsonify({'message': 'Watchlist deleted successfully'}), 200
 
+@watchlist_routes.route('/', methods=['GET'])
+@login_required
+def get_watchlists():
+    watchlists = Watchlist.query.filter_by(user_id=current_user.id).all()
+    return jsonify([watchlist.to_dict() for watchlist in watchlists])
+
 
 # @watchlist_routes.route('/watchlist', methods=['POST'])
 # @login_required
