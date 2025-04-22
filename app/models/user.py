@@ -1,7 +1,8 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from .db import db, environment, SCHEMA
-
+from .portfolio import Portfolio
+from .watchlist import Watchlist
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -16,10 +17,9 @@ class User(db.Model, UserMixin):
     hashed_password = db.Column(db.String(255), nullable=False)
 
     # Relationships
-    portfolios = db.relationship('Portfolio', back_populates='user', cascade='all, delete-orphan')
-    watchlists = db.relationship('Watchlist', back_populates='user', cascade='all, delete-orphan')
+    user.portfolios = db.relationship('Portfolio', back_populates='user', cascade='all, delete-orphan')
+    user.watchlists = db.relationship('Watchlist', back_populates='user', cascade='all, delete-orphan')
     transactions = db.relationship('Transaction', back_populates='user', cascade='all, delete-orphan')
-
 
     @property
     def password(self):
