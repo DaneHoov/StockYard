@@ -9,9 +9,10 @@ watchlist_routes = Blueprint('watchlist', __name__)
 def get_watchlist():
     watchlist = WatchlistStock.query.filter_by(user_id=current_user.id).all()
     return jsonify([{
-        'stock_id': item.stock_id,
-        'symbol': item.stock.symbol,
-        'name': item.stock.name
+        'id': item.stock.id,
+        'symbol': item.stock.ticker,
+        'price': item.stock.price,
+        'change': item.stock.change,
     } for item in watchlist])
 
 

@@ -16,7 +16,7 @@ class Portfolio(db.Model):
     portfolio_stocks = db.relationship('PortfolioStock', back_populates='portfolio', cascade='all, delete-orphan')
 
     def __repr__(self):
-        return f'<Portfolio id={self.id}, user_id={self.user_id}, balance={self.balance}>'
+        return f'<Portfolio id={self.id}, user_id={self.user_id}, cash_balance={self.balance}>'
 
     def add_balance(self, amount):
         self.balance += amount

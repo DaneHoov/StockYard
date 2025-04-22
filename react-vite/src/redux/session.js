@@ -1,5 +1,6 @@
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
+const SET_WATCHLIST = "session/SET_WATCHLIST";
 const ADD_TO_WATCHLIST = "session/addToWatchlist";
 const REMOVE_FROM_WATCHLIST = "session/removeFromWatchlist";
 const ADD_TO_PORTFOLIO = "session/addToPortfolio";
@@ -12,6 +13,11 @@ const setUser = (user) => ({
 
 const removeUser = () => ({
     type: REMOVE_USER,
+});
+
+const setWatchlist = (watchlist) => ({
+    type: SET_WATCHLIST,
+    payload: watchlist,
 });
 
 const addToWatchlist = (stock) => ({
@@ -94,6 +100,19 @@ export const thunkLogout = () => async (dispatch) => {
     dispatch(removeUser());
 };
 
+export const fetchWatchlist = () => async (dispatch, getState) => {
+    const { user } = getState().session;
+    if (!user) return;
+
+    const response = await fetch("/api/watchlist");
+    if (response.ok) {
+        const data = await response.json();
+        dispatch(setWatchlist(data)); // Update the Redux state with the fetched watchlist
+    } else {
+        console.error("Failed to fetch watchlist");
+    }
+};
+
 export const thunkAddToWatchlist = (stock) => async (dispatch, getState) => {
     const { user } = getState().session;
     if (!user) return;
@@ -153,24 +172,35 @@ export const thunkRemoveFromWatchlist =
         }
     };
 
-export const thunkAddToPortfolio = (stockId, quantity) => async (dispatch, getState) => {
+export const thunkAddToPortfolio = (stock) => async (dispatch, getState) => {
     const { user } = getState().session;
     if (!user) return;
+
+    // Ensure stock_id is included in the payload
+    if (!stock.id) {
+        console.error("Missing stock ID for portfolio addition:", stock);
+        alert("Failed to add to portfolio: Missing stock ID.");
+        return;
+    }
 
     const response = await fetch("/api/stocks/portfolio", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            stock_id: stockId,
-            quantity,
+            stock_id: stock.id,
+            quantity: stock.quantity,
         }),
     });
+
     if (response.ok) {
-        const stock = await response.json();
         dispatch(addToPortfolio(stock));
-        dispatch(thunkAddToPortfolio(user.id));
+        alert(
+            `${stock.quantity} shares of ${stock.symbol} have been added to your portfolio.`
+        );
     } else {
-        console.error("Failed to add stock to portfolio")
+        const error = await response.json();
+        console.error("Failed to add to portfolio:", error);
+        alert(error.error || "Failed to add to portfolio.");
     }
 };
 
@@ -195,6 +225,11 @@ function sessionReducer(state = sessionInitialState, action) {
             return { ...state, user: action.payload };
         case REMOVE_USER:
             return { ...state, user: null, watchlist: [], portfolio: [] };
+        case SET_WATCHLIST:
+            return {
+                ...state,
+                watchlist: action.payload,
+            };
         case ADD_TO_WATCHLIST:
             return {
                 ...state,
