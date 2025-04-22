@@ -148,6 +148,17 @@ export const thunkDeleteWatchlist = (watchlistId) => async (dispatch) => {
   }
 };
 
+export const thunkFetchWatchlists = () => async (dispatch) => {
+  const response = await fetch("/api/watchlist");
+
+  if (response.ok) {
+    const watchlists = await response.json();
+    dispatch(setWatchlists(watchlists));
+  } else {
+    console.error("Failed to fetch watchlists");
+  }
+};
+
 export const fetchWatchlist = () => async (dispatch, getState) => {
   const { user } = getState().session;
   if (!user) return;
