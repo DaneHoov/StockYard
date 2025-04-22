@@ -8,7 +8,6 @@ import TermsConditions from "../components/TermsConditionsPage/TermsConditions";
 import PrivacyPolicy from "../components/PrivacyPolicyPage/PrivacyPolicy";
 import Layout from "./Layout";
 import WatchlistList from "../components/WatchlistPage/WatchlistList";
-import Watchlist from "../components/WatchlistPage/Watchlist";
 
 export const router = createBrowserRouter([
   {
