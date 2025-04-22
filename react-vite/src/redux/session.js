@@ -135,6 +135,19 @@ export const thunkCreateWatchlist = (name) => async (dispatch) => {
   }
 };
 
+export const thunkDeleteWatchlist = (watchlistId) => async (dispatch) => {
+  const response = await fetch(`/api/watchlist/${watchlistId}`, {
+    method: "DELETE",
+  });
+
+  if (response.ok) {
+    dispatch(removeWatchlist(watchlistId));
+  } else {
+    const error = await response.json();
+    alert(error.error || "Failed to delete watchlist.");
+  }
+};
+
 export const fetchWatchlist = () => async (dispatch, getState) => {
   const { user } = getState().session;
   if (!user) return;
