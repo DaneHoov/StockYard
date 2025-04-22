@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWatchlist } from "../../redux/session";
 import { fetchStocks } from "../../redux/stocks";
-
-
 // import { addStockToPortfolioThunk } from "../../redux/portfolio";
 
 import {
@@ -146,26 +144,6 @@ function Trade() {
     }
   };
 
-  const handleBuyStock = async (stock, quantity) => {
-    if (!stock) {
-      alert("Please select a stock to buy.");
-      return;
-    }
-
-    if (!quantity || isNaN(quantity) || quantity <= 0) {
-      alert("Invalid quantity. Please enter a positive number.");
-      return;
-    }
-
-    try {
-      await dispatch(thunkAddToPortfolio({ ...stock, quantity }));
-      alert(`${quantity} shares of ${stock.symbol} have been purchased.`);
-    } catch (error) {
-      console.error("Failed to buy stock:", error);
-      alert("Failed to buy stock. Please try again.");
-    }
-  };
-
   return (
     <div className="trade-page">
       <div className="trade-container">
@@ -210,6 +188,7 @@ function Trade() {
                     <button className="add-to-portfolio" onClick={() => handleAddToPortfolio(stock)}>
                       Add to Portfolio
                     </button>
+                    <button className="sell-button" onClick={() => handleSellStock(stock)}>Sell</button>
                   </td>
                 </tr>
               ))}
@@ -333,9 +312,6 @@ function Trade() {
                     className={`trade-button ${
                       selectedSide === "Buy" ? "buy" : "sell"
                     }`}
-                    onClick={() => selectedSide === "Buy"
-                      ? handleBuyStock(selectedStock, quantity)
-                      : handleSellStock(selectedStock, quantity)}
                   >
                     {selectedSide} ({selectedStock.symbol})
                   </button>
