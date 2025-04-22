@@ -276,7 +276,12 @@ export const thunkRemoveFromPortfolio =
     }
   };
 
-const sessionInitialState = { user: null, watchlist: [], portfolio: [] };
+const sessionInitialState = {
+  user: null,
+  watchlist: [],
+  portfolio: [],
+  watchlists: [],
+};
 
 function sessionReducer(state = sessionInitialState, action) {
   switch (action.type) {

@@ -14,10 +14,19 @@ function WatchlistList() {
   const watchlists = useSelector((state) => state.session.watchlists);
   const [showModal, setShowModal] = useState(false);
   const [newWatchlistName, setNewWatchlistName] = useState("");
+  const sessionUser = useSelector((state) => state.session.user);
 
   useEffect(() => {
-    dispatch(thunkFetchWatchlists());
-  }, [dispatch]);
+    if (!sessionUser) {
+      navigate("/login");
+    }
+  }, [sessionUser, navigate]);
+
+  useEffect(() => {
+    if (sessionUser) {
+      dispatch(thunkFetchWatchlists());
+    }
+  }, [dispatch, sessionUser]);
 
   const handleCreateWatchlist = async () => {
     if (!newWatchlistName.trim()) {
@@ -37,27 +46,34 @@ function WatchlistList() {
 
   return (
     <div className="watchlist-list-container">
-      <h1>Your Watchlists</h1>
+      <h1 style={{ marginBottom: "20px" }}>Your Watchlists</h1>
+      {watchlists.length === 0 && (
+        <p style={{ marginBottom: "20px" }}>
+          No watchlists found. Create one to get started!
+        </p>
+      )}
       <button
         onClick={() => setShowModal(true)}
         className="create-watchlist-button"
+        style={{ marginBottom: "20px" }}
       >
         Create Watchlist
       </button>
       <ul className="watchlist-list">
-        {watchlists.map((watchlist) => (
-          <li key={watchlist.id} className="watchlist-item">
-            <span onClick={() => navigate(`/watchlist/${watchlist.id}`)}>
-              {watchlist.name}
-            </span>
-            <button
-              onClick={() => handleDeleteWatchlist(watchlist.id)}
-              className="delete-watchlist-button"
-            >
-              Delete
-            </button>
-          </li>
-        ))}
+        {watchlists.length > 0 &&
+          watchlists.map((watchlist) => (
+            <li key={watchlist.id} className="watchlist-item">
+              <span onClick={() => navigate(`/watchlist/${watchlist.id}`)}>
+                {watchlist.name}
+              </span>
+              <button
+                onClick={() => handleDeleteWatchlist(watchlist.id)}
+                className="delete-watchlist-button"
+              >
+                Delete
+              </button>
+            </li>
+          ))}
       </ul>
 
       {showModal && (

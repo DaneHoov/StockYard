@@ -29,7 +29,11 @@ export const router = createBrowserRouter([
         ),
       },
       { path: "/trade", element: <Trade /> },
-      { path: "/watchlist", element: <Watchlist /> },
+      { path: "/watchlist", element: <WatchlistList /> },
+      {
+        path: "/watchlist/:id",
+        element: <Watchlist />,
+      },
       { path: "/portfolio", element: <Portfolio /> },
       {
         path: "/login",
@@ -46,14 +50,6 @@ export const router = createBrowserRouter([
       {
         path: "/privacy",
         element: <PrivacyPolicy />,
-      },
-      {
-        path: "/watchlists",
-        element: <WatchlistList />,
-      },
-      {
-        path: "/watchlist/:id",
-        element: <Watchlist />,
       },
     ],
   },
