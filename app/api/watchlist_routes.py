@@ -15,6 +15,20 @@ def get_watchlist():
         'change': item.stock.change,
     } for item in watchlist])
 
+@watchlist_routes.route('/', methods=['POST'])
+@login_required
+def create_watchlist():
+    data = request.json
+    name = data.get('name')
+
+    if not name:
+        return jsonify({'error': 'Watchlist name is required'}), 400
+
+    new_watchlist = Watchlist(user_id=current_user.id, name=name)
+    db.session.add(new_watchlist)
+    db.session.commit()
+    return new_watchlist.to_dict(), 201
+
 
 # @watchlist_routes.route('/watchlist', methods=['POST'])
 # @login_required
