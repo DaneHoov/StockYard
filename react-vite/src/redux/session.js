@@ -314,6 +314,31 @@ export const thunkRemoveFromPortfolio =
     }
   };
 
+
+    export const thunkRemoveFromPortfolio =
+    (stockId) => async (dispatch, getState) => {
+        if (!stockId) {
+            console.error("Missing stock ID for removal!");
+            return;
+        }
+
+        const { user } = getState().session;
+        if (!user) return;
+
+        const response = await fetch(`/api/stocks/portfolio/${stockId}`, {
+            method: "DELETE",
+        });
+
+        if (response.ok) {
+            dispatch(removeFromPortfolio(stockId));
+        } else {
+            const error = await response.json();
+            console.error("Failed to remove from portfolio:", error);
+            throw new Error(error.error || "Failed to remove from portfolio.");
+        }
+    };
+
+
 const sessionInitialState = {
   user: null,
   watchlist: [],
