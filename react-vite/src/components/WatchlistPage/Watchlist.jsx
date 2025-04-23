@@ -20,7 +20,10 @@ function Watchlist() {
       <div className="watchlist-container">
         <div className="watchlist-card">
           <h1>Your Watchlist</h1>
-          <p>No watchlist found. Add stocks from the trade page to get started!</p>
+          <p>
+            No stocks have been added yet. Add stocks from the trade page to get
+            started!
+          </p>
         </div>
       </div>
     );
