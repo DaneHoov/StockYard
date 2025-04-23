@@ -9,6 +9,7 @@ import {
   thunkRemoveFromWatchlist,
   thunkAddToPortfolio,
   thunkRemoveFromPortfolio,
+  thunkFetchWatchlists,
 } from "../../redux/session";
 import "./Trade.css";
 
@@ -25,11 +26,30 @@ function Trade() {
   const [stopPriceType, setStopPriceType] = useState("Dollars");
   const [stopPrice, setStopPrice] = useState(-1);
   const [limitPrice, setLimitPrice] = useState(1);
+  const [isWatchlistModalOpen, setIsWatchlistModalOpen] = useState(false);
+  const [selectedWatchlist, setSelectedWatchlist] = useState("");
+  const [stockToAdd, setStockToAdd] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchStocks());
-    dispatch(fetchWatchlist());
-  }, [dispatch]);
+    if (sessionUser) {
+      dispatch(thunkFetchWatchlists());
+      dispatch(fetchStocks());
+      dispatch(fetchWatchlist());
+    }
+  }, [dispatch, sessionUser]);
+
+  // new
+  const openWatchlistModal = (stock) => {
+    setStockToAdd(stock);
+    setSelectedWatchlist("");
+    setIsWatchlistModalOpen(true);
+  };
+
+  // new
+  const closeWatchlistModal = () => {
+    setIsWatchlistModalOpen(false);
+    setStockToAdd(null);
+  };
 
   const toggleSidebar = () => {
     setIsSidebarExpanded(!isSidebarExpanded);
@@ -64,10 +84,28 @@ function Trade() {
     ).toFixed(2)})`;
   };
 
-  const handleAddToWatchlist = async (stock) => {
+  // const handleAddToWatchlist = async (stock) => {
+  //   try {
+  //     await dispatch(thunkAddToWatchlist(stock));
+  //     alert(`${stock.symbol} has been added to your watchlist.`);
+  //   } catch (error) {
+  //     console.error("Failed to add to watchlist:", error);
+  //     alert("Failed to add to watchlist. Please try again.");
+  //   }
+  // };
+  // new
+  const handleAddStockToWatchlist = async () => {
+    if (!selectedWatchlist) return;
+
     try {
-      await dispatch(thunkAddToWatchlist(stock));
-      alert(`${stock.symbol} has been added to your watchlist.`);
+      await dispatch(
+        thunkAddToWatchlist({
+          stockId: stockToAdd.id,
+          watchlistId: selectedWatchlist,
+        })
+      );
+      alert(`${stockToAdd.symbol} has been added to the selected watchlist.`);
+      closeWatchlistModal();
     } catch (error) {
       console.error("Failed to add to watchlist:", error);
       alert("Failed to add to watchlist. Please try again.");
@@ -210,7 +248,7 @@ function Trade() {
                     ) : (
                       <button
                         className="add-to-watchlist"
-                        onClick={() => handleAddToWatchlist(stock)}
+                        onClick={() => openWatchlistModal(stock)}
                       >
                         Add to Watchlist
                       </button>
@@ -357,6 +395,40 @@ function Trade() {
               </div>
             </div>
           )}
+        </div>
+      )}
+      {/* // new */}
+      {isWatchlistModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Add {stockToAdd?.symbol} to Watchlist</h2>
+            <select
+              value={selectedWatchlist}
+              onChange={(e) => setSelectedWatchlist(e.target.value)}
+            >
+              <option value="">Select a watchlist</option>
+              {watchlist.map((watchlistItem) => (
+                <option key={watchlistItem.id} value={watchlistItem.id}>
+                  {watchlistItem.name}
+                </option>
+              ))}
+            </select>
+            <div className="modal-buttons">
+              <button
+                className="modal-add-button"
+                onClick={handleAddStockToWatchlist}
+                disabled={!selectedWatchlist}
+              >
+                Add to Watchlist
+              </button>
+              <button
+                className="modal-cancel-button"
+                onClick={closeWatchlistModal}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
