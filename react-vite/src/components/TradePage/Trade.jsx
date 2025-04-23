@@ -16,7 +16,7 @@ import "./Trade.css";
 function Trade() {
   const dispatch = useDispatch();
   const stocks = useSelector((state) => state.stocks);
-  const watchlist = useSelector((state) => state.session.watchlist);
+  const watchlists = useSelector((state) => state.session.watchlists);
   const sessionUser = useSelector((state) => state.session.user);
 
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -113,7 +113,7 @@ function Trade() {
   };
 
   const handleRemoveFromWatchlist = async (stock) => {
-    const match = watchlist.find((item) => item.symbol === stock.symbol);
+    const match = watchlists.find((item) => item.symbol === stock.symbol);
     if (!match || !match.id) {
       console.error("Stock ID is missing for removal:", stock);
       alert("Failed to remove from watchlist: Missing stock ID.");
@@ -131,8 +131,12 @@ function Trade() {
   };
 
   const isStockInWatchlist = (stockSymbol) => {
-    const result = watchlist.find((stock) => stock.symbol === stockSymbol);
-    console.log(`Checking if ${stockSymbol} is in watchlist:`, result);
+    let result = null;
+    for (const wl of watchlists) {
+      result = wl.stocks?.find((stock) => stock.symbol === stockSymbol);
+      if (result) break;
+    }
+    console.log(`Checking if ${stockSymbol} is in any watchlist:`, result);
     return result;
   };
 
@@ -407,7 +411,7 @@ function Trade() {
               onChange={(e) => setSelectedWatchlist(e.target.value)}
             >
               <option value="">Select a watchlist</option>
-              {watchlist.map((watchlistItem) => (
+              {watchlists.map((watchlistItem) => (
                 <option key={watchlistItem.id} value={watchlistItem.id}>
                   {watchlistItem.name}
                 </option>

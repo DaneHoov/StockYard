@@ -53,7 +53,7 @@ def delete_watchlist(watchlist_id):
 @watchlist_routes.route('/', methods=['GET'])
 @login_required
 def get_watchlists():
-    watchlists = Watchlist.query.filter_by(user_id=current_user.id).all()
+    watchlists = Watchlist.query.filter_by(user_id=current_user.id, deleted=False).all()
     return jsonify([watchlist.to_dict() for watchlist in watchlists])
 
 
