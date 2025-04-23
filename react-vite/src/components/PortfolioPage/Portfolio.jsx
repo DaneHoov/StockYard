@@ -10,7 +10,9 @@ import "./Portfolio.css";
 function Portfolio() {
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.session.user);
-  const portfolio = useSelector((state) => state.portfolio);
+  const portfolio = useSelector((state) =>
+    state.portfolio[sessionUser?.id]
+  );
   const [showFunds, setShowFunds] = useState(true);
   const [addAmount, setAddAmount] = useState("");
 
@@ -23,7 +25,7 @@ function Portfolio() {
 
   const handleAddFunds = async () => {
     if (addAmount && !isNaN(addAmount)) {
-      await dispatch(updatePortfolioThunk(sessionUser.id, parseFloat(addAmount)));
+      await dispatch(updatePortfolioThunk(sessionUser.id, { add_cash: parseFloat(addAmount) }));
       setAddAmount("");
     }
   };
@@ -53,7 +55,7 @@ function Portfolio() {
         {showFunds ? (
           <>
             <p className="portfolio-balance">
-              Available Cash: ${portfolio.cash_balance?.toFixed(2)}
+              Available Cash: ${portfolio.balance?.toFixed(2)}
             </p>
             <input
               type="number"
@@ -87,8 +89,8 @@ function Portfolio() {
                 <tbody>
                   {portfolio.portfolio_stocks?.map((entry) => (
                     <tr key={entry.id}>
-                      <td>{entry.stock.symbol}</td>
-                      <td>{entry.stock.company_name}</td>
+                      <td>{entry.stock.ticker}</td>
+                      <td>{entry.stock.name}</td>
                       <td>{entry.quantity}</td>
                       <td>${entry.stock.price.toFixed(2)}</td>
                       <td>${(entry.stock.price * entry.quantity).toFixed(2)}</td>
