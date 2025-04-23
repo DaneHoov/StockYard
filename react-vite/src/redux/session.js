@@ -8,6 +8,10 @@ const ADD_TO_WATCHLIST = "session/addToWatchlist";
 const REMOVE_FROM_WATCHLIST = "session/removeFromWatchlist";
 const ADD_TO_PORTFOLIO = "session/addToPortfolio";
 const REMOVE_FROM_PORTFOLIO = "session/removeFromPortfolio";
+const SET_PORTFOLIOS = "session/SET_PORTFOLIOS";
+const ADD_PORTFOLIO = "session/ADD_PORTFOLIO";
+const REMOVE_PORTFOLIO = "session/REMOVE_PORTFOLIO";
+const SET_PORTFOLIO = "session/SET_PORTFOLIO";
 
 const setUser = (user) => ({
     type: SET_USER,
@@ -47,15 +51,29 @@ const removeFromWatchlist = (stock) => ({
     payload: stock,
 });
 
-const addToPortfolio = (stock) => ({
-    type: ADD_TO_PORTFOLIO,
-    payload: stock,
+export const setPortfolios = (portfolios) => ({
+    type: SET_PORTFOLIOS,
+    portfolios,
 });
 
-const removeFromPortfolio = (stockSymbol) => ({
-    type: REMOVE_FROM_PORTFOLIO,
-    payload: stockSymbol,
+
+export const addPortfolio = (portfolio) => ({
+    type: ADD_PORTFOLIO,
+    portfolio,
 });
+
+
+export const removePortfolio = (portfolioId) => ({
+    type: REMOVE_PORTFOLIO,
+    portfolioId,
+});
+
+export const setPortfolio = (portfolio) => ({
+    type: SET_PORTFOLIO,
+    payload: portfolio,
+});
+
+
 
 export const thunkAuthenticate = () => async (dispatch) => {
     const response = await fetch("/api/auth/");
@@ -235,55 +253,131 @@ export const thunkRemoveFromWatchlist =
         }
     };
 
-export const thunkAddToPortfolio = (stock) => async (dispatch, getState) => {
-    const { user } = getState().session;
-    if (!user) return;
+    export const thunkCreatePortfolio = (name) => async (dispatch) => {
+        const response = await fetch("/api/portfolio/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ name }),
+        });
 
-    // Ensure stock_id is included in the payload
-    if (!stock.id) {
-        console.error("Missing stock ID for portfolio addition:", stock);
-        alert("Failed to add to portfolio: Missing stock ID.");
-        return;
-    }
+        if (response.ok) {
+            const newPortfolio = await response.json();
+            dispatch(addPortfolio(newPortfolio));
+            return newPortfolio;
+        } else {
+            const error = await response.json();
+            alert(error.error || "Failed to create portfolio.");
+        }
+    };
 
-    const response = await fetch("/api/stocks/portfolio", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            stock_id: stock.id,
-            quantity: stock.quantity,
-        }),
+    export const thunkDeletePortfolio = (portfolioId) => async (dispatch) => {
+    const response = await fetch(`/api/portfolio/${portfolioId}`, {
+        method: "DELETE",
+        credentials: "include",
     });
 
     if (response.ok) {
-        dispatch(addToPortfolio(stock));
-        alert(
-            `${stock.quantity} shares of ${stock.symbol} have been added to your portfolio.`
-        );
+        dispatch(removePortfolio(portfolioId));
     } else {
         const error = await response.json();
-        console.error("Failed to add to portfolio:", error);
-        alert(error.error || "Failed to add to portfolio.");
+        alert(error.error || "Failed to delete portfolio.");
+    }
+};
+export const thunkFetchPortfolios = () => async (dispatch) => {
+    const response = await fetch("/api/portfolio", {
+        method: "GET",
+        credentials: "include",
+    });
+
+    if (response.ok) {
+        const portfolios = await response.json();
+        dispatch(setPortfolios(portfolios));
+    } else {
+        console.error("Failed to fetch portfolios");
+    }
+};
+export const fetchPortfolio = () => async (dispatch, getState) => {
+    const { user } = getState().session;
+    if (!user) return;
+
+    const response = await fetch("/api/portfolio");
+    if (response.ok) {
+        const data = await response.json();
+        dispatch(setPortfolio(data));
+    } else {
+        console.error("Failed to fetch portfolio");
     }
 };
 
-export const thunkRemoveFromPortfolio =
-    (stockSymbol) => async (dispatch, getState) => {
+
+
+    export const thunkAddToPortfolio = (stock) => async (dispatch, getState) => {
         const { user } = getState().session;
         if (!user) return;
 
-        const response = await fetch(`/api/stocks/portfolio/${stockSymbol}`, {
-            method: "DELETE",
+        if (!stock.id) {
+            const response = await fetch(`/api/stocks/${stock.symbol}`);
+            if (response.ok) {
+                const data = await response.json();
+                stock.id = data.id;
+            } else if (response.status === 404) {
+                console.error("Stock not found");
+                alert("Failed to add to portfolio: Stock not found.");
+                return;
+            } else {
+                console.error("Failed to fetch stock ID");
+                alert("Failed to add to portfolio: Unable to fetch stock ID.");
+                return;
+            }
+        }
+
+        const response = await fetch("/api/stocks/portfolio", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ stock_id: stock.id, quantity: stock.quantity || 1 }),
         });
+
         if (response.ok) {
-            dispatch(removeFromPortfolio(stockSymbol));
+            const data = await response.json();
+            dispatch(fetchPortfolio()); // or dispatch(setPortfolio(data)) depending on your slice
+            alert(data.message || "Added to portfolio successfully!");
+        } else {
+            const error = await response.json();
+            alert(error.error || "Failed to add to portfolio.");
         }
     };
+
+
+    export const thunkRemoveFromPortfolio =
+    (stockId) => async (dispatch, getState) => {
+        if (!stockId) {
+            console.error("Missing stock ID for removal!");
+            return;
+        }
+
+        const { user } = getState().session;
+        if (!user) return;
+
+        const response = await fetch(`/api/stocks/portfolio/${stockId}`, {
+            method: "DELETE",
+        });
+
+        if (response.ok) {
+            dispatch(removeFromPortfolio(stockId));
+        } else {
+            const error = await response.json();
+            console.error("Failed to remove from portfolio:", error);
+            throw new Error(error.error || "Failed to remove from portfolio.");
+        }
+    };
+
 
 const sessionInitialState = {
     user: null,
     watchlist: [],
     portfolio: [],
+    portfolios: [],
     watchlists: [],
 };
 
@@ -324,6 +418,11 @@ function sessionReducer(state = sessionInitialState, action) {
                     (watchlist) => watchlist.id !== action.watchlistId
                 ),
             };
+            case SET_PORTFOLIO:
+            return {
+                ...state,
+                portfolio: action.payload,
+            };
         case ADD_TO_PORTFOLIO:
             return {
                 ...state,
@@ -334,6 +433,23 @@ function sessionReducer(state = sessionInitialState, action) {
                 ...state,
                 portfolio: state.portfolio.filter(
                     (stock) => stock.symbol !== action.payload
+                ),
+            };
+            case SET_PORTFOLIOS:
+            return {
+                ...state,
+                portfolios: action.portfolios,
+            };
+            case ADD_PORTFOLIO:
+            return {
+                ...state,
+                portfolios: [...state.portfolios, action.portfolio],
+            };
+            case REMOVE_PORTFOLIO:
+            return {
+                ...state,
+                portfolios: state.portfolios.filter(
+                    (p) => p.id !== action.portfolioId
                 ),
             };
         default:
