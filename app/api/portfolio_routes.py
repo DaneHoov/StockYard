@@ -14,10 +14,17 @@ def get_portfolio(user_id):
     return portfolio.to_dict()
 
 
-@portfolio_routes.route('/', methods=['POST'])
+@portfolio_routes.route('/create', methods=['POST'])
 @login_required
 def create_portfolio():
-    new_portfolio = Portfolio(user_id=current_user.id, balance=0.0)
+    data = request.json
+    user_id = data.get('user_id')
+    balance = data.get('balance', 0)
+
+    if not user_id:
+        return {"error": "User ID is required"}, 400
+
+    new_portfolio = Portfolio(user_id=current_user.id, balance=balance)
     db.session.add(new_portfolio)
     db.session.commit()
     return new_portfolio.to_dict(), 201

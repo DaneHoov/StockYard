@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getPortfolioThunk,
   updatePortfolioThunk,
+  createPortfolioThunk,
   deletePortfolioThunk,
 } from "../../redux/portfolio";
 import "./Portfolio.css";
@@ -10,7 +11,9 @@ import "./Portfolio.css";
 function Portfolio() {
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.session.user);
-  const portfolio = useSelector((state) => state.portfolio);
+  const portfolio = useSelector((state) =>
+    state.portfolio[sessionUser?.id]
+  );
   const [showFunds, setShowFunds] = useState(true);
   const [addAmount, setAddAmount] = useState("");
 
@@ -23,7 +26,7 @@ function Portfolio() {
 
   const handleAddFunds = async () => {
     if (addAmount && !isNaN(addAmount)) {
-      await dispatch(updatePortfolioThunk(sessionUser.id, parseFloat(addAmount)));
+      await dispatch(updatePortfolioThunk(sessionUser.id, { add_cash: parseFloat(addAmount) }));
       setAddAmount("");
     }
   };
@@ -34,8 +37,27 @@ function Portfolio() {
     }
   };
 
-  if (!sessionUser || !portfolio) return null;
+  const handleCreatePortfolio = () => {
+    dispatch(createPortfolioThunk({ user_id: sessionUser.id, balance: 0 }));
+  };
 
+  if (!sessionUser) {
+    return <p>Please log in to view your portfolio.</p>;
+  }
+
+  if (!portfolio || Object.keys(portfolio).length === 0) {
+    return (
+      <div className="portfolio-container">
+        <div className="portfolio-card">
+          <h1>Your Portfolio</h1>
+          <p>No portfolio found. Create one to get started!</p>
+          <button className="create-portfolio-btn" onClick={handleCreatePortfolio}>
+            Create Portfolio
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="portfolio-container">
       <div className="portfolio-card">
@@ -53,7 +75,7 @@ function Portfolio() {
         {showFunds ? (
           <>
             <p className="portfolio-balance">
-              Available Cash: ${portfolio.cash_balance?.toFixed(2)}
+              Available Cash: ${portfolio.balance?.toFixed(2)}
             </p>
             <input
               type="number"
@@ -87,8 +109,8 @@ function Portfolio() {
                 <tbody>
                   {portfolio.portfolio_stocks?.map((entry) => (
                     <tr key={entry.id}>
-                      <td>{entry.stock.symbol}</td>
-                      <td>{entry.stock.company_name}</td>
+                      <td>{entry.stock.ticker}</td>
+                      <td>{entry.stock.name}</td>
                       <td>{entry.quantity}</td>
                       <td>${entry.stock.price.toFixed(2)}</td>
                       <td>${(entry.stock.price * entry.quantity).toFixed(2)}</td>

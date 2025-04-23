@@ -51,35 +51,44 @@ function WatchlistList() {
 
   return (
     <div className="watchlist-list-container">
-      <h1 style={{ marginBottom: "20px" }}>Your Watchlists</h1>
-      {watchlists.length === 0 && (
-        <p style={{ marginBottom: "20px" }}>
-          No watchlists found. Create one to get started!
-        </p>
+      {!watchlists || watchlists.length === 0 ? (
+        <div className="watchlist-card">
+          <h1>Your Watchlists</h1>
+          <p>No watchlists found. Create one to get started!</p>
+          <button
+            onClick={() => setShowModal(true)}
+            className="create-watchlist-btn"
+          >
+            Create Watchlist
+          </button>
+        </div>
+      ) : (
+        <>
+          <h1 style={{ marginBottom: "20px" }}>Your Watchlists</h1>
+          <button
+            onClick={() => setShowModal(true)}
+            className="create-watchlist-button"
+            style={{ marginBottom: "20px" }}
+          >
+            Create Watchlist
+          </button>
+          <ul className="watchlist-list">
+            {watchlists.map((watchlist) => (
+              <li key={watchlist.id} className="watchlist-item">
+                <span onClick={() => navigate(`/watchlist/${watchlist.id}`)}>
+                  {watchlist.name}
+                </span>
+                <button
+                  onClick={() => handleDeleteWatchlist(watchlist.id)}
+                  className="delete-watchlist-button"
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
-      <button
-        onClick={() => setShowModal(true)}
-        className="create-watchlist-button"
-        style={{ marginBottom: "20px" }}
-      >
-        Create Watchlist
-      </button>
-      <ul className="watchlist-list">
-        {watchlists.length > 0 &&
-          watchlists.map((watchlist) => (
-            <li key={watchlist.id} className="watchlist-item">
-              <span onClick={() => navigate(`/watchlist/${watchlist.id}`)}>
-                {watchlist.name}
-              </span>
-              <button
-                onClick={() => handleDeleteWatchlist(watchlist.id)}
-                className="delete-watchlist-button"
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-      </ul>
 
       {showModal && (
         <div className="modal">
