@@ -1,14 +1,8 @@
 """empty message
 
-<<<<<<<< HEAD:migrations/versions/20250423_065255_rebuild_db.py
-Revision ID: e45eeac344eb
+Revision ID: 8c7eb297dc25
 Revises: 
-Create Date: 2025-04-23 06:52:55.177253
-========
-Revision ID: b0c8f5a8eab1
-Revises: 
-Create Date: 2025-04-22 19:20:05.610359
->>>>>>>> anth:migrations/versions/20250422_192005_.py
+Create Date: 2025-04-23 14:31:33.988897
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/20250423_065255_rebuild_db.py
-revision = 'e45eeac344eb'
-========
-revision = 'b0c8f5a8eab1'
->>>>>>>> anth:migrations/versions/20250422_192005_.py
+revision = '8c7eb297dc25'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -53,6 +43,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('balance', sa.Float(), nullable=True),
+    sa.Column('name', sa.String(length=50), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -60,6 +51,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
+    sa.Column('deleted', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

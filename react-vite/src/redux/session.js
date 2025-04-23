@@ -312,19 +312,6 @@ export const createPortfolioThunk = (portfolioData) => async (dispatch) => {
   }
 };
 
-export const thunkRemoveFromPortfolio =
-  (stockSymbol) => async (dispatch, getState) => {
-    const { user } = getState().session;
-    if (!user) return;
-
-    const response = await fetch(`/api/stocks/portfolio/${stockSymbol}`, {
-      method: "DELETE",
-    });
-    if (response.ok) {
-      dispatch(removeFromPortfolio(stockSymbol));
-    }
-  };
-
 
     export const thunkRemoveFromPortfolio =
     (stockId) => async (dispatch, getState) => {
