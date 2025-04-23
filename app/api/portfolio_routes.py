@@ -14,7 +14,7 @@ def get_portfolio(user_id):
     return portfolio.to_dict()
 
 
-@portfolio_routes.route('/', methods=['POST'])
+@portfolio_routes.route('/create', methods=['POST'])
 @login_required
 def create_portfolio():
     new_portfolio = Portfolio(user_id=current_user.id, balance=0.0)
