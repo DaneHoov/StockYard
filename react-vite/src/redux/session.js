@@ -8,6 +8,7 @@ const ADD_TO_WATCHLIST = "session/addToWatchlist";
 const REMOVE_FROM_WATCHLIST = "session/removeFromWatchlist";
 const ADD_TO_PORTFOLIO = "session/addToPortfolio";
 const REMOVE_FROM_PORTFOLIO = "session/removeFromPortfolio";
+const SET_PORTFOLIO = "session/SET_PORTFOLIO";
 
 const setUser = (user) => ({
     type: SET_USER,
@@ -17,6 +18,11 @@ const setUser = (user) => ({
 export const setWatchlists = (watchlists) => ({
     type: SET_WATCHLISTS,
     watchlists,
+});
+
+const setPortfolio = (portfolio) => ({
+    type: SET_PORTFOLIO,
+    payload: portfolio,
 });
 
 export const addWatchlist = (watchlist) => ({
@@ -235,6 +241,16 @@ export const thunkRemoveFromWatchlist =
         }
     };
 
+export const thunkFetchPortfolio = (userId) => async (dispatch) => {
+    const response = await fetch(`/api/portfolio/${userId}`);
+    if (response.ok) {
+        const portfolio = await response.json();
+        dispatch(setPortfolio(portfolio));
+    } else {
+        console.error("Failed to fetch portfolio");
+    }
+};
+
 export const thunkAddToPortfolio = (stock) => async (dispatch, getState) => {
     const { user } = getState().session;
     if (!user) return;
@@ -264,6 +280,24 @@ export const thunkAddToPortfolio = (stock) => async (dispatch, getState) => {
         const error = await response.json();
         console.error("Failed to add to portfolio:", error);
         alert(error.error || "Failed to add to portfolio.");
+    }
+};
+
+export const createPortfolioThunk = (portfolioData) => async (dispatch) => {
+    const res = await fetch(`/api/portfolio/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portfolioData),
+    });
+
+    if (res.ok) {
+        const data = await res.json();
+        dispatch(setPortfolio(data));
+        return data;
+    } else {
+        const error = await res.json();
+        console.error("Failed to create portfolio:", error);
+        return error;
     }
 };
 

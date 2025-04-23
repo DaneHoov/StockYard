@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getPortfolioThunk,
   updatePortfolioThunk,
+  createPortfolioThunk,
   deletePortfolioThunk,
 } from "../../redux/portfolio";
 import "./Portfolio.css";
@@ -36,8 +37,27 @@ function Portfolio() {
     }
   };
 
-  if (!sessionUser || !portfolio) return null;
+  const handleCreatePortfolio = () => {
+    dispatch(createPortfolioThunk({ user_id: sessionUser.id, balance: 0 }));
+  };
 
+  if (!sessionUser) {
+    return <p>Please log in to view your portfolio.</p>;
+  }
+
+  if (!portfolio || Object.keys(portfolio).length === 0) {
+    return (
+      <div className="portfolio-container">
+        <div className="portfolio-card">
+          <h1>Your Portfolio</h1>
+          <p>No portfolio found. Create one to get started!</p>
+          <button className="create-portfolio-btn" onClick={handleCreatePortfolio}>
+            Create Portfolio
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="portfolio-container">
       <div className="portfolio-card">

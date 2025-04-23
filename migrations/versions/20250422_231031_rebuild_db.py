@@ -1,14 +1,8 @@
-"""rebuild for portfolio balance update check
+"""rebuild db
 
-<<<<<<<< HEAD:migrations/versions/20250422_215242_rebuild_db.py
-Revision ID: 02aecf72c608
+Revision ID: 0450bfc349f1
 Revises: 
-Create Date: 2025-04-22 21:52:42.212561
-========
-Revision ID: 31854d955284
-Revises: 
-Create Date: 2025-04-22 21:36:35.062960
->>>>>>>> 3e02287379ce32a852ef88c25aad223f52bc8c3c:migrations/versions/20250422_213635_rebuild_for_portfolio_balance_update_.py
+Create Date: 2025-04-22 23:10:31.078086
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/20250422_215242_rebuild_db.py
-revision = '02aecf72c608'
-========
-revision = '31854d955284'
->>>>>>>> 3e02287379ce32a852ef88c25aad223f52bc8c3c:migrations/versions/20250422_213635_rebuild_for_portfolio_balance_update_.py
+revision = '0450bfc349f1'
 down_revision = None
 branch_labels = None
 depends_on = None
