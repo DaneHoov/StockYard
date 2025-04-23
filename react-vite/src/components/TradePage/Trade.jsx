@@ -177,10 +177,10 @@ function Trade() {
           <table className="trade-table">
             <thead>
               <tr>
-                <th>Symbol</th>
                 <th>Name</th>
                 <th>Price</th>
-                <th>Change</th>
+                <th>% Change</th>
+                <th>Features</th>
                 <th>% Change</th>
                 <th>Open</th>
                 <th>Prev Close</th>
