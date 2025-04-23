@@ -37,6 +37,12 @@ function Trade() {
       dispatch(fetchWatchlist());
     }
   }, [dispatch, sessionUser]);
+  //NEW: Set default selectedStock
+  useEffect(() => {
+  if (!selectedStock && stocks.length > 0) {
+    setSelectedStock(stocks[0]);
+  }
+}, [stocks, selectedStock]);
 
   // new
   const openWatchlistModal = (stock) => {
@@ -273,7 +279,7 @@ function Trade() {
         )}
       </div>
 
-      {selectedStock && (
+
         <div
           className={`sidebar ${isSidebarExpanded ? "expanded" : "collapsed"}`}
         >
@@ -392,7 +398,7 @@ function Trade() {
                         : handleSellStock(selectedStock)
                     }
                   >
-                    {selectedSide} ({selectedStock.symbol})
+                    {selectedSide} {selectedStock.symbol && `(${selectedStock.symbol})`}
                   </button>
                 </div>
                 <button onClick={toggleStopPriceType}>{stopPriceType}</button>
@@ -400,7 +406,7 @@ function Trade() {
             </div>
           )}
         </div>
-      )}
+
       {/* // new */}
       {isWatchlistModalOpen && (
         <div className="modal">
