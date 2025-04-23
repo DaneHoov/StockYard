@@ -7,7 +7,7 @@ watchlist_routes = Blueprint('watchlist', __name__)
 @watchlist_routes.route('/watchlist', methods=['GET'])
 @login_required
 def get_watchlist():
-    watchlist = WatchlistStock.query.filter_by(user_id=current_user.id).all()
+    watchlist = WatchlistStock.query.filter_by(user_id=current_user.id, deleted=False).all()
     return jsonify([{
         'id': item.stock.id,
         'symbol': item.stock.ticker,
@@ -28,7 +28,7 @@ def create_watchlist():
         return jsonify({'error': 'Watchlist name is required'}), 400
 
     # Check for duplicate watchlist name
-    existing_watchlist = Watchlist.query.filter_by(user_id=current_user.id, name=name).first()
+    existing_watchlist = Watchlist.query.filter_by(user_id=current_user.id, name=name, deleted=False).first()
     if existing_watchlist:
         return jsonify({'error': 'A watchlist with this name already exists'}), 400
 
@@ -45,6 +45,7 @@ def delete_watchlist(watchlist_id):
     if not watchlist:
         return jsonify({'error': 'Watchlist not found'}), 404
 
+    watchlist.deleted = True
     db.session.delete(watchlist)
     db.session.commit()
     return jsonify({'message': 'Watchlist deleted successfully'}), 200

@@ -6,6 +6,7 @@ class Watchlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     name = db.Column(db.String(50), nullable=False)
+    deleted = db.Column(db.Boolean, default=False)
 
     # Relationships
     user = db.relationship('User', back_populates='watchlists')
@@ -20,7 +21,9 @@ class Watchlist(db.Model):
             'id': self.id,
             'user_id': self.user_id,
             'name': self.name,
-            'stocks': [stock.to_dict_basic() for stock in self.stocks]
+            'stocks': [stock.to_dict_basic() for stock in self.stocks],
+            'deleted': self.deleted,
+
         }
 
     def to_dict_basic(self):
