@@ -1,12 +1,12 @@
 .watchlist-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
-  min-height: 80vh;
-  background-color: #f5f7fa;
-  padding: 40px 20px;
+  min-height: 100vh;
+  background-color: #c2ddb3;
+  padding: 250px 20px 40px 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
