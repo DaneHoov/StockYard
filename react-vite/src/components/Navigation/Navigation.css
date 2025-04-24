@@ -39,7 +39,6 @@ body {
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .create-link {
@@ -75,7 +74,9 @@ body {
   text-decoration: none;
   transition: all 0.2s ease-in-out;
   font-family: "Montserrat Alternates", sans-serif;
+  margin-right: 40px;
 }
+
 
 /* Style for "Log In" */
 .auth-link:nth-child(1) {

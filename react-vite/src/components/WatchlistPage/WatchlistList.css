@@ -1,12 +1,13 @@
 .watchlist-list-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
-  min-height: 80vh;
-  background-color: #f5f7fa;
-  padding: 40px 20px;
+  min-height: 100vh;
+  background-color: #c2ddb3;
+  padding: 200px 20px 40px 20px;
+  height: 100%;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -36,9 +37,9 @@
 }
 
 /* Create Watchlist Button */
-.create-watchlist-btn {
+.create-watchlist-button {
   padding: 10px 20px;
-  background-color: #2ecc71;
+  background-color: #3498db;
   color: white;
   border: none;
   border-radius: 5px;

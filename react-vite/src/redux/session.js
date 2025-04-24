@@ -232,7 +232,6 @@ export const thunkAddToWatchlist =
 
       if (response.status === 200 || response.status === 201) {
         const data = await response.json();
-        await dispatch(thunkFetchWatchlist());
         await dispatch(thunkFetchWatchlist(watchlistId));
         alert(data.message || "Stock added to watchlist successfully.");
       } else {
