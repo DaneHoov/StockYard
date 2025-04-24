@@ -1,11 +1,23 @@
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { thunkRemoveFromWatchlist } from "../../redux/session";
+import {
+  thunkRemoveFromWatchlist,
+  thunkFetchWatchlist,
+} from "../../redux/session";
 import "./Watchlist.css";
 
 function Watchlist() {
   const dispatch = useDispatch();
+  const { watchlistId } = useParams();
   const watchlist = useSelector((state) => state.session.watchlist);
   const sessionUser = useSelector((state) => state.session.user);
+
+  useEffect(() => {
+    if (watchlistId) {
+      dispatch(thunkFetchWatchlist(watchlistId));
+    }
+  }, [dispatch, watchlistId]);
 
   const handleRemoveFromWatchlist = (stockSymbol) => {
     dispatch(thunkRemoveFromWatchlist(stockSymbol));
@@ -15,7 +27,7 @@ function Watchlist() {
     return <p>Please log in to view your watchlist.</p>;
   }
 
-  if (watchlist.length === 0) {
+  if (!watchlist || !watchlist.stocks || watchlist.stocks.length === 0) {
     return (
       <div className="watchlist-container">
         <div className="watchlist-card">
@@ -46,21 +58,26 @@ function Watchlist() {
           </tr>
         </thead>
         <tbody>
-          {watchlist.map((stock) => (
-            <tr key={stock.symbol}>
-              <td>{stock.symbol}</td>
-              <td>${stock.price.toFixed(2)}</td>
-              <td>{stock.change}</td>
-              <td>
-                <button
-                  onClick={() => handleRemoveFromWatchlist(stock.symbol)}
-                  className="remove-button"
-                >
-                  Remove
-                </button>
-              </td>
-            </tr>
-          ))}
+          {watchlist.stocks &&
+            watchlist.stocks.map((stock) => (
+              <tr key={stock.symbol}>
+                <td>{stock.symbol}</td>
+                <td>{stock.name}</td>
+                <td>${stock.price.toFixed(2)}</td>
+                <td>{stock.change}</td>
+                <td>{stock.percentChange}</td>
+                <td>{stock.open}</td>
+                <td>{stock.prevClose}</td>
+                <td>
+                  <button
+                    onClick={() => handleRemoveFromWatchlist(stock.symbol)}
+                    className="remove-button"
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

@@ -4,10 +4,10 @@ from app.models import db, WatchlistStock, Watchlist
 
 watchlist_routes = Blueprint('watchlist', __name__)
 
-@watchlist_routes.route('/watchlist', methods=['GET'])
+@watchlist_routes.route('/<int:watchlist_id>', methods=['GET'])
 @login_required
-def get_watchlist():
-    watchlist = WatchlistStock.query.filter_by(user_id=current_user.id, deleted=False).all()
+def get_watchlist(watchlist_id):
+    watchlist = WatchlistStock.query.filter_by(id=watchlist_id, user_id=current_user.id, deleted=False).all()
     return jsonify([{
         'id': item.stock.id,
         'symbol': item.stock.ticker,
