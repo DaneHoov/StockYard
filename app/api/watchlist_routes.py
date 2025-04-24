@@ -4,10 +4,10 @@ from app.models import db, WatchlistStock, Watchlist
 
 watchlist_routes = Blueprint('watchlist', __name__)
 
-@watchlist_routes.route('/watchlist', methods=['GET'])
+@watchlist_routes.route('/<int:watchlist_id>', methods=['GET'])
 @login_required
-def get_watchlist():
-    watchlist = WatchlistStock.query.filter_by(user_id=current_user.id, deleted=False).all()
+def get_watchlist(watchlist_id):
+    watchlist = WatchlistStock.query.filter_by(id=watchlist_id, user_id=current_user.id, deleted=False).all()
     return jsonify([{
         'id': item.stock.id,
         'symbol': item.stock.ticker,
@@ -57,21 +57,22 @@ def get_watchlists():
     return jsonify([watchlist.to_dict() for watchlist in watchlists])
 
 
-@watchlist_routes.route('/:id', methods=['POST'])
+@watchlist_routes.route('/<int:watchlist_id>/add', methods=['POST'])
 @login_required
-def add_to_watchlist():
+def add_to_watchlist(watchlist_id):
     data = request.get_json()
+    print("Request data:", data)  # Debug log
     stock_id = data.get('stock_id')
 
     if not stock_id:
         return jsonify({'error': 'Stock ID is required'}), 400
 
     # Prevent duplicates
-    existing = WatchlistStock.query.filter_by(user_id=current_user.id, stock_id=stock_id).first()
+    existing = WatchlistStock.query.filter_by(watchlist_id=watchlist_id, stock_id=stock_id).first()
     if existing:
         return jsonify({'message': 'Stock already in watchlist'}), 200
 
-    new_watch = WatchlistStock(user_id=current_user.id, stock_id=stock_id)
+    new_watch = WatchlistStock(watchlist_id=watchlist_id, stock_id=stock_id)
     db.session.add(new_watch)
     db.session.commit()
     return jsonify({'message': 'Stock added to watchlist'}), 201

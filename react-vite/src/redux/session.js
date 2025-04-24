@@ -170,6 +170,19 @@ export const thunkFetchWatchlists = () => async (dispatch) => {
   }
 };
 
+export const thunkFetchWatchlist = (watchlistId) => async (dispatch) => {
+  const response = await fetch(`/api/watchlist/${watchlistId}`, {
+    method: "GET",
+    credentials: "include",
+  });
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(setWatchlist(data));
+  } else {
+    console.error("Failed to fetch watchlist");
+  }
+};
+
 export const fetchWatchlist = () => async (dispatch, getState) => {
   const { user } = getState().session;
   if (!user) return;
@@ -183,57 +196,55 @@ export const fetchWatchlist = () => async (dispatch, getState) => {
   }
 };
 
-export const thunkAddToWatchlist = ({ stockId, watchlistId, symbol }) => async (dispatch, getState) => {
-  const { user } = getState().session;
-  if (!user) return;
+export const thunkAddToWatchlist =
+  ({ stockId, watchlistId, symbol }) =>
+  async (dispatch, getState) => {
+    const { user } = getState().session;
+    if (!user) return;
 
-  let resolvedStockId = stockId;
+    let resolvedStockId = stockId;
 
-  if (!resolvedStockId && symbol) {
-    const response = await fetch(`/api/stocks/${symbol}`);
-    if (response.ok) {
-      const data = await response.json();
-      resolvedStockId = data.id;
-    } else {
-      alert("Failed to add to watchlist: Stock not found.");
+    if (!resolvedStockId && symbol) {
+      const response = await fetch(`/api/stocks/${symbol}`);
+      if (response.ok) {
+        const data = await response.json();
+        resolvedStockId = data.id;
+      } else {
+        alert("Failed to add to watchlist: Stock not found.");
+        return;
+      }
+    }
+
+    if (!resolvedStockId || !watchlistId) {
+      alert("Missing stock or watchlist ID.");
       return;
     }
-  }
 
-  if (!resolvedStockId || !watchlistId) {
-    alert("Missing stock or watchlist ID.");
-    return;
-  }
+    try {
+      const response = await fetch(`/api/watchlist/${watchlistId}/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          stock_id: resolvedStockId,
+        }),
+      });
 
-  const response = await fetch("/api/stocks/watchlist", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ stock_id: resolvedStockId, watchlist_id: watchlistId }),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    console.error("Error response from server:", error); // <--- Add this
-    alert(error.error || "Failed to add to watchlist.");
-  }
-
-  if (response.ok) {
-    const updatedWatchlist = await fetch(`/api/watchlists/${watchlistId}`);
-    if (updatedWatchlist.ok) {
-      const watchlistData = await updatedWatchlist.json();
-      dispatch(setWatchlist(watchlistData));
+      if (response.status === 200 || response.status === 201) {
+        const data = await response.json();
+        await dispatch(thunkFetchWatchlist());
+        await dispatch(thunkFetchWatchlist(watchlistId));
+        alert(data.message || "Stock added to watchlist successfully.");
+      } else {
+        const error = await response.json();
+        console.error("Failed to add to watchlist:", error);
+        alert(error.error || "Failed to add to watchlist.");
+      }
+    } catch (error) {
+      console.error("Error adding to watchlist:", error);
+      alert("An unexpected error occurred. Please try again.");
     }
-
-    const data = await response.json();
-    alert(data.message);
-  } else {
-    const error = await response.json();
-    console.error("Failed to add to watchlist:", response.status, error);
-    alert(error.error || "Failed to add to watchlist.");
-  }
-};
-
+  };
 
 export const thunkRemoveFromWatchlist =
   (stockId) => async (dispatch, getState) => {
