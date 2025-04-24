@@ -212,17 +212,24 @@ export const thunkAddToWatchlist = ({ stockId, watchlistId, symbol }) => async (
     body: JSON.stringify({ stock_id: resolvedStockId, watchlist_id: watchlistId }),
   });
 
+  if (!response.ok) {
+    const error = await response.json();
+    console.error("Error response from server:", error); // <--- Add this
+    alert(error.error || "Failed to add to watchlist.");
+  }
+
   if (response.ok) {
     const updatedWatchlist = await fetch(`/api/watchlists/${watchlistId}`);
     if (updatedWatchlist.ok) {
       const watchlistData = await updatedWatchlist.json();
-      dispatch(setSingleWatchlist(watchlistData));
+      dispatch(setWatchlist(watchlistData));
     }
 
     const data = await response.json();
     alert(data.message);
   } else {
     const error = await response.json();
+    console.error("Failed to add to watchlist:", response.status, error);
     alert(error.error || "Failed to add to watchlist.");
   }
 };
