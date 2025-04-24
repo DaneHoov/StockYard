@@ -101,7 +101,10 @@ function Trade() {
   // };
   // new
   const handleAddStockToWatchlist = async () => {
-    if (!selectedWatchlist) return;
+    if (!selectedWatchlist) {
+    alert("Please select a watchlist.");
+    return;
+  }
 
     try {
       console.log("stockToAdd:", stockToAdd);
