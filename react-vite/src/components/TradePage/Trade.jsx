@@ -102,9 +102,9 @@ function Trade() {
   // new
   const handleAddStockToWatchlist = async () => {
     if (!selectedWatchlist) {
-    alert("Please select a watchlist.");
-    return;
-  }
+      alert("Please select a watchlist.");
+      return;
+    }
 
     try {
       console.log("stockToAdd:", stockToAdd);
@@ -123,23 +123,31 @@ function Trade() {
     }
   };
 
-  const handleRemoveFromWatchlist = async (stock) => {
-    const match = watchlists.find((item) => item.symbol === stock.symbol);
-    if (!match || !match.id) {
-      console.error("Stock ID is missing for removal:", stock);
-      alert("Failed to remove from watchlist: Missing stock ID.");
-      return;
-    }
-
+  const handleRemoveFromWatchlist = async (stock, watchlistId) => {
     try {
-      console.log("Removing stock:", stock); // Debugging log
-      await dispatch(thunkRemoveFromWatchlist(match.id));
-      alert(`${stock.symbol} has been removed from your watchlist.`);
+      await dispatch(thunkRemoveFromWatchlist(stock.ticker, watchlistId));
+      alert(`${stock.ticker} has been removed from your watchlist.`);
     } catch (error) {
-      console.error("Failed to remove from watchlist:", error);
       alert("Failed to remove from watchlist. Please try again.");
     }
   };
+  // const handleRemoveFromWatchlist = async (stock) => {
+  //   const match = watchlists.find((item) => item.symbol === stock.ticker);
+  //   if (!match || !match.id) {
+  //     console.error("Stock ID is missing for removal:", stock);
+  //     alert("Failed to remove from watchlist: Missing stock ID.");
+  //     return;
+  //   }
+
+  //   try {
+  //     console.log("Removing stock:", stock); // Debugging log
+  //     await dispatch(thunkRemoveFromWatchlist(match.id));
+  //     alert(`${stock.symbol} has been removed from your watchlist.`);
+  //   } catch (error) {
+  //     console.error("Failed to remove from watchlist:", error);
+  //     alert("Failed to remove from watchlist. Please try again.");
+  //   }
+  // };
 
   const isStockInWatchlist = (stockSymbol) => {
     let result = null;

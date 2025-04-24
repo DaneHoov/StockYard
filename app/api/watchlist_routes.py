@@ -81,16 +81,24 @@ def add_to_watchlist(watchlist_id):
     return jsonify({'message': 'Stock added to watchlist'}), 201
 
 
-@watchlist_routes.route('/watchlist<int:stock_id>', methods=['DELETE'])
+@watchlist_routes.route('/<int:watchlist_id>/remove', methods=['DELETE'])
 @login_required
-def remove_from_watchlist(stock_id):
-    print(f"Received stock_id: {stock_id}")  # Debugging log
-    watch_item = WatchlistStock.query.filter_by(user_id=current_user.id, stock_id=stock_id).first()
+def remove_from_watchlist(watchlist_id):
+    data = request.get_json()
+    symbol = data.get('symbol')
+    if not symbol:
+        return jsonify({'error': 'Stock symbol is required'}), 400
+
+    # Find the stock by symbol
+    stock = Stock.query.filter_by(ticker=symbol).first()
+    if not stock:
+        return jsonify({'error': 'Stock not found'}), 404
+
+    # Find the WatchlistStock entry
+    watch_item = WatchlistStock.query.filter_by(watchlist_id=watchlist_id, stock_id=stock.id).first()
     if not watch_item:
-        print("Stock not found in watchlist")  # Debugging log
         return jsonify({'error': 'Stock not found in watchlist'}), 404
 
-    print(f"Removing watch_item: {watch_item}")  # Debugging log
     db.session.delete(watch_item)
     db.session.commit()
     return jsonify({'message': 'Stock removed from watchlist'}), 200

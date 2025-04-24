@@ -10,6 +10,7 @@ import "./Watchlist.css";
 function Watchlist() {
   const dispatch = useDispatch();
   const { watchlistId } = useParams();
+  console.log("watchlistId:", watchlistId);
   const watchlist = useSelector((state) => state.session.watchlist);
   const sessionUser = useSelector((state) => state.session.user);
 
@@ -19,8 +20,8 @@ function Watchlist() {
     }
   }, [dispatch, watchlistId]);
 
-  const handleRemoveFromWatchlist = (stockSymbol) => {
-    dispatch(thunkRemoveFromWatchlist(stockSymbol));
+  const handleRemoveFromWatchlist = (stockTicker) => {
+    dispatch(thunkRemoveFromWatchlist(stockTicker, watchlistId));
   };
 
   if (!sessionUser) {
@@ -60,8 +61,8 @@ function Watchlist() {
         <tbody>
           {watchlist.stocks &&
             watchlist.stocks.map((stock) => (
-              <tr key={stock.symbol}>
-                <td>{stock.symbol}</td>
+              <tr key={stock.ticker}>
+                <td>{stock.ticker}</td>
                 <td>{stock.name}</td>
                 <td>${stock.price.toFixed(2)}</td>
                 <td>{stock.change}</td>
@@ -70,7 +71,7 @@ function Watchlist() {
                 <td>{stock.prevClose}</td>
                 <td>
                   <button
-                    onClick={() => handleRemoveFromWatchlist(stock.symbol)}
+                    onClick={() => handleRemoveFromWatchlist(stock.ticker)}
                     className="remove-button"
                   >
                     Remove

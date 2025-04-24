@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
       { path: "/trade", element: <Trade /> },
       { path: "/watchlist", element: <WatchlistList /> },
       {
-        path: "/watchlist/:id",
+        path: "/watchlist/:watchlistId",
         element: <Watchlist />,
       },
       { path: "/portfolio", element: <Portfolio /> },
