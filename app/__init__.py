@@ -20,6 +20,10 @@ login = LoginManager(app)
 login.login_view = 'auth.unauthorized'
 
 
+@login.unauthorized_handler
+def unauthorized_callback():
+    return jsonify({'error': 'Unauthorized'}), 401
+
 @login.user_loader
 def load_user(id_num):
     return User.query.get(int(id_num))
@@ -93,5 +97,13 @@ def react_root(path):
 
 
 @app.errorhandler(404)
-def not_found(_):
+def not_found(e):
+    if request.path.startswith("/api/"):
+        return jsonify({'error': 'Not found'}), 404
+    return app.send_static_file('index.html')
+
+@app.errorhandler(500)
+def internal_error(e):
+    if request.path.startswith("/api/"):
+        return jsonify({'error': 'Internal server error'}), 500
     return app.send_static_file('index.html')
