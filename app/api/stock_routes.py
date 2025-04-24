@@ -7,13 +7,13 @@ stock_routes = Blueprint('stocks', __name__)
 @stock_routes.route('/')
 def get_stocks():
     stocks = [
-        {"symbol": "AAPL", "price": 175.64, "change": "+1.35%"},
-        {"symbol": "GOOG", "price": 135.12, "change": "-0.90%"},
-        {"symbol": "MSFT", "price": 320.45, "change": "+0.98%"},
-        {"symbol": "AMZN", "price": 135.67, "change": "+1.08%"},
-        {"symbol": "NVDA", "price": 450.23, "change": "+1.28%"},
-        {"symbol": "TSLA", "price": 245.12, "change": "-1.39%"},
-        {"symbol": "PLTR", "price": 17.45, "change": "+4.00%"},
+        {"id": 1, "symbol": "AAPL", "price": 175.64, "change": "+1.35%"},
+        {"id": 2, "symbol": "GOOG", "price": 135.12, "change": "-0.90%"},
+        {"id": 3, "symbol": "MSFT", "price": 320.45, "change": "+0.98%"},
+        {"id": 4, "symbol": "AMZN", "price": 135.67, "change": "+1.08%"},
+        {"id": 5, "symbol": "NVDA", "price": 450.23, "change": "+1.28%"},
+        {"id": 6, "symbol": "TSLA", "price": 245.12, "change": "-1.39%"},
+        {"id": 7, "symbol": "PLTR", "price": 17.45, "change": "+4.00%"},
     ]
     return jsonify(stocks)
 
@@ -54,21 +54,20 @@ def add_to_watchlist():
     data = request.json
     print("Request payload:", data)  # Debugging log
     stock_id = data.get('stock_id')
+    watchlist_id = data.get('watchlist_id')
+    if not stock_id or not watchlist_id:
+        return {"error": "Stock ID and Watchlist ID are required"}, 400
 
-    if not stock_id:
-        return {"error": "Stock ID is required"}, 400
-
-    existing = WatchlistStock.query.filter_by(watchlist_id=current_user.id, stock_id=stock_id).first()
+    existing = WatchlistStock.query.filter_by(watchlist_id=watchlist_id, stock_id=stock_id).first()
     if existing:
         print("Stock already in watchlist:", existing)  # Debugging log
         return {"message": "Stock already in watchlist"}, 200
 
-    new_watchlist_stock = WatchlistStock(watchlist_id=current_user.id, stock_id=stock_id)
+    new_watchlist_stock = WatchlistStock(watchlist_id=watchlist_id, stock_id=stock_id)
     db.session.add(new_watchlist_stock)
     db.session.commit()
     print("Stock added to watchlist:", new_watchlist_stock)  # Debugging log
     return {"message": "Stock added to watchlist"}, 201
-
 
 @stock_routes.route('/watchlist/<int:stock_id>', methods=['DELETE'])
 @login_required

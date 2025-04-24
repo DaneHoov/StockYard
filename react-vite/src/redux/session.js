@@ -184,50 +184,56 @@ export const fetchWatchlist = () => async (dispatch, getState) => {
 };
 
 export const thunkAddToWatchlist = ({ stockId, watchlistId, symbol }) => async (dispatch, getState) => {
-    const { user } = getState().session;
-    if (!user) return;
+  const { user } = getState().session;
+  if (!user) return;
 
-    let resolvedStockId = stockId;
+  let resolvedStockId = stockId;
 
-    // If stockId is not provided, fetch it using the symbol
-    if (!resolvedStockId && symbol) {
-      const response = await fetch(`/api/stocks/${symbol}`);
-      if (response.ok) {
-        const data = await response.json();
-        resolvedStockId = data.id;
-      } else if (response.status === 404) {
-        console.error("Stock not found");
-        alert("Failed to add to watchlist: Stock not found.");
-        return;
-      } else {
-        console.error("Failed to fetch stock ID");
-        alert("Failed to add to watchlist: Unable to fetch stock ID.");
-        return;
-      }
-    }
-
-    // Ensure both IDs are present
-    if (!resolvedStockId || !watchlistId) {
-      alert("Missing stock or watchlist ID.");
-      return;
-    }
-
-    const response = await fetch("/api/stocks/watchlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ stock_id: resolvedStockId, watchlist_id: watchlistId }),
-    });
-
+  if (!resolvedStockId && symbol) {
+    const response = await fetch(`/api/stocks/${symbol}`);
     if (response.ok) {
       const data = await response.json();
-      // Optionally update state here if needed
-      alert(data.message);
+      resolvedStockId = data.id;
     } else {
-      const error = await response.json();
-      alert(error.error || "Failed to add to watchlist.");
+      alert("Failed to add to watchlist: Stock not found.");
+      return;
     }
-  };
+  }
+
+  if (!resolvedStockId || !watchlistId) {
+    alert("Missing stock or watchlist ID.");
+    return;
+  }
+
+  const response = await fetch("/api/stocks/watchlist", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ stock_id: resolvedStockId, watchlist_id: watchlistId }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    console.error("Error response from server:", error); // <--- Add this
+    alert(error.error || "Failed to add to watchlist.");
+  }
+
+  if (response.ok) {
+    const updatedWatchlist = await fetch(`/api/watchlists/${watchlistId}`);
+    if (updatedWatchlist.ok) {
+      const watchlistData = await updatedWatchlist.json();
+      dispatch(setWatchlist(watchlistData));
+    }
+
+    const data = await response.json();
+    alert(data.message);
+  } else {
+    const error = await response.json();
+    console.error("Failed to add to watchlist:", response.status, error);
+    alert(error.error || "Failed to add to watchlist.");
+  }
+};
+
 
 export const thunkRemoveFromWatchlist =
   (stockId) => async (dispatch, getState) => {
@@ -312,30 +318,28 @@ export const createPortfolioThunk = (portfolioData) => async (dispatch) => {
   }
 };
 
+export const thunkRemoveFromPortfolio =
+  (stockId) => async (dispatch, getState) => {
+    if (!stockId) {
+      console.error("Missing stock ID for removal!");
+      return;
+    }
 
-    export const thunkRemoveFromPortfolio =
-    (stockId) => async (dispatch, getState) => {
-        if (!stockId) {
-            console.error("Missing stock ID for removal!");
-            return;
-        }
+    const { user } = getState().session;
+    if (!user) return;
 
-        const { user } = getState().session;
-        if (!user) return;
+    const response = await fetch(`/api/stocks/portfolio/${stockId}`, {
+      method: "DELETE",
+    });
 
-        const response = await fetch(`/api/stocks/portfolio/${stockId}`, {
-            method: "DELETE",
-        });
-
-        if (response.ok) {
-            dispatch(removeFromPortfolio(stockId));
-        } else {
-            const error = await response.json();
-            console.error("Failed to remove from portfolio:", error);
-            throw new Error(error.error || "Failed to remove from portfolio.");
-        }
-    };
-
+    if (response.ok) {
+      dispatch(removeFromPortfolio(stockId));
+    } else {
+      const error = await response.json();
+      console.error("Failed to remove from portfolio:", error);
+      throw new Error(error.error || "Failed to remove from portfolio.");
+    }
+  };
 
 const sessionInitialState = {
   user: null,
