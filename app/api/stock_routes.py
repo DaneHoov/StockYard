@@ -7,13 +7,13 @@ stock_routes = Blueprint('stocks', __name__)
 @stock_routes.route('/')
 def get_stocks():
     stocks = [
-        {"symbol": "AAPL", "price": 175.64, "change": "+1.35%"},
-        {"symbol": "GOOG", "price": 135.12, "change": "-0.90%"},
-        {"symbol": "MSFT", "price": 320.45, "change": "+0.98%"},
-        {"symbol": "AMZN", "price": 135.67, "change": "+1.08%"},
-        {"symbol": "NVDA", "price": 450.23, "change": "+1.28%"},
-        {"symbol": "TSLA", "price": 245.12, "change": "-1.39%"},
-        {"symbol": "PLTR", "price": 17.45, "change": "+4.00%"},
+        {"id": 1, "symbol": "AAPL", "price": 175.64, "change": "+1.35%"},
+        {"id": 2, "symbol": "GOOG", "price": 135.12, "change": "-0.90%"},
+        {"id": 3, "symbol": "MSFT", "price": 320.45, "change": "+0.98%"},
+        {"id": 4, "symbol": "AMZN", "price": 135.67, "change": "+1.08%"},
+        {"id": 5, "symbol": "NVDA", "price": 450.23, "change": "+1.28%"},
+        {"id": 6, "symbol": "TSLA", "price": 245.12, "change": "-1.39%"},
+        {"id": 7, "symbol": "PLTR", "price": 17.45, "change": "+4.00%"},
     ]
     return jsonify(stocks)
 
