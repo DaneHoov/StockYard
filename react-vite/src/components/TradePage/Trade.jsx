@@ -9,13 +9,14 @@ import {
   thunkRemoveFromWatchlist,
   thunkAddToPortfolio,
   thunkRemoveFromPortfolio,
+  thunkFetchWatchlists,
 } from "../../redux/session";
 import "./Trade.css";
 
 function Trade() {
   const dispatch = useDispatch();
   const stocks = useSelector((state) => state.stocks);
-  const watchlist = useSelector((state) => state.session.watchlist);
+  const watchlists = useSelector((state) => state.session.watchlists);
   const sessionUser = useSelector((state) => state.session.user);
 
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -25,11 +26,36 @@ function Trade() {
   const [stopPriceType, setStopPriceType] = useState("Dollars");
   const [stopPrice, setStopPrice] = useState(-1);
   const [limitPrice, setLimitPrice] = useState(1);
+  const [isWatchlistModalOpen, setIsWatchlistModalOpen] = useState(false);
+  const [selectedWatchlist, setSelectedWatchlist] = useState("");
+  const [stockToAdd, setStockToAdd] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchStocks());
-    dispatch(fetchWatchlist());
-  }, [dispatch]);
+    if (sessionUser) {
+      dispatch(thunkFetchWatchlists());
+      dispatch(fetchStocks());
+      dispatch(fetchWatchlist());
+    }
+  }, [dispatch, sessionUser]);
+  //NEW: Set default selectedStock
+  useEffect(() => {
+    if (!selectedStock && stocks.length > 0) {
+      setSelectedStock(stocks[0]);
+    }
+  }, [stocks, selectedStock]);
+
+  // new
+  const openWatchlistModal = (stock) => {
+    setStockToAdd(stock);
+    setSelectedWatchlist("");
+    setIsWatchlistModalOpen(true);
+  };
+
+  // new
+  const closeWatchlistModal = () => {
+    setIsWatchlistModalOpen(false);
+    setStockToAdd(null);
+  };
 
   const toggleSidebar = () => {
     setIsSidebarExpanded(!isSidebarExpanded);
@@ -64,10 +90,30 @@ function Trade() {
     ).toFixed(2)})`;
   };
 
-  const handleAddToWatchlist = async (stock) => {
+  // const handleAddToWatchlist = async (stock) => {
+  //   try {
+  //     await dispatch(thunkAddToWatchlist(stock));
+  //     alert(`${stock.symbol} has been added to your watchlist.`);
+  //   } catch (error) {
+  //     console.error("Failed to add to watchlist:", error);
+  //     alert("Failed to add to watchlist. Please try again.");
+  //   }
+  // };
+  // new
+  const handleAddStockToWatchlist = async () => {
+    if (!selectedWatchlist) return;
+
     try {
-      await dispatch(thunkAddToWatchlist(stock));
-      alert(`${stock.symbol} has been added to your watchlist.`);
+      console.log("stockToAdd:", stockToAdd);
+      console.log("selectedWatchlist:", selectedWatchlist);
+      await dispatch(
+        thunkAddToWatchlist({
+          stockId: stockToAdd.id,
+          watchlistId: selectedWatchlist,
+        })
+      );
+      alert(`${stockToAdd.symbol} has been added to the selected watchlist.`);
+      closeWatchlistModal();
     } catch (error) {
       console.error("Failed to add to watchlist:", error);
       alert("Failed to add to watchlist. Please try again.");
@@ -75,7 +121,7 @@ function Trade() {
   };
 
   const handleRemoveFromWatchlist = async (stock) => {
-    const match = watchlist.find((item) => item.symbol === stock.symbol);
+    const match = watchlists.find((item) => item.symbol === stock.symbol);
     if (!match || !match.id) {
       console.error("Stock ID is missing for removal:", stock);
       alert("Failed to remove from watchlist: Missing stock ID.");
@@ -93,41 +139,45 @@ function Trade() {
   };
 
   const isStockInWatchlist = (stockSymbol) => {
-    const result = watchlist.find((stock) => stock.symbol === stockSymbol);
-    console.log(`Checking if ${stockSymbol} is in watchlist:`, result);
+    let result = null;
+    for (const wl of watchlists) {
+      result = wl.stocks?.find((stock) => stock.symbol === stockSymbol);
+      if (result) break;
+    }
+    console.log(`Checking if ${stockSymbol} is in any watchlist:`, result);
     return result;
   };
 
-  const handleAddToPortfolio = async (stock) => {
-    try {
-      const quantity = prompt(`Enter the quantity of ${stock.symbol} to add:`);
-      if (!quantity || isNaN(quantity) || quantity <= 0) {
-        alert("Invalid quantity. Please enter a positive number.");
-        return;
-      }
+  // const handleAddToPortfolio = async (stock) => {
+  //   try {
+  //     const quantity = prompt(`Enter the quantity of ${stock.symbol} to add:`);
+  //     if (!quantity || isNaN(quantity) || quantity <= 0) {
+  //       alert("Invalid quantity. Please enter a positive number.");
+  //       return;
+  //     }
 
-      // Fetch the stock ID if it's missing
-      if (!stock.id) {
-        const response = await fetch(`/api/stocks/${stock.symbol}`);
-        if (response.ok) {
-          const data = await response.json();
-          stock.id = data.id; // Add the fetched ID to the stock object
-        } else {
-          alert("Failed to fetch stock ID. Cannot add to portfolio.");
-          console.error("Failed to fetch stock ID for:", stock);
-          return;
-        }
-      }
+  //     // Fetch the stock ID if it's missing
+  //     if (!stock.id) {
+  //       const response = await fetch(`/api/stocks/${stock.symbol}`);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         stock.id = data.id; // Add the fetched ID to the stock object
+  //       } else {
+  //         alert("Failed to fetch stock ID. Cannot add to portfolio.");
+  //         console.error("Failed to fetch stock ID for:", stock);
+  //         return;
+  //       }
+  //     }
 
-      await dispatch(
-        thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) })
-      );
-      // alert(`${quantity} shares of ${stock.symbol} have been added to your portfolio.`);
-    } catch (error) {
-      console.error("Failed to add to portfolio:", error);
-      alert("Failed to add to portfolio. Please try again.");
-    }
-  };
+  //     await dispatch(
+  //       thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) })
+  //     );
+  //     // alert(`${quantity} shares of ${stock.symbol} have been added to your portfolio.`);
+  //   } catch (error) {
+  //     console.error("Failed to add to portfolio:", error);
+  //     alert("Failed to add to portfolio. Please try again.");
+  //   }
+  // };
 
   const handleSellStock = async (stock) => {
     try {
@@ -210,17 +260,11 @@ function Trade() {
                     ) : (
                       <button
                         className="add-to-watchlist"
-                        onClick={() => handleAddToWatchlist(stock)}
+                        onClick={() => openWatchlistModal(stock)}
                       >
                         Add to Watchlist
                       </button>
                     )}
-                    <button
-                      className="add-to-portfolio"
-                      onClick={() => handleAddToPortfolio(stock)}
-                    >
-                      Add to Portfolio
-                    </button>
                   </td>
                 </tr>
               ))}
@@ -231,132 +275,160 @@ function Trade() {
         )}
       </div>
 
-      {selectedStock && (
-        <div
-          className={`sidebar ${isSidebarExpanded ? "expanded" : "collapsed"}`}
-        >
-          <div className="toggle-button" onClick={toggleSidebar}>
-            {isSidebarExpanded ? "→" : "←"}
-          </div>
-          {isSidebarExpanded && (
-            <div className="sidebar-content">
-              <div className="classic-trade-section">
-                <h3>Classic Trade</h3>
-                <div className="side-bar">
-                  <div
-                    className={`side-option ${
-                      selectedSide === "Buy" ? "active buy" : ""
-                    }`}
-                    onClick={() => setSelectedSide("Buy")}
-                  >
-                    Buy
-                  </div>
-                  <div
-                    className={`side-option ${
-                      selectedSide === "Sell" ? "active sell" : ""
-                    }`}
-                    onClick={() => setSelectedSide("Sell")}
-                  >
-                    Sell
-                  </div>
+      <div
+        className={`sidebar ${isSidebarExpanded ? "expanded" : "collapsed"}`}
+      >
+        <div className="toggle-button" onClick={toggleSidebar}>
+          {isSidebarExpanded ? "→" : "←"}
+        </div>
+        {isSidebarExpanded && (
+          <div className="sidebar-content">
+            <div className="classic-trade-section">
+              <h3>Classic Trade</h3>
+              <div className="side-bar">
+                <div
+                  className={`side-option ${
+                    selectedSide === "Buy" ? "active buy" : ""
+                  }`}
+                  onClick={() => setSelectedSide("Buy")}
+                >
+                  Buy
                 </div>
-                <div className="quantity-selector">
-                  <label>Quantity:</label>
-                  <select
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                  >
-                    <option value={10}>10</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                    <option value={500}>500</option>
-                  </select>
+                <div
+                  className={`side-option ${
+                    selectedSide === "Sell" ? "active sell" : ""
+                  }`}
+                  onClick={() => setSelectedSide("Sell")}
+                >
+                  Sell
                 </div>
-                <div>
-                  <label>
-                    <input type="checkbox" />
-                    Stop-Loss Order
-                  </label>
-                  <div className="stop-price">
-                    <input
-                      type="number"
-                      value={stopPrice}
-                      onChange={(e) => setStopPrice(Number(e.target.value))}
-                      step={stopPriceType === "Dollars" ? 0.01 : 1}
-                      min={stopPriceType === "Percentages" ? -100 : undefined}
-                    />
-                    <button
-                      onClick={() =>
-                        adjustStopPrice(stopPriceType === "Dollars" ? 0.01 : 1)
-                      }
-                    >
-                      ▲
-                    </button>
-                    <button
-                      onClick={() =>
-                        adjustStopPrice(
-                          stopPriceType === "Dollars" ? -0.01 : -1
-                        )
-                      }
-                    >
-                      ▼
-                    </button>
-                    <span>
-                      {stopPriceType === "Percentages" &&
-                        formatPrice(stopPrice)}
-                    </span>
-                  </div>
-                  <br />
-                  <label>
-                    <input type="checkbox" />
-                    Take-Profit Order
-                  </label>
-                  <div className="stop-price">
-                    <input
-                      type="number"
-                      value={limitPrice}
-                      onChange={(e) => setLimitPrice(Number(e.target.value))}
-                      step={stopPriceType === "Dollars" ? 0.01 : 1}
-                      min={stopPriceType === "Percentages" ? 0 : undefined}
-                    />
-                    <button
-                      onClick={() =>
-                        adjustLimitPrice(stopPriceType === "Dollars" ? 0.01 : 1)
-                      }
-                    >
-                      ▲
-                    </button>
-                    <button
-                      onClick={() =>
-                        adjustLimitPrice(
-                          stopPriceType === "Dollars" ? -0.01 : -1
-                        )
-                      }
-                    >
-                      ▼
-                    </button>
-                    <span>
-                      {stopPriceType === "Percentages" &&
-                        formatPrice(limitPrice)}
-                    </span>
-                  </div>
+              </div>
+              <div className="quantity-selector">
+                <label>Quantity:</label>
+                <select
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                >
+                  <option value={10}>10</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                  <option value={500}>500</option>
+                </select>
+              </div>
+              <div>
+                <label>
+                  <input type="checkbox" />
+                  Stop-Loss Order
+                </label>
+                <div className="stop-price">
+                  <input
+                    type="number"
+                    value={stopPrice}
+                    onChange={(e) => setStopPrice(Number(e.target.value))}
+                    step={stopPriceType === "Dollars" ? 0.01 : 1}
+                    min={stopPriceType === "Percentages" ? -100 : undefined}
+                  />
                   <button
-                    className={`trade-button ${
-                      selectedSide === "Buy" ? "buy" : "sell"
-                    }`}
                     onClick={() =>
-                      selectedSide === "Buy"
-                        ? handleBuyStock(selectedStock, quantity)
-                        : handleSellStock(selectedStock)
+                      adjustStopPrice(stopPriceType === "Dollars" ? 0.01 : 1)
                     }
                   >
-                    {selectedSide} ({selectedStock.symbol})
+                    ▲
                   </button>
+                  <button
+                    onClick={() =>
+                      adjustStopPrice(stopPriceType === "Dollars" ? -0.01 : -1)
+                    }
+                  >
+                    ▼
+                  </button>
+                  <span>
+                    {stopPriceType === "Percentages" && formatPrice(stopPrice)}
+                  </span>
                 </div>
-                <button onClick={toggleStopPriceType}>{stopPriceType}</button>
+                <br />
+                <label>
+                  <input type="checkbox" />
+                  Take-Profit Order
+                </label>
+                <div className="stop-price">
+                  <input
+                    type="number"
+                    value={limitPrice}
+                    onChange={(e) => setLimitPrice(Number(e.target.value))}
+                    step={stopPriceType === "Dollars" ? 0.01 : 1}
+                    min={stopPriceType === "Percentages" ? 0 : undefined}
+                  />
+                  <button
+                    onClick={() =>
+                      adjustLimitPrice(stopPriceType === "Dollars" ? 0.01 : 1)
+                    }
+                  >
+                    ▲
+                  </button>
+                  <button
+                    onClick={() =>
+                      adjustLimitPrice(stopPriceType === "Dollars" ? -0.01 : -1)
+                    }
+                  >
+                    ▼
+                  </button>
+                  <span>
+                    {stopPriceType === "Percentages" && formatPrice(limitPrice)}
+                  </span>
+                </div>
+                <button
+                  className={`trade-button ${
+                    selectedSide === "Buy" ? "buy" : "sell"
+                  }`}
+                  onClick={() =>
+                    selectedSide === "Buy"
+                      ? handleBuyStock(selectedStock, quantity)
+                      : handleSellStock(selectedStock)
+                  }
+                >
+                  {selectedSide}{" "}
+                  {selectedStock.symbol && `(${selectedStock.symbol})`}
+                </button>
               </div>
+              <button onClick={toggleStopPriceType}>{stopPriceType}</button>
             </div>
-          )}
+          </div>
+        )}
+      </div>
+
+      {/* // new */}
+      {isWatchlistModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Add {stockToAdd?.symbol} to Watchlist</h2>
+            <select
+              value={selectedWatchlist}
+              onChange={(e) => setSelectedWatchlist(e.target.value)}
+            >
+              <option value="">Select a watchlist</option>
+              {watchlists.map((watchlistItem) => (
+                <option key={watchlistItem.id} value={watchlistItem.id}>
+                  {watchlistItem.name}
+                </option>
+              ))}
+            </select>
+            <div className="modal-buttons">
+              <button
+                className="modal-add-button"
+                onClick={handleAddStockToWatchlist}
+                disabled={!selectedWatchlist}
+              >
+                Add to Watchlist
+              </button>
+              <button
+                className="modal-cancel-button"
+                onClick={closeWatchlistModal}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -51,7 +51,7 @@ function WatchlistList() {
 
   return (
     <div className="watchlist-list-container">
-      {(!watchlists || watchlists.length === 0) ? (
+      {!watchlists || watchlists.length === 0 ? (
         <div className="watchlist-card">
           <h1>Your Watchlists</h1>
           <p>No watchlists found. Create one to get started!</p>
