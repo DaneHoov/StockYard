@@ -5,7 +5,7 @@ from .portfolios import seed_portfolios, undo_portfolios
 from .stocks import seed_stocks, undo_stocks
 from .portfolio_stocks import seed_portfolio_stocks, undo_portfolio_stocks
 from .transactions import seed_transactions, undo_transactions
-from .watchlists import seed_watchlists, undo_watchlists
+
 
 
 
@@ -15,7 +15,6 @@ seed_commands = AppGroup('seed')
 @seed_commands.command('all')
 def seed():
     undo_transactions()
-    undo_watchlists()
     undo_portfolio_stocks()
     undo_portfolios()
     undo_stocks()
@@ -25,7 +24,6 @@ def seed():
     seed_stocks()
     seed_portfolios()
     seed_portfolio_stocks()
-    seed_watchlists()
     seed_transactions()
     # Add other seed functions here
 
@@ -33,7 +31,6 @@ def seed():
 @seed_commands.command('undo')
 def undo():
     undo_transactions()
-    undo_watchlists()
     undo_portfolio_stocks()
     undo_portfolios()
     undo_stocks()

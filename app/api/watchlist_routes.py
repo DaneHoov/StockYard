@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import db, WatchlistStock, Watchlist
+from app.models import db, WatchlistStock, Watchlist, Stock
 
 watchlist_routes = Blueprint('watchlist', __name__)
 
@@ -13,7 +13,7 @@ def get_watchlist(watchlist_id):
     return jsonify(watchlist.to_dict())
     # return jsonify([{
     #     'id': item.stock.id,
-    #     'symbol': item.stock.ticker,
+    #     'ticker': item.stock.ticker,
     #     'price': item.stock.price,
     #     'change': item.stock.change,
     # } for item in watchlist])
@@ -85,12 +85,12 @@ def add_to_watchlist(watchlist_id):
 @login_required
 def remove_from_watchlist(watchlist_id):
     data = request.get_json()
-    symbol = data.get('symbol')
-    if not symbol:
+    ticker = data.get('ticker')
+    if not ticker:
         return jsonify({'error': 'Stock symbol is required'}), 400
 
-    # Find the stock by symbol
-    stock = Stock.query.filter_by(ticker=symbol).first()
+    # Find the stock by ticker
+    stock = Stock.query.filter_by(ticker=ticker).first()
     if not stock:
         return jsonify({'error': 'Stock not found'}), 404
 

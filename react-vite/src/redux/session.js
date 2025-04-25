@@ -197,15 +197,15 @@ export const fetchWatchlist = () => async (dispatch, getState) => {
 };
 
 export const thunkAddToWatchlist =
-  ({ stockId, watchlistId, symbol }) =>
+  ({ stockId, watchlistId, ticker }) =>
   async (dispatch, getState) => {
     const { user } = getState().session;
     if (!user) return;
 
     let resolvedStockId = stockId;
 
-    if (!resolvedStockId && symbol) {
-      const response = await fetch(`/api/stocks/${symbol}`);
+    if (!resolvedStockId && ticker) {
+      const response = await fetch(`/api/stocks/${ticker}`);
       if (response.ok) {
         const data = await response.json();
         resolvedStockId = data.id;
@@ -251,7 +251,7 @@ export const thunkRemoveFromWatchlist =
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ symbol: stockTicker }),
+      body: JSON.stringify({ ticker: stockTicker }),
     });
     if (response.ok) {
       await dispatch(thunkFetchWatchlist(watchlistId)); // Refresh the watchlist
@@ -313,7 +313,7 @@ export const thunkAddToPortfolio = (stock) => async (dispatch, getState) => {
   if (response.ok) {
     dispatch(addToPortfolio(stock));
     alert(
-      `${stock.quantity} shares of ${stock.symbol} have been added to your portfolio.`
+      `${stock.quantity} shares of ${stock.ticker} have been added to your portfolio.`
     );
   } else {
     const error = await response.json();
@@ -416,7 +416,7 @@ function sessionReducer(state = sessionInitialState, action) {
       return {
         ...state,
         portfolio: state.portfolio.filter(
-          (stock) => stock.symbol !== action.payload
+          (stock) => stock.ticker !== action.payload
         ),
       };
     default:

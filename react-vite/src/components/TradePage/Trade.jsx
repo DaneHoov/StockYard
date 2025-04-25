@@ -93,7 +93,7 @@ function Trade() {
   // const handleAddToWatchlist = async (stock) => {
   //   try {
   //     await dispatch(thunkAddToWatchlist(stock));
-  //     alert(`${stock.symbol} has been added to your watchlist.`);
+  //     alert(`${stock.ticker} has been added to your watchlist.`);
   //   } catch (error) {
   //     console.error("Failed to add to watchlist:", error);
   //     alert("Failed to add to watchlist. Please try again.");
@@ -115,7 +115,7 @@ function Trade() {
           watchlistId: selectedWatchlist,
         })
       );
-      alert(`${stockToAdd.symbol} has been added to the selected watchlist.`);
+      alert(`${stockToAdd.ticker} has been added to the selected watchlist.`);
       closeWatchlistModal();
     } catch (error) {
       console.error("Failed to add to watchlist:", error);
@@ -132,7 +132,7 @@ function Trade() {
     }
   };
   // const handleRemoveFromWatchlist = async (stock) => {
-  //   const match = watchlists.find((item) => item.symbol === stock.ticker);
+  //   const match = watchlists.find((item) => item.ticker === stock.ticker);
   //   if (!match || !match.id) {
   //     console.error("Stock ID is missing for removal:", stock);
   //     alert("Failed to remove from watchlist: Missing stock ID.");
@@ -142,7 +142,7 @@ function Trade() {
   //   try {
   //     console.log("Removing stock:", stock); // Debugging log
   //     await dispatch(thunkRemoveFromWatchlist(match.id));
-  //     alert(`${stock.symbol} has been removed from your watchlist.`);
+  //     alert(`${stock.ticker} has been removed from your watchlist.`);
   //   } catch (error) {
   //     console.error("Failed to remove from watchlist:", error);
   //     alert("Failed to remove from watchlist. Please try again.");
@@ -152,16 +152,15 @@ function Trade() {
   const isStockInWatchlist = (stockSymbol) => {
     let result = null;
     for (const wl of watchlists) {
-      result = wl.stocks?.find((stock) => stock.symbol === stockSymbol);
-      if (result) break;
-    }
+      result = wl.stocks?.find((stock) => stock.ticker === stockSymbol);
+      if (result) breaticker
     console.log(`Checking if ${stockSymbol} is in any watchlist:`, result);
     return result;
   };
 
   // const handleAddToPortfolio = async (stock) => {
   //   try {
-  //     const quantity = prompt(`Enter the quantity of ${stock.symbol} to add:`);
+  //     const quantity = prompt(`Enter the quantity of ${stock.ticker} to add:`);
   //     if (!quantity || isNaN(quantity) || quantity <= 0) {
   //       alert("Invalid quantity. Please enter a positive number.");
   //       return;
@@ -169,7 +168,7 @@ function Trade() {
 
   //     // Fetch the stock ID if it's missing
   //     if (!stock.id) {
-  //       const response = await fetch(`/api/stocks/${stock.symbol}`);
+  //       const response = await fetch(`/api/stocks/${stock.ticker}`);
   //       if (response.ok) {
   //         const data = await response.json();
   //         stock.id = data.id; // Add the fetched ID to the stock object
@@ -183,7 +182,7 @@ function Trade() {
   //     await dispatch(
   //       thunkAddToPortfolio({ ...stock, quantity: parseInt(quantity) })
   //     );
-  //     // alert(`${quantity} shares of ${stock.symbol} have been added to your portfolio.`);
+  //     // alert(`${quantity} shares of ${stock.ticker} have been added to your portfolio.`);
   //   } catch (error) {
   //     console.error("Failed to add to portfolio:", error);
   //     alert("Failed to add to portfolio. Please try again.");
@@ -192,18 +191,18 @@ function Trade() {
 
   const handleSellStock = async (stock) => {
     try {
-      const quantity = prompt(`Enter the quantity of ${stock.symbol} to sell:`);
+      const quantity = prompt(`Enter the quantity of ${stock.ticker} to sell:`);
       if (!quantity || isNaN(quantity) || quantity <= 0) {
         alert("Invalid quantity. Please enter a positive number.");
         return;
       }
       await dispatch(
         thunkRemoveFromPortfolio({
-          symbol: stock.symbol,
+          ticker: stock.ticker,
           quantity: parseInt(quantity),
         })
       );
-      alert(`${quantity} shares of ${stock.symbol} have been sold.`);
+      alert(`${quantity} shares of ${stock.ticker} have been sold.`);
     } catch (error) {
       console.error("Failed to sell stock:", error);
       alert("Failed to sell stock. Please try again.");
@@ -223,7 +222,7 @@ function Trade() {
 
     try {
       await dispatch(thunkAddToPortfolio({ ...stock, quantity }));
-      alert(`${quantity} shares of ${stock.symbol} have been purchased.`);
+      alert(`${quantity} shares of ${stock.ticker} have been purchased.`);
     } catch (error) {
       console.error("Failed to buy stock:", error);
       alert("Failed to buy stock. Please try again.");
@@ -251,17 +250,17 @@ function Trade() {
             <tbody>
               {stocks.map((stock) => (
                 <tr
-                  key={stock.symbol}
+                  key={stock.ticker}
                   onClick={() => setSelectedStock(stock)}
                   className={
-                    selectedStock?.symbol === stock.symbol ? "active-row" : ""
+                    selectedStock?.ticker === stock.ticker ? "active-row" : ""
                   }
                 >
-                  <td>{stock.symbol}</td>
+                  <td>{stock.ticker}</td>
                   <td>${stock.price.toFixed(2)}</td>
                   <td>{stock.change}</td>
                   <td>
-                    {isStockInWatchlist(stock.symbol) ? (
+                    {isStockInWatchlist(stock.ticker) ? (
                       <button
                         className="remove-from-watchlist"
                         onClick={() => handleRemoveFromWatchlist(stock)}
@@ -399,7 +398,7 @@ function Trade() {
                   }
                 >
                   {selectedSide}{" "}
-                  {selectedStock.symbol && `(${selectedStock.symbol})`}
+                  {selectedStock.ticker && `(${selectedStock.ticker})`}
                 </button>
               </div>
               <button onClick={toggleStopPriceType}>{stopPriceType}</button>
@@ -412,7 +411,7 @@ function Trade() {
       {isWatchlistModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Add {stockToAdd?.symbol} to Watchlist</h2>
+            <h2>Add {stockToAdd?.ticker} to Watchlist</h2>
             <select
               value={selectedWatchlist}
               onChange={(e) => setSelectedWatchlist(e.target.value)}
@@ -444,6 +443,7 @@ function Trade() {
       )}
     </div>
   );
+}
 }
 
 export default Trade;
