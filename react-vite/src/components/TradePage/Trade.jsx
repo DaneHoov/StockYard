@@ -33,10 +33,18 @@ function Trade() {
   useEffect(() => {
     if (sessionUser) {
       dispatch(thunkFetchWatchlists());
-      dispatch(fetchStocks());
       dispatch(fetchWatchlist());
+
+      if (!searchQuery) {
+        dispatch(fetchStocks());
+      } else {
+        fetch(`/api/stocks/search?q=${encodeURIComponent(searchQuery)}`)
+          .then((res) => res.json())
+          .then((data) => setSearchResults(data))
+          .catch((err) => console.error("Failed to fetch search results:", err));
+      }
     }
-  }, [dispatch, sessionUser]);
+  }, [dispatch, sessionUser, searchQuery]);
   //NEW: Set default selectedStock
   useEffect(() => {
     if (!selectedStock && stocks.length > 0) {
@@ -237,55 +245,94 @@ function Trade() {
       <div className="trade-container">
         <h1>Trade Stocks</h1>
         {sessionUser ? (
+  <>
+    {searchQuery ? (
+      <>
+        <h2>Search Results for "{searchQuery}"</h2>
+        {searchResults.length > 0 ? (
           <table className="trade-table">
             <thead>
               <tr>
+                <th>Symbol</th>
                 <th>Name</th>
                 <th>Price</th>
-                <th>% Change</th>
-                <th>Features</th>
-                <th>% Change</th>
-                <th>Open</th>
-                <th>Prev Close</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {stocks.map((stock) => (
+              {searchResults.map((stock) => (
                 <tr
                   key={stock.ticker}
                   onClick={() => setSelectedStock(stock)}
                   className={
-                    selectedStock?.ticker === stock.ticker ? "active-row" : ""
+                    selectedStock?.ticker === stock.ticker
+                      ? "active-row"
+                      : ""
                   }
                 >
                   <td>{stock.ticker}</td>
+                  <td>{stock.name}</td>
                   <td>${stock.price.toFixed(2)}</td>
-                  <td>{stock.change}</td>
-                  <td>
-                    {isStockInWatchlist(stock.ticker) ? (
-                      <button
-                        className="remove-from-watchlist"
-                        onClick={() => handleRemoveFromWatchlist(stock)}
-                      >
-                        Remove from Watchlist
-                      </button>
-                    ) : (
-                      <button
-                        className="add-to-watchlist"
-                        onClick={() => openWatchlistModal(stock)}
-                      >
-                        Add to Watchlist
-                      </button>
-                    )}
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p>Please log in to view and trade stocks.</p>
+          <p>No results found.</p>
         )}
+      </>
+    ) : (
+      <table className="trade-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>% Change</th>
+            <th>Features</th>
+            <th>% Change</th>
+            <th>Open</th>
+            <th>Prev Close</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stocks.map((stock) => (
+            <tr
+              key={stock.ticker}
+              onClick={() => setSelectedStock(stock)}
+              className={
+                selectedStock?.ticker === stock.ticker ? "active-row" : ""
+              }
+            >
+              <td>{stock.ticker}</td>
+              <td>${stock.price.toFixed(2)}</td>
+              <td>{stock.change}</td>
+              <td>
+                {isStockInWatchlist(stock.ticker) ? (
+                  <button
+                    className="remove-from-watchlist"
+                    onClick={() => handleRemoveFromWatchlist(stock)}
+                  >
+                    Remove from Watchlist
+                  </button>
+                ) : (
+                  <button
+                    className="add-to-watchlist"
+                    onClick={() => openWatchlistModal(stock)}
+                  >
+                    Add to Watchlist
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+  </>
+) : (
+  <p>Please log in to view and trade stocks.</p>
+)}
+
       </div>
 
       <div
