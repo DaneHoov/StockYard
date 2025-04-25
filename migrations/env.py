@@ -1,9 +1,12 @@
 import logging
 from logging.config import fileConfig
-
+import os
 from flask import current_app
 
 from alembic import context
+
+environment = os.getenv('FLASK_ENV')
+SCHEMA = os.environ.get('SCHEMA')
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -102,6 +105,9 @@ def run_migrations_online():
             target_metadata=get_metadata(),
             **conf_args
         )
+# Create a schema (only in production)
+        if environment == 'production':
+            connection.execute(f'CREATE SCHEMA IF NOT EXISTS {SCHEMA}')
 
         with context.begin_transaction():
             context.run_migrations()

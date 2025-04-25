@@ -9,7 +9,7 @@ def seed_portfolios():
 
 def undo_portfolios():
     if environment == "production":
-        db.session.execute("TRUNCATE TABLE stockyard_schema.portfolios RESTART IDENTITY CASCADE;")
+        db.session.execute(f"TRUNCATE table {SCHEMA}.portfolios RESTART IDENTITY CASCADE;")
     else:
         db.session.execute(text("DELETE FROM portfolios"))
     db.session.commit()
