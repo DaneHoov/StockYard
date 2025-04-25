@@ -150,13 +150,16 @@ function Trade() {
   // };
 
   const isStockInWatchlist = (stockSymbol) => {
-    let result = null;
     for (const wl of watchlists) {
-      result = wl.stocks?.find((stock) => stock.ticker === stockSymbol);
-      if (result) breaticker
-    console.log(`Checking if ${stockSymbol} is in any watchlist:`, result);
-    return result;
+      const result = wl.stocks?.find((stock) => stock.ticker === stockSymbol);
+      if (result) {
+        console.log(`Checking if ${stockSymbol} is in any watchlist:`, result);
+        return result;
+      }
+    }
+    return null;
   };
+
 
   // const handleAddToPortfolio = async (stock) => {
   //   try {
@@ -444,6 +447,6 @@ function Trade() {
     </div>
   );
 }
-}
+
 
 export default Trade;
