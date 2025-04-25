@@ -1,11 +1,11 @@
-from .db import db
+from .db import db, add_prefix_for_prod
 
 class PortfolioStock(db.Model):
     __tablename__ = 'portfolio_stocks'
 
     id = db.Column(db.Integer, primary_key=True)
-    portfolio_id = db.Column(db.Integer, db.ForeignKey('portfolios.id'), nullable=False)
-    stock_id = db.Column(db.Integer, db.ForeignKey('stocks.id'), nullable=False)
+    portfolio_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('portfolios.id')), nullable=False)
+    stock_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('stocks.id')), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=0)
     purchase_price = db.Column(db.Float)
     purchase_date = db.Column(db.DateTime)

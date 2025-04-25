@@ -1,13 +1,13 @@
-from .db import db
+from .db import db, add_prefix_for_prod
 from datetime import datetime
 
 class Transaction(db.Model):
     __tablename__ = 'transactions'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    portfolio_id = db.Column(db.Integer, db.ForeignKey('portfolios.id'), nullable=False)
-    stock_id = db.Column(db.Integer, db.ForeignKey('stocks.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), nullable=False)
+    portfolio_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('portfolios.id')), nullable=False)
+    stock_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('stocks.id')), nullable=False)
     transaction_type = db.Column(db.String(10), nullable=False)  # 'buy' or 'sell'
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)  # Price per share
