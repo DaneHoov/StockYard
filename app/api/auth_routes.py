@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_login import current_user, login_user, logout_user
-from app.models import User, db
+from app.models import User, db, Portfolio
 from app.forms import LoginForm
 from app.forms import SignUpForm
 
@@ -13,7 +13,10 @@ def authenticate():
     Authenticates a user.
     """
     if current_user.is_authenticated:
-        return current_user.to_dict()
+        user = current_user.to_dict()
+        portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+        user['portfolio_id'] = portfolio.id if portfolio else None
+        return user
     return {'errors': {'message': 'Unauthorized'}}, 401
 
 
@@ -80,7 +83,17 @@ def sign_up():
     user = User(username=phone, email=f"{phone}@demo.com", phone=phone, password="defaultpassword123")
     db.session.add(user)
     db.session.commit()
+
+    # Create a portfolio for the new user
+    portfolio = Portfolio(user_id=user.id, balance=10000.0)
+    db.session.add(portfolio)
+    db.session.commit()
+
     login_user(user)
+
+    user_data = user.to_dict()
+    user_data['portfolio'] = portfolio.to_dict_basic()
+
     return user.to_dict()
 
 @auth_routes.route('/send-code', methods=['POST'])
