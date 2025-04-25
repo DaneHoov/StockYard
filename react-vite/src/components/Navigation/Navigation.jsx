@@ -1,25 +1,32 @@
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import ProfileButton from "./ProfileButton";
-import "./Navigation.css";
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import ProfileButton from './ProfileButton';
+import './Navigation.css';
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
   const location = useLocation();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
+  const queryParams = new URLSearchParams(location.search);
+  const searchParam = queryParams.get('search') || '';
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    setSearchQuery(searchParam);
+  }, [searchParam]);
+
 
   const isAuthPage =
-    location.pathname === "/login" || location.pathname === "/signup";
-    const isTradePage = location.pathname === "/trade";
+    location.pathname === '/login' || location.pathname === '/signup';
+  const isTradePage = location.pathname === '/trade';
 
-    const handleSearch = (e) => {
-      e.preventDefault();
-      if (searchQuery.trim()) {
-        navigate(`/trade?search=${encodeURIComponent(searchQuery.trim())}`);
-      }
-    };
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/trade?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
     <div>
@@ -28,7 +35,7 @@ function Navigation({ isLoaded }) {
           <NavLink to="/" className="home-logo">
             <i
               className="fa-solid fa-piggy-bank"
-              style={{ fontSize: "24px", color: "#91c274", marginLeft: "10px" }}
+              style={{ fontSize: '24px', color: '#91c274', marginLeft: '10px' }}
             ></i>
           </NavLink>
           <NavLink to="/" className="title">
