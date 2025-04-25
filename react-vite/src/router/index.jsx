@@ -8,6 +8,7 @@ import TermsConditions from "../components/TermsConditionsPage/TermsConditions";
 import PrivacyPolicy from "../components/PrivacyPolicyPage/PrivacyPolicy";
 import Layout from "./Layout";
 import WatchlistList from "../components/WatchlistPage/WatchlistList";
+import SearchResults from "../components/SearchResultsPage/SearchResults";
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
         ),
       },
       { path: "/trade", element: <Trade /> },
+      { path: "/search", element: <SearchResults /> },
       { path: "/watchlist", element: <WatchlistList /> },
       {
         path: "/watchlist/:watchlistId",

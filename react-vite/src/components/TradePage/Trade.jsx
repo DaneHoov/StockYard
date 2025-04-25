@@ -19,6 +19,7 @@ function Trade() {
   const watchlists = useSelector((state) => state.session.watchlists);
   const sessionUser = useSelector((state) => state.session.user);
 
+  const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null);
   const [selectedSide, setSelectedSide] = useState("Buy");
@@ -29,6 +30,7 @@ function Trade() {
   const [isWatchlistModalOpen, setIsWatchlistModalOpen] = useState(false);
   const [selectedWatchlist, setSelectedWatchlist] = useState("");
   const [stockToAdd, setStockToAdd] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     if (sessionUser) {
@@ -244,6 +246,12 @@ function Trade() {
     <div className="trade-page">
       <div className="trade-container">
         <h1>Trade Stocks</h1>
+        <input
+          type="text"
+          placeholder="Search stocks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
         {sessionUser ? (
           <table className="trade-table">
             <thead>
@@ -259,7 +267,7 @@ function Trade() {
               </tr>
             </thead>
             <tbody>
-              {stocks.map((stock) => (
+            {(searchQuery ? searchResults : stocks).map((stock) => (
                 <tr
                   key={stock.ticker}
                   onClick={() => setSelectedStock(stock)}

@@ -76,7 +76,6 @@ body {
   text-decoration: none;
   transition: all 0.2s ease-in-out;
   font-family: "Montserrat Alternates", sans-serif;
-  margin-right: 10px;
 }
 
 
@@ -107,9 +106,30 @@ body.home-page {
   align-items: center;
   gap: 5px;
   background-color: white;
-  border-radius: 5px;
-  padding: 4px 8px;
-  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 5px 15px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.search-bar:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: 25px;
+  background-color: transparent;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+  font-style: italic;
 }
 
 .search-bar input {
@@ -123,11 +143,18 @@ body.home-page {
   background-color: #2ecc71;
   color: white;
   border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
+  padding: 8px 12px;
+  border-radius: 25px;
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .search-bar button:hover {
   background-color: #27ae60;
+  transform: scale(1.05);
+}
+
+.search-bar button i {
+  font-size: 16px;
 }
