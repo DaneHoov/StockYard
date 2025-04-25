@@ -29,7 +29,8 @@
 FROM python:3.9.18-alpine3.18
 
 RUN apk add build-base
-RUN apt-get update && apt-get install -y postgresql-client
+# RUN apt-get update && apt-get install -y postgresql-client
+RUN apk add --no-cache postgresql-client
 RUN apk add postgresql-dev gcc python3-dev musl-dev
 
 WORKDIR /var/www
