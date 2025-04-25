@@ -1,4 +1,4 @@
-from ..models import db, add_prefix_for_prod
+from .db import db, add_prefix_for_prod
 
 class WatchlistStock(db.Model):
     __tablename__ = 'watchlist_stocks'
