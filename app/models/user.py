@@ -1,8 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from .db import db, environment, SCHEMA
-from .portfolio import Portfolio
-from .watchlist import Watchlist
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -42,3 +40,6 @@ class User(db.Model, UserMixin):
             'watchlists': [watchlist.to_dict_basic() for watchlist in self.watchlists],
             'transactions': [transaction.to_dict_basic() for transaction in self.transactions]
         }
+
+from .portfolio import Portfolio
+from .watchlist import Watchlist
