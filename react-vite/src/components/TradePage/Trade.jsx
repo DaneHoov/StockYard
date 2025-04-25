@@ -33,10 +33,18 @@ function Trade() {
   useEffect(() => {
     if (sessionUser) {
       dispatch(thunkFetchWatchlists());
-      dispatch(fetchStocks());
       dispatch(fetchWatchlist());
+
+      if (!searchQuery) {
+        dispatch(fetchStocks());
+      } else {
+        fetch(`/api/stocks/search?q=${encodeURIComponent(searchQuery)}`)
+          .then((res) => res.json())
+          .then((data) => setSearchResults(data))
+          .catch((err) => console.error("Failed to fetch search results:", err));
+      }
     }
-  }, [dispatch, sessionUser]);
+  }, [dispatch, sessionUser, searchQuery]);
   //NEW: Set default selectedStock
   useEffect(() => {
     if (!selectedStock && stocks.length > 0) {
