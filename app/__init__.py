@@ -1,5 +1,9 @@
 import os
+<<<<<<< HEAD
 from flask import Flask, render_template, request, session, redirect, send_from_directory, jsonify
+=======
+from flask import Flask, render_template, jsonify, request, session, redirect, send_from_directory
+>>>>>>> anth
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
