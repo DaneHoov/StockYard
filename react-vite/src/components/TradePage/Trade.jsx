@@ -204,15 +204,26 @@ function Trade() {
 
   const handleSellStock = async (stock) => {
     try {
-      const quantity = prompt(`Enter the quantity of ${stock.ticker} to sell:`);
+      console.log("sessionUser:", sessionUser); // Debugging log
+      const portfolioId = sessionUser?.portfolios?.[0]?.id;
+      console.log("portfolioId:", portfolioId); // Debugging log
+
+      if (!portfolioId) {
+        alert("Portfolio ID is missing. Please try again.");
+        return;
+      }
+
       if (!quantity || isNaN(quantity) || quantity <= 0) {
         alert("Invalid quantity. Please enter a positive number.");
         return;
       }
+
+
       await dispatch(
         thunkRemoveFromPortfolio({
           ticker: stock.ticker,
           quantity: parseInt(quantity),
+          portfolioId,
         })
       );
       alert(`${quantity} shares of ${stock.ticker} have been sold.`);

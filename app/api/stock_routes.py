@@ -158,9 +158,16 @@ def delete_stock_from_portfolio(portfolio_id, stock_id):
 @stock_routes.route('/portfolio/<string:ticker>', methods=['DELETE'])
 @login_required
 def remove_from_portfolio(ticker):
-    portfolio_id = request.args.get('portfolio_id')  # Ensure you pass the portfolio ID
+    portfolio_id = request.args.get('portfolio_id')
+    quantity_to_sell = request.json.get('quantity')
+
     if not portfolio_id:
         return {"error": "Portfolio ID is required"}, 400
+
+    if not quantity_to_sell or quantity_to_sell <= 0:
+        return {"error": "Invalid quantity"}, 400
+
+    print(f"Removing stock with ticker: {ticker} from portfolio ID: {portfolio_id}")
 
     # Query the PortfolioStock model to find the stock in the portfolio
     portfolio_stock = PortfolioStock.query.join(Stock).filter(
@@ -169,8 +176,19 @@ def remove_from_portfolio(ticker):
     ).first()
 
     if portfolio_stock:
-        db.session.delete(portfolio_stock)
+        if portfolio_stock.quantity > quantity_to_sell:
+            # Decrement the quantity
+            portfolio_stock.quantity -= quantity_to_sell
+            print(f"Decremented quantity of {ticker} to {portfolio_stock.quantity}")
+        elif portfolio_stock.quantity == quantity_to_sell:
+            # Remove the stock if the quantity matches
+            print(f"Removing stock {ticker} completely from portfolio")
+            db.session.delete(portfolio_stock)
+        else:
+            return {"error": "Not enough shares to sell"}, 400
+
         db.session.commit()
-        return {"message": "Stock removed from portfolio"}, 200
+        return {"message": f"Sold {quantity_to_sell} shares of {ticker}"}, 200
     else:
+        print(f"Stock not found in portfolio for ticker: {ticker} and portfolio ID: {portfolio_id}")
         return {"error": "Stock not found in portfolio"}, 404
