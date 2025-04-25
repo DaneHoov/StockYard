@@ -114,6 +114,7 @@
   margin: 0.5rem 0;
   color: #007bff;
   cursor: pointer;
+  padding-top: 10px;
 }
 
 .signup-prompt {
