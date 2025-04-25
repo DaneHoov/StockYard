@@ -7,19 +7,13 @@ import "./Navigation.css";
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
   const location = useLocation();
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
+
+
 
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/signup";
     const isTradePage = location.pathname === "/trade";
 
-    const handleSearch = (e) => {
-      e.preventDefault();
-      if (searchQuery.trim()) {
-        navigate(`/trade?search=${encodeURIComponent(searchQuery.trim())}`);
-      }
-    };
 
   return (
     <div>
@@ -37,19 +31,6 @@ function Navigation({ isLoaded }) {
         </div>
         {!isAuthPage && (
           <div className="nav-right">
-            {isTradePage && (
-              <form className="search-bar" onSubmit={handleSearch}>
-                <input
-                  type="text"
-                  placeholder="Search stocks..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button type="submit">
-                  <i className="fa fa-search"></i>
-                </button>
-              </form>
-            )}
 
             {sessionUser ? (
               <>
