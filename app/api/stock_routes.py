@@ -7,19 +7,19 @@ stock_routes = Blueprint('stocks', __name__)
 @stock_routes.route('/')
 def get_stocks():
     stocks = [
-        {"id": 1, "symbol": "AAPL", "price": 175.64, "change": "+1.35%"},
-        {"id": 2, "symbol": "GOOG", "price": 135.12, "change": "-0.90%"},
-        {"id": 3, "symbol": "MSFT", "price": 320.45, "change": "+0.98%"},
-        {"id": 4, "symbol": "AMZN", "price": 135.67, "change": "+1.08%"},
-        {"id": 5, "symbol": "NVDA", "price": 450.23, "change": "+1.28%"},
-        {"id": 6, "symbol": "TSLA", "price": 245.12, "change": "-1.39%"},
-        {"id": 7, "symbol": "PLTR", "price": 17.45, "change": "+4.00%"},
+        {"id": 1, "ticker": "AAPL", "price": 175.64, "change": "+1.35%"},
+        {"id": 2, "ticker": "GOOG", "price": 135.12, "change": "-0.90%"},
+        {"id": 3, "ticker": "MSFT", "price": 320.45, "change": "+0.98%"},
+        {"id": 4, "ticker": "AMZN", "price": 135.67, "change": "+1.08%"},
+        {"id": 5, "ticker": "NVDA", "price": 450.23, "change": "+1.28%"},
+        {"id": 6, "ticker": "TSLA", "price": 245.12, "change": "-1.39%"},
+        {"id": 7, "ticker": "PLTR", "price": 17.45, "change": "+4.00%"},
     ]
     return jsonify(stocks)
 
-@stock_routes.route('/<string:symbol>', methods=['GET'])
-def get_stock_details(symbol):
-    stock = Stock.query.filter_by(ticker=symbol.upper()).first()
+@stock_routes.route('/<string:ticker>', methods=['GET'])
+def get_stock_details(ticker):
+    stock = Stock.query.filter_by(ticker=ticker.upper()).first()
     if not stock:
         return jsonify({'error': 'Stock not found'}), 404
 
@@ -155,9 +155,9 @@ def delete_stock_from_portfolio(portfolio_id, stock_id):
     db.session.commit()
     return jsonify({'message': 'Stock removed from portfolio and refunded'})
 
-@stock_routes.route('/portfolio/<string:symbol>', methods=['DELETE'])
+@stock_routes.route('/portfolio/<string:ticker>', methods=['DELETE'])
 @login_required
-def remove_from_portfolio(symbol):
+def remove_from_portfolio(ticker):
     portfolio_id = request.args.get('portfolio_id')  # Ensure you pass the portfolio ID
     if not portfolio_id:
         return {"error": "Portfolio ID is required"}, 400
@@ -165,7 +165,7 @@ def remove_from_portfolio(symbol):
     # Query the PortfolioStock model to find the stock in the portfolio
     portfolio_stock = PortfolioStock.query.join(Stock).filter(
         PortfolioStock.portfolio_id == portfolio_id,
-        Stock.ticker == symbol
+        Stock.ticker == ticker
     ).first()
 
     if portfolio_stock:

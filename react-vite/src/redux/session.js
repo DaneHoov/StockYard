@@ -48,10 +48,10 @@ const setWatchlist = (watchlist) => ({
 //   type: ADD_TO_WATCHLIST,
 //   payload: stock,
 // });
-const removeFromWatchlist = (stock) => ({
-  type: REMOVE_FROM_WATCHLIST,
-  payload: stock,
-});
+// const removeFromWatchlist = (stock) => ({
+//   type: REMOVE_FROM_WATCHLIST,
+//   payload: stock,
+// });
 
 const addToPortfolio = (stock) => ({
   type: ADD_TO_PORTFOLIO,
@@ -197,15 +197,15 @@ export const fetchWatchlist = () => async (dispatch, getState) => {
 };
 
 export const thunkAddToWatchlist =
-  ({ stockId, watchlistId, symbol }) =>
+  ({ stockId, watchlistId, ticker }) =>
   async (dispatch, getState) => {
     const { user } = getState().session;
     if (!user) return;
 
     let resolvedStockId = stockId;
 
-    if (!resolvedStockId && symbol) {
-      const response = await fetch(`/api/stocks/${symbol}`);
+    if (!resolvedStockId && ticker) {
+      const response = await fetch(`/api/stocks/${ticker}`);
       if (response.ok) {
         const data = await response.json();
         resolvedStockId = data.id;
@@ -246,27 +246,39 @@ export const thunkAddToWatchlist =
   };
 
 export const thunkRemoveFromWatchlist =
-  (stockId) => async (dispatch, getState) => {
-    if (!stockId) {
-      console.error("Missing stock ID for removal!");
-      return;
-    }
-
-    console.log("Removing stock with ID:", stockId); // Debugging log
-    const { user } = getState().session;
-    if (!user) return;
-
-    const response = await fetch(`/api/stocks/watchlist/${stockId}`, {
+  (stockTicker, watchlistId) => async (dispatch) => {
+    const response = await fetch(`/api/watchlist/${watchlistId}/remove`, {
       method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ ticker: stockTicker }),
     });
     if (response.ok) {
-      dispatch(removeFromWatchlist(stockId));
-    } else {
-      const error = await response.json();
-      console.error("Failed to remove from watchlist:", error);
-      throw new Error(error.error || "Failed to remove from watchlist.");
+      await dispatch(thunkFetchWatchlist(watchlistId)); // Refresh the watchlist
     }
   };
+// export const thunkRemoveFromWatchlist =
+//   (stockId) => async (dispatch, getState) => {
+//     if (!stockId) {
+//       console.error("Missing stock ID for removal!");
+//       return;
+//     }
+
+//     console.log("Removing stock with ID:", stockId); // Debugging log
+//     const { user } = getState().session;
+//     if (!user) return;
+
+//     const response = await fetch(`/api/stocks/watchlist/${stockId}`, {
+//       method: "DELETE",
+//     });
+//     if (response.ok) {
+//       dispatch(removeFromWatchlist(stockId));
+//     } else {
+//       const error = await response.json();
+//       console.error("Failed to remove from watchlist:", error);
+//       throw new Error(error.error || "Failed to remove from watchlist.");
+//     }
+//   };
 
 export const thunkFetchPortfolio = (userId) => async (dispatch) => {
   const response = await fetch(`/api/portfolio/${userId}`);
@@ -301,7 +313,7 @@ export const thunkAddToPortfolio = (stock) => async (dispatch, getState) => {
   if (response.ok) {
     dispatch(addToPortfolio(stock));
     alert(
-      `${stock.quantity} shares of ${stock.symbol} have been added to your portfolio.`
+      `${stock.quantity} shares of ${stock.ticker} have been added to your portfolio.`
     );
   } else {
     const error = await response.json();
@@ -404,7 +416,7 @@ function sessionReducer(state = sessionInitialState, action) {
       return {
         ...state,
         portfolio: state.portfolio.filter(
-          (stock) => stock.symbol !== action.payload
+          (stock) => stock.ticker !== action.payload
         ),
       };
     default:

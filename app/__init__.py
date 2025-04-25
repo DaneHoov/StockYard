@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template, request, session, redirect, send_from_directory
+from flask import Flask, render_template, request, session, redirect, send_from_directory, jsonify
+from flask import Flask, render_template, jsonify, request, session, redirect, send_from_directory
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -97,13 +98,13 @@ def react_root(path):
 
 
 @app.errorhandler(404)
-def not_found(e):
+def not_found(_):
     if request.path.startswith("/api/"):
         return jsonify({'error': 'Not found'}), 404
     return app.send_static_file('index.html')
 
 @app.errorhandler(500)
-def internal_error(e):
+def internal_error(_):
     if request.path.startswith("/api/"):
         return jsonify({'error': 'Internal server error'}), 500
     return app.send_static_file('index.html')
