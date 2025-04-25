@@ -86,11 +86,15 @@ def api_help():
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def serve_react_app(path):
-    if path != "" and os.path.exists(f"react-vite/dist/{path}"):
-        return send_from_directory("react-vite/dist", path)
-    else:
-        return send_from_directory("react-vite/dist", "index.html")
+def react_root(path):
+    """
+    This route will direct to the public directory in our
+    react builds in the production environment for favicon
+    or index.html requests
+    """
+    if path == 'favicon.ico':
+        return send_from_directory(os.path.join(app.root_path, 'public'), 'favicon.ico')
+    return app.send_static_file('index.html')
 
 
 @app.errorhandler(404)
