@@ -9,7 +9,7 @@ Create Date: 2025-04-25 16:53:19.260100
 """
 from alembic import op
 import sqlalchemy as sa
-
+op.execute("CREATE SCHEMA IF NOT EXISTS stockyard_schema")
 
 # revision identifiers, used by Alembic.
 revision = '6d5fade3aa15'
