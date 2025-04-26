@@ -35,7 +35,7 @@ def upgrade():
     sa.UniqueConstraint('ticker')
     )
     if environment == "production":
-        op.execute(f"ALTER TABLE stocks SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE public.stocks SET SCHEMA {SCHEMA};")
 
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -49,7 +49,7 @@ def upgrade():
     sa.UniqueConstraint('username')
     )
     if environment == "production":
-        op.execute(f"ALTER TABLE users SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE public.users SET SCHEMA {SCHEMA};")
 
     op.create_table('portfolios',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -59,7 +59,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     if environment == "production":
-        op.execute(f"ALTER TABLE portfolios SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE public.portfolios SET SCHEMA {SCHEMA};")
 
     op.create_table('watchlists',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -70,7 +70,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     if environment == "production":
-        op.execute(f"ALTER TABLE watchlists SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE public.watchlists SET SCHEMA {SCHEMA};")
 
     op.create_table('portfolio_stocks',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -84,7 +84,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     if environment == "production":
-        op.execute(f"ALTER TABLE portfolio_stocks SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE public.portfolio_stocks SET SCHEMA {SCHEMA};")
 
     op.create_table('transactions',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -103,7 +103,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     if environment == "production":
-        op.execute(f"ALTER TABLE transactions SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE public.transactions SET SCHEMA {SCHEMA};")
 
     op.create_table('watchlist_stocks',
     sa.Column('watchlist_id', sa.Integer(), nullable=False),
@@ -115,7 +115,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('watchlist_id', 'stock_id')
     )
     if environment == "production":
-        op.execute(f"ALTER TABLE watchlist_stocks SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE public.watchlist_stocks SET SCHEMA {SCHEMA};")
 
     # ### end Alembic commands ###
 
