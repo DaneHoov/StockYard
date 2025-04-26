@@ -1,4 +1,4 @@
-from app.models import db, PortfolioStock
+from app.models import db, PortfolioStock, environment, SCHEMA
 from datetime import datetime
 from sqlalchemy.sql import text
 
