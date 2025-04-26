@@ -1,10 +1,10 @@
-from ..models import db
+from .db import db, add_prefix_for_prod
 
 class WatchlistStock(db.Model):
     __tablename__ = 'watchlist_stocks'
-    watchlist_id = db.Column(db.Integer, db.ForeignKey('watchlists.id'), primary_key=True)
-    stock_id = db.Column(db.Integer, db.ForeignKey('stocks.id'), primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    watchlist_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('watchlists.id')), primary_key=True)
+    stock_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('stocks.id')), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')))
 
     # Define relationships
     watchlist = db.relationship('Watchlist', back_populates='watchlist_stocks', overlaps="stocks,watchlists")

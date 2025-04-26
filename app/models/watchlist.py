@@ -1,10 +1,10 @@
-from .db import db
+from .db import db, add_prefix_for_prod
 
 class Watchlist(db.Model):
     __tablename__ = 'watchlists'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), nullable=False)
     name = db.Column(db.String(50), nullable=False)
     deleted = db.Column(db.Boolean, default=False, nullable=False)
 

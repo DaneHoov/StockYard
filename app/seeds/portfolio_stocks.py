@@ -1,4 +1,4 @@
-from app.models import db, PortfolioStock
+from app.models import db, PortfolioStock, environment, SCHEMA
 from datetime import datetime
 from sqlalchemy.sql import text
 
@@ -22,5 +22,10 @@ def seed_portfolio_stocks():
     db.session.commit()
 
 def undo_portfolio_stocks():
-    db.session.execute(text("DELETE FROM portfolio_stocks"))
+    if environment == "production":
+        db.session.execute(f"TRUNCATE table {SCHEMA}.portfolios_stocks RESTART IDENTITY CASCADE;")
+    else:
+        db.session.execute(text("DELETE FROM portfolios_stocks"))
     db.session.commit()
+    # db.session.execute(text("DELETE FROM portfolio_stocks"))
+    # db.session.commit()

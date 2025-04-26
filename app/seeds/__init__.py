@@ -14,11 +14,12 @@ seed_commands = AppGroup('seed')
 
 @seed_commands.command('all')
 def seed():
-    undo_transactions()
-    undo_portfolio_stocks()
-    undo_portfolios()
-    undo_stocks()
-    undo_users()
+    if environment == "production":
+        undo_transactions()
+        undo_portfolio_stocks()
+        undo_portfolios()
+        undo_stocks()
+        undo_users()
 
     seed_users()
     seed_stocks()
