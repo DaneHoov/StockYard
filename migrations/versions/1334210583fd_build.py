@@ -22,6 +22,9 @@ depends_on = None
 def upgrade():
     schema = SCHEMA if environment == "production" else None
 
+    def fk(ref):
+        return [f"{SCHEMA}.{ref}"] if environment == "production" else [ref]
+
     op.create_table('users',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('username', sa.String(length=40), nullable=False),
@@ -51,7 +54,7 @@ def upgrade():
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('balance', sa.Float(), nullable=False),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+        sa.ForeignKeyConstraint(['user_id'], fk('users.id')),
         sa.PrimaryKeyConstraint('id'),
         schema=schema
     )
@@ -61,7 +64,7 @@ def upgrade():
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('name', sa.String(length=50), nullable=False),
         sa.Column('deleted', sa.Boolean(), nullable=False),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+        sa.ForeignKeyConstraint(['user_id'], fk('users.id')),
         sa.PrimaryKeyConstraint('id'),
         schema=schema
     )
@@ -73,8 +76,8 @@ def upgrade():
         sa.Column('quantity', sa.Integer(), nullable=False),
         sa.Column('purchase_price', sa.Float(), nullable=True),
         sa.Column('purchase_date', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['portfolio_id'], ['portfolios.id'], ),
-        sa.ForeignKeyConstraint(['stock_id'], ['stocks.id'], ),
+        sa.ForeignKeyConstraint(['portfolio_id'], fk('portfolios.id')),
+        sa.ForeignKeyConstraint(['stock_id'], fk('stocks.id')),
         sa.PrimaryKeyConstraint('id'),
         schema=schema
     )
@@ -90,9 +93,9 @@ def upgrade():
         sa.Column('total_value', sa.Float(), nullable=False),
         sa.Column('status', sa.String(length=20), nullable=False),
         sa.Column('date', sa.DateTime(), nullable=False),
-        sa.ForeignKeyConstraint(['portfolio_id'], ['portfolios.id'], ),
-        sa.ForeignKeyConstraint(['stock_id'], ['stocks.id'], ),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+        sa.ForeignKeyConstraint(['user_id'], fk('users.id')),
+        sa.ForeignKeyConstraint(['portfolio_id'], fk('portfolios.id')),
+        sa.ForeignKeyConstraint(['stock_id'], fk('stocks.id')),
         sa.PrimaryKeyConstraint('id'),
         schema=schema
     )
@@ -101,9 +104,9 @@ def upgrade():
         sa.Column('watchlist_id', sa.Integer(), nullable=False),
         sa.Column('stock_id', sa.Integer(), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=True),
-        sa.ForeignKeyConstraint(['stock_id'], ['stocks.id'], ),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-        sa.ForeignKeyConstraint(['watchlist_id'], ['watchlists.id'], ),
+        sa.ForeignKeyConstraint(['watchlist_id'], fk('watchlists.id')),
+        sa.ForeignKeyConstraint(['stock_id'], fk('stocks.id')),
+        sa.ForeignKeyConstraint(['user_id'], fk('users.id')),
         sa.PrimaryKeyConstraint('watchlist_id', 'stock_id'),
         schema=schema
     )
