@@ -20,9 +20,7 @@ depends_on = None
 
 
 def upgrade():
-    if environment == "production":
-        op.execute(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA};")
-
+    schema = SCHEMA if environment == "production" else None
 
     op.create_table('users',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -33,10 +31,9 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('email'),
         sa.UniqueConstraint('phone'),
-        sa.UniqueConstraint('username')
+        sa.UniqueConstraint('username'),
+        schema=schema
     )
-    if environment == "production":
-        op.execute(f"ALTER TABLE public.users SET SCHEMA {SCHEMA};")
 
     op.create_table('stocks',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -46,20 +43,18 @@ def upgrade():
         sa.Column('price', sa.Float(), nullable=False),
         sa.Column('sector', sa.String(length=50), nullable=False),
         sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('ticker')
+        sa.UniqueConstraint('ticker'),
+        schema=schema
     )
-    if environment == "production":
-        op.execute(f"ALTER TABLE public.stocks SET SCHEMA {SCHEMA};")
 
     op.create_table('portfolios',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('balance', sa.Float(), nullable=False),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-        sa.PrimaryKeyConstraint('id')
+        sa.PrimaryKeyConstraint('id'),
+        schema=schema
     )
-    if environment == "production":
-        op.execute(f"ALTER TABLE public.portfolios SET SCHEMA {SCHEMA};")
 
     op.create_table('watchlists',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -67,10 +62,9 @@ def upgrade():
         sa.Column('name', sa.String(length=50), nullable=False),
         sa.Column('deleted', sa.Boolean(), nullable=False),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-        sa.PrimaryKeyConstraint('id')
+        sa.PrimaryKeyConstraint('id'),
+        schema=schema
     )
-    if environment == "production":
-        op.execute(f"ALTER TABLE public.watchlists SET SCHEMA {SCHEMA};")
 
     op.create_table('portfolio_stocks',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -81,10 +75,9 @@ def upgrade():
         sa.Column('purchase_date', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(['portfolio_id'], ['portfolios.id'], ),
         sa.ForeignKeyConstraint(['stock_id'], ['stocks.id'], ),
-        sa.PrimaryKeyConstraint('id')
+        sa.PrimaryKeyConstraint('id'),
+        schema=schema
     )
-    if environment == "production":
-        op.execute(f"ALTER TABLE public.portfolio_stocks SET SCHEMA {SCHEMA};")
 
     op.create_table('transactions',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -100,10 +93,9 @@ def upgrade():
         sa.ForeignKeyConstraint(['portfolio_id'], ['portfolios.id'], ),
         sa.ForeignKeyConstraint(['stock_id'], ['stocks.id'], ),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-        sa.PrimaryKeyConstraint('id')
+        sa.PrimaryKeyConstraint('id'),
+        schema=schema
     )
-    if environment == "production":
-        op.execute(f"ALTER TABLE public.transactions SET SCHEMA {SCHEMA};")
 
     op.create_table('watchlist_stocks',
         sa.Column('watchlist_id', sa.Integer(), nullable=False),
@@ -112,10 +104,10 @@ def upgrade():
         sa.ForeignKeyConstraint(['stock_id'], ['stocks.id'], ),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.ForeignKeyConstraint(['watchlist_id'], ['watchlists.id'], ),
-        sa.PrimaryKeyConstraint('watchlist_id', 'stock_id')
+        sa.PrimaryKeyConstraint('watchlist_id', 'stock_id'),
+        schema=schema
     )
-    if environment == "production":
-        op.execute(f"ALTER TABLE public.watchlist_stocks SET SCHEMA {SCHEMA};")
+
 
 
 
