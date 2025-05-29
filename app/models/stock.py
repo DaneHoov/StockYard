@@ -13,7 +13,7 @@ class Stock(db.Model):
 
     # Relationships
     transactions = db.relationship('Transaction', back_populates='stock')
-    portfolio_stocks = db.relationship('PortfolioStock', back_populates='stock')
+    portfolio_stocks = db.relationship('PortfolioStock', back_populates='stock', cascade="all, delete-orphan")
     watchlist_stocks = db.relationship('WatchlistStock', back_populates='stock')
     watchlists = db.relationship('Watchlist', secondary='watchlist_stocks', back_populates='stocks', overlaps="watchlist_stocks")
 
