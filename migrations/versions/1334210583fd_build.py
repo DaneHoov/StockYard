@@ -75,7 +75,7 @@ def upgrade():
     op.create_table('portfolio_stocks',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('portfolio_id', sa.Integer(), nullable=False),
-        sa.Column('stock_id', sa.Integer(), nullable=False),
+        sa.Column('stock_id', sa.Integer(),  sa.ForeignKey('stockyard_schema.stocks.id'), nullable=False),
         sa.Column('quantity', sa.Integer(), nullable=False),
         sa.Column('purchase_price', sa.Float(), nullable=True),
         sa.Column('purchase_date', sa.DateTime(), nullable=True),
