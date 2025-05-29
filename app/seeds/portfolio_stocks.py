@@ -23,9 +23,7 @@ def seed_portfolio_stocks():
 
 def undo_portfolio_stocks():
     if environment == "production":
-        db.session.execute(f"TRUNCATE table {SCHEMA}.portfolios_stocks RESTART IDENTITY CASCADE;")
+        db.session.execute(f"TRUNCATE table {SCHEMA}.portfolio_stocks RESTART IDENTITY CASCADE;")
     else:
-        db.session.execute(text("DELETE FROM portfolios_stocks"))
+        db.session.execute(text("DELETE FROM portfolio_stocks"))
     db.session.commit()
-    # db.session.execute(text("DELETE FROM portfolio_stocks"))
-    # db.session.commit()
