@@ -22,6 +22,9 @@ depends_on = None
 def upgrade():
     schema = SCHEMA if environment == "production" else None
 
+    if environment == "production":
+        op.execute(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA};")
+
     def fk(ref):
         return [f"{SCHEMA}.{ref}"] if environment == "production" else [ref]
 
