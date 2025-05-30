@@ -10,16 +10,8 @@ class PortfolioStock(db.Model):
     purchase_price = db.Column(db.Float)
     purchase_date = db.Column(db.DateTime)
 
-    portfolio = db.relationship(
-        'Portfolio',
-        back_populates='portfolio_stocks',
-        foreign_keys=[portfolio_id]
-    )
-    stock = db.relationship(
-        'Stock',
-        back_populates='portfolio_stocks',
-        foreign_keys=[stock_id]
-    )
+    portfolio = db.relationship('Portfolio', back_populates='portfolio_stocks')
+    stock = db.relationship('Stock', back_populates='portfolio_stocks')
 
     def to_dict(self):
         return {
