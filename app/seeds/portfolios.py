@@ -8,6 +8,7 @@ def seed_portfolios():
     db.session.commit()
 
 def undo_portfolios():
+    print(f"Environment: {environment}, Schema: {SCHEMA}")  # Debugging log
     if environment == "production":
         db.session.execute(f"TRUNCATE table {SCHEMA}.portfolios RESTART IDENTITY CASCADE;")
     else:

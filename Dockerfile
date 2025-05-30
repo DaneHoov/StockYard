@@ -71,4 +71,4 @@ COPY . .
 
 RUN flask db upgrade
 RUN flask seed all
-CMD gunicorn app:app
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
