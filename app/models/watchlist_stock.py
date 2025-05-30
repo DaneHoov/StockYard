@@ -1,12 +1,14 @@
-from .db import db, add_prefix_for_prod
+from .db import db, add_prefix_for_prod, environment, SCHEMA
 
 class WatchlistStock(db.Model):
     __tablename__ = 'watchlist_stocks'
+    if environment == "production":
+        __table_args__ = {'schema': SCHEMA}
+
     watchlist_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('watchlists.id')), primary_key=True)
     stock_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('stocks.id')), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')))
 
-    # Define relationships
     watchlist = db.relationship('Watchlist', back_populates='watchlist_stocks', overlaps="stocks,watchlists")
     stock = db.relationship('Stock', back_populates='watchlist_stocks', overlaps="stocks,watchlists")
 

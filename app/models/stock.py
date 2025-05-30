@@ -1,7 +1,9 @@
-from .db import db
+from .db import db, environment, SCHEMA
 
 class Stock(db.Model):
     __tablename__ = 'stocks'
+    if environment == "production":
+        __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
     ticker = db.Column(db.String(10), nullable=False, unique=True)
@@ -10,8 +12,6 @@ class Stock(db.Model):
     price = db.Column(db.Float, nullable=False)
     sector = db.Column(db.String(50), nullable=False)
 
-
-    # Relationships
     transactions = db.relationship('Transaction', back_populates='stock')
     portfolio_stocks = db.relationship('PortfolioStock', back_populates='stock', cascade="all, delete-orphan")
     watchlist_stocks = db.relationship('WatchlistStock', back_populates='stock')

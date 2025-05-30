@@ -1,24 +1,26 @@
-from .db import db, add_prefix_for_prod
+from .db import db, add_prefix_for_prod, environment, SCHEMA
 from datetime import datetime
+
 
 class Transaction(db.Model):
     __tablename__ = 'transactions'
+    if environment == "production":
+        __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), nullable=False)
     portfolio_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('portfolios.id')), nullable=False)
     stock_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('stocks.id')), nullable=False)
-    transaction_type = db.Column(db.String(10), nullable=False)  # 'buy' or 'sell'
+    transaction_type = db.Column(db.String(10), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float, nullable=False)  # Price per share
-    total_value = db.Column(db.Float, nullable=False)  # quantity * price
-    status = db.Column(db.String(20), nullable=False, default='pending')  # 'pending', 'completed', 'canceled'
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    price = db.Column(db.Float, nullable=False)
+    total_value = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(20), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
 
-    # Relationships
+    user = db.relationship('User', back_populates='transactions')
     portfolio = db.relationship('Portfolio', back_populates='transactions')
     stock = db.relationship('Stock', back_populates='transactions')
-    user = db.relationship('User', back_populates='transactions')
 
     def to_dict(self):
         return {
