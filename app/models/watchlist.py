@@ -12,7 +12,7 @@ class Watchlist(db.Model):
 
     user = db.relationship('User', back_populates='watchlists')
     watchlist_stocks = db.relationship('WatchlistStock', back_populates='watchlist', cascade='all, delete-orphan')
-    stocks = db.relationship('Stock', secondary='watchlist_stocks', back_populates='watchlists', overlaps="watchlist_stocks")
+    stocks = db.relationship('Stock', f'{SCHEMA}.watchlist_stocks' if environment == "production" else 'watchlist_stocks', back_populates='watchlists', overlaps="watchlist_stocks")
 
     def __repr__(self):
         return f'<Watchlist {self.id}>'
