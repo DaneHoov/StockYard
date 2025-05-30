@@ -15,7 +15,7 @@ class Stock(db.Model):
     transactions = db.relationship('Transaction', back_populates='stock')
     portfolio_stocks = db.relationship('PortfolioStock', back_populates='stock', cascade="all, delete-orphan")
     watchlist_stocks = db.relationship('WatchlistStock', back_populates='stock')
-    watchlists = db.relationship('Watchlist', secondary='watchlist_stocks', back_populates='stocks', overlaps="watchlist_stocks")
+    watchlists = db.relationship('Watchlist', f'{SCHEMA}.watchlist_stocks' if environment == "production" else 'watchlist_stocks', back_populates='stocks', overlaps="watchlist_stocks")
 
     def to_dict(self):
         return {
