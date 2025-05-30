@@ -1,4 +1,5 @@
 import logging
+import os
 from logging.config import fileConfig
 
 from flask import current_app
@@ -100,6 +101,8 @@ def run_migrations_online():
         context.configure(
             connection=connection,
             target_metadata=get_metadata(),
+            include_schemas=True,
+            version_table_schema=os.environ.get("SCHEMA"),
             **conf_args
         )
 
