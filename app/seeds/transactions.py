@@ -35,7 +35,7 @@ def seed_transactions():
             date=datetime(2023, 10, 2),
         )
         db.session.add_all([transaction1, transaction2])
-        db.session.commit()
+        # db.session.commit()
 
 
 def undo_transactions():

@@ -13,7 +13,7 @@ def seed_stocks():
     ]
 
     db.session.add_all(stocks)
-    db.session.commit()
+    # db.session.commit()
 
 def undo_stocks():
     if environment == "production":

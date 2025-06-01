@@ -23,7 +23,7 @@ def seed_portfolio_stocks():
             purchase_date=datetime(2023, 10, 2)
         )
         db.session.add_all([portfolio_stock1, portfolio_stock2])
-        db.session.commit()
+        # db.session.commit()
 
 def undo_portfolio_stocks():
     if environment == "production":
