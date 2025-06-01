@@ -35,12 +35,14 @@ def seed():
         """))
         db.session.commit()
         db.session.close()
+        db.engine.dispose()
         print("✅ Users seeded")
 
         print("🌱 Seeding stocks...")
         seed_stocks()
         db.session.commit()
         db.session.close()
+        db.engine.dispose()
         print("✅ Stocks seeded")
 
         print("🌱 Seeding portfolios...")
@@ -58,18 +60,21 @@ def seed():
         """))
         db.session.commit()
         db.session.close()
+        db.engine.dispose()
         print("✅ Portfolios seeded")
 
         print("🌱 Seeding portfolio_stocks...")
         seed_portfolio_stocks()
         db.session.commit()
         db.session.close()
+        db.engine.dispose()
         print("✅ Portfolio stocks seeded")
 
         print("🌱 Seeding transactions...")
         seed_transactions()
         db.session.commit()
         db.session.close()
+        db.engine.dispose()
         print("✅ Transactions seeded")
 
         print("✅ All seeding completed successfully!")
