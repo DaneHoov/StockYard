@@ -34,11 +34,13 @@ def seed():
             ('bobbie', 'bobbie@aa.io', '+19999999999', 'pbkdf2:sha256:260000$bobbie$hashedpassword')
         """))
         db.session.commit()
+        db.session.close()
         print("✅ Users seeded")
 
         print("🌱 Seeding stocks...")
         seed_stocks()
         db.session.commit()
+        db.session.close()
         print("✅ Stocks seeded")
 
         print("🌱 Seeding portfolios...")
@@ -55,16 +57,19 @@ def seed():
             JOIN {users_table} u ON u.username = p.username
         """))
         db.session.commit()
+        db.session.close()
         print("✅ Portfolios seeded")
 
         print("🌱 Seeding portfolio_stocks...")
         seed_portfolio_stocks()
         db.session.commit()
+        db.session.close()
         print("✅ Portfolio stocks seeded")
 
         print("🌱 Seeding transactions...")
         seed_transactions()
         db.session.commit()
+        db.session.close()
         print("✅ Transactions seeded")
 
         print("✅ All seeding completed successfully!")
