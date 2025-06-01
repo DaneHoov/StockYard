@@ -12,7 +12,6 @@ import os
 
 seed_commands = AppGroup('seed')
 
-
 @seed_commands.command('all')
 def seed():
     if environment == "production":
@@ -22,7 +21,6 @@ def seed():
         undo_stocks()
         undo_users()
 
-    # Seed each table in separate transactions to avoid FK issues
     try:
         if environment == "production":
             # Use single transaction for all dependent data on production
@@ -44,6 +42,16 @@ def seed():
                 """)
                 print("✅ Users seeded")
 
+                # Verify users were inserted
+                cursor.execute(f"SELECT COUNT(*) FROM {SCHEMA}.users")
+                user_count = cursor.fetchone()[0]
+                print(f"🔍 Users in table: {user_count}")
+
+                # List the user IDs to verify they exist
+                cursor.execute(f"SELECT id, username FROM {SCHEMA}.users")
+                users = cursor.fetchall()
+                print(f"🔍 User data: {users}")
+
                 # Insert stocks
                 print("🌱 Seeding stocks...")
                 cursor.execute(f"""
@@ -58,17 +66,25 @@ def seed():
                 """)
                 print("✅ Stocks seeded")
 
-                # Insert portfolios using the users from the same transaction
+                # Insert portfolios with explicit user_id values
                 print("🌱 Seeding portfolios...")
+                # First, get the actual user IDs
                 cursor.execute(f"""
-                    INSERT INTO {SCHEMA}.portfolios (user_id, balance)
-                    SELECT u.id, p.balance FROM (VALUES
-                        ('Demo', 10000.0),
-                        ('marnie', 5000.0)
-                    ) AS p(username, balance)
-                    JOIN {SCHEMA}.users u ON u.username = p.username
+                    SELECT id FROM {SCHEMA}.users WHERE username IN ('Demo', 'marnie') ORDER BY username
                 """)
-                print("✅ Portfolios seeded")
+                user_ids = cursor.fetchall()
+                print(f"🔍 Found user IDs for portfolios: {user_ids}")
+
+                if len(user_ids) >= 2:
+                    demo_id, marnie_id = user_ids[0][0], user_ids[1][0]
+                    cursor.execute(f"""
+                        INSERT INTO {SCHEMA}.portfolios (user_id, balance) VALUES
+                        ({demo_id}, 10000.0),
+                        ({marnie_id}, 5000.0)
+                    """)
+                    print("✅ Portfolios seeded with explicit IDs")
+                else:
+                    raise Exception(f"Expected 2 users, found {len(user_ids)}")
 
                 # Insert portfolio_stocks using the same transaction data
                 print("🌱 Seeding portfolio_stocks...")
@@ -102,15 +118,22 @@ def seed():
 
                 # Commit everything at once
                 cursor.execute("COMMIT")
-                cursor.close()
-                conn.close()
                 print("✅ All seeding completed successfully!")
 
             except Exception as e:
-                cursor.execute("ROLLBACK")
-                cursor.close()
-                conn.close()
+                print(f"💥 Error during seeding: {e}")
+                try:
+                    cursor.execute("ROLLBACK")
+                    print("🔄 Transaction rolled back")
+                except:
+                    print("⚠️ Could not rollback - connection may be closed")
                 raise e
+            finally:
+                try:
+                    cursor.close()
+                    conn.close()
+                except:
+                    pass
         else:
             # Use separate transactions for development
             print("🌱 Seeding users...")
@@ -147,12 +170,9 @@ def seed():
             print("✅ All seeding completed successfully!")
 
     except Exception as e:
-        if 'cursor' in locals():
-            cursor.execute("ROLLBACK")
         db.session.rollback()
         print(f"❌ Seeding failed: {e}")
         raise
-
 
 @seed_commands.command('undo')
 def undo():
@@ -161,4 +181,3 @@ def undo():
     undo_portfolios()
     undo_stocks()
     undo_users()
-    # Add other undo functions here
