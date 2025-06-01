@@ -21,24 +21,28 @@ def seed():
         undo_stocks()
         undo_users()
 
-    # Start a single transaction for all seeding
+    # Seed each table in separate transactions to avoid FK issues
     try:
+        print("🌱 Seeding users...")
         seed_users()
-        db.session.flush()  # Flush to make users available for FK references
+        db.session.commit()  # Commit users first
 
+        print("🌱 Seeding stocks...")
         seed_stocks()
-        db.session.flush()  # Flush to make stocks available for FK references
+        db.session.commit()  # Commit stocks
 
+        print("🌱 Seeding portfolios...")
         seed_portfolios()
-        db.session.flush()  # Flush to make portfolios available for FK references
+        db.session.commit()  # Commit portfolios
 
+        print("🌱 Seeding portfolio_stocks...")
         seed_portfolio_stocks()
-        db.session.flush()  # Flush to make portfolio_stocks available for FK references
+        db.session.commit()  # Commit portfolio_stocks
 
+        print("🌱 Seeding transactions...")
         seed_transactions()
+        db.session.commit()  # Commit transactions
 
-        # Commit everything at once
-        db.session.commit()
         print("✅ All seeding completed successfully!")
 
     except Exception as e:
