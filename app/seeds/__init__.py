@@ -6,7 +6,7 @@ from .stocks import seed_stocks, undo_stocks
 from .portfolio_stocks import seed_portfolio_stocks, undo_portfolio_stocks
 from .transactions import seed_transactions, undo_transactions
 from sqlalchemy import text
-
+import time
 
 
 seed_commands = AppGroup('seed')
@@ -24,7 +24,6 @@ def seed():
     # Seed each table in separate transactions to avoid FK issues
     try:
         print("🌱 Seeding users...")
-        # Handle schema prefix for production vs development
         users_table = f"{SCHEMA}.users" if environment == "production" and SCHEMA else "users"
 
         db.session.execute(text(f"""
@@ -46,21 +45,23 @@ def seed():
         print("✅ Stocks seeded")
 
         print("🌱 Seeding portfolios...")
-        # Handle schema prefix for both tables
+        # Use direct connection with autocommit to bypass transaction isolation issues
         portfolios_table = f"{SCHEMA}.portfolios" if environment == "production" and SCHEMA else "portfolios"
         users_table = f"{SCHEMA}.users" if environment == "production" and SCHEMA else "users"
 
-        db.session.execute(text(f"""
-            INSERT INTO {portfolios_table} (user_id, balance)
-            SELECT u.id, p.balance FROM (VALUES
-                ('Demo', 10000.0),
-                ('marnie', 5000.0)
-            ) AS p(username, balance)
-            JOIN {users_table} u ON u.username = p.username
-        """))
-        db.session.commit()
-        db.session.close()
-        db.engine.dispose()
+        # Add a small delay to ensure data visibility
+        time.sleep(1)
+
+        # Use autocommit connection for immediate visibility
+        with db.engine.connect().execution_options(autocommit=True) as connection:
+            connection.execute(text(f"""
+                INSERT INTO {portfolios_table} (user_id, balance)
+                SELECT u.id, p.balance FROM (VALUES
+                    ('Demo', 10000.0),
+                    ('marnie', 5000.0)
+                ) AS p(username, balance)
+                JOIN {users_table} u ON u.username = p.username
+            """))
         print("✅ Portfolios seeded")
 
         print("🌱 Seeding portfolio_stocks...")
