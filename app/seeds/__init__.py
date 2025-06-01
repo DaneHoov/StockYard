@@ -7,7 +7,8 @@ from .portfolio_stocks import seed_portfolio_stocks, undo_portfolio_stocks
 from .transactions import seed_transactions, undo_transactions
 from sqlalchemy import text
 import time
-
+import psycopg2
+import os
 
 seed_commands = AppGroup('seed')
 
@@ -45,23 +46,46 @@ def seed():
         print("✅ Stocks seeded")
 
         print("🌱 Seeding portfolios...")
-        # Use direct connection with autocommit to bypass transaction isolation issues
+        # Use direct PostgreSQL connection to bypass SQLAlchemy transaction issues
         portfolios_table = f"{SCHEMA}.portfolios" if environment == "production" and SCHEMA else "portfolios"
         users_table = f"{SCHEMA}.users" if environment == "production" and SCHEMA else "users"
 
-        # Add a small delay to ensure data visibility
-        time.sleep(1)
+        # Add a longer delay to ensure data visibility
+        time.sleep(2)
 
-        # Use autocommit connection for immediate visibility
-        with db.engine.connect().execution_options(autocommit=True) as connection:
-            connection.execute(text(f"""
-                INSERT INTO {portfolios_table} (user_id, balance)
-                SELECT u.id, p.balance FROM (VALUES
-                    ('Demo', 10000.0),
-                    ('marnie', 5000.0)
-                ) AS p(username, balance)
-                JOIN {users_table} u ON u.username = p.username
-            """))
+        if environment == "production":
+            # Use direct psycopg2 connection for production
+            database_url = os.environ.get('DATABASE_URL')
+            conn = psycopg2.connect(database_url)
+            conn.autocommit = True
+            cursor = conn.cursor()
+
+            try:
+                cursor.execute(f"""
+                    INSERT INTO {portfolios_table} (user_id, balance)
+                    SELECT u.id, p.balance FROM (VALUES
+                        ('Demo', 10000.0),
+                        ('marnie', 5000.0)
+                    ) AS p(username, balance)
+                    JOIN {users_table} u ON u.username = p.username
+                """)
+                cursor.close()
+                conn.close()
+            except Exception as e:
+                cursor.close()
+                conn.close()
+                raise e
+        else:
+            # Use SQLAlchemy for development
+            with db.engine.connect().execution_options(autocommit=True) as connection:
+                connection.execute(text(f"""
+                    INSERT INTO {portfolios_table} (user_id, balance)
+                    SELECT u.id, p.balance FROM (VALUES
+                        ('Demo', 10000.0),
+                        ('marnie', 5000.0)
+                    ) AS p(username, balance)
+                    JOIN {users_table} u ON u.username = p.username
+                """))
         print("✅ Portfolios seeded")
 
         print("🌱 Seeding portfolio_stocks...")
