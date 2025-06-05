@@ -23,16 +23,13 @@ def seed():
 
     try:
         if environment == "production":
-            # Use single transaction for all dependent data on production
+            # Production seeding using raw SQL in a single transaction
             database_url = os.environ.get('DATABASE_URL')
             conn = psycopg2.connect(database_url)
             cursor = conn.cursor()
 
             try:
-                # Begin transaction
                 cursor.execute("BEGIN")
-
-                # Insert users first
                 print("🌱 Seeding users...")
                 cursor.execute(f"""
                     INSERT INTO {SCHEMA}.users (username, email, phone, hashed_password) VALUES
@@ -42,17 +39,10 @@ def seed():
                 """)
                 print("✅ Users seeded")
 
-                # Verify users were inserted
-                cursor.execute(f"SELECT COUNT(*) FROM {SCHEMA}.users")
-                user_count = cursor.fetchone()[0]
-                print(f"🔍 Users in table: {user_count}")
-
-                # List the user IDs to verify they exist
                 cursor.execute(f"SELECT id, username FROM {SCHEMA}.users")
                 users = cursor.fetchall()
                 print(f"🔍 User data: {users}")
 
-                # Insert stocks
                 print("🌱 Seeding stocks...")
                 cursor.execute(f"""
                     INSERT INTO {SCHEMA}.stocks (ticker, name, exchange, price, sector) VALUES
@@ -66,9 +56,7 @@ def seed():
                 """)
                 print("✅ Stocks seeded")
 
-                # Insert portfolios with explicit user_id values
                 print("🌱 Seeding portfolios...")
-                # First, get the actual user IDs
                 cursor.execute(f"""
                     SELECT id FROM {SCHEMA}.users WHERE username IN ('Demo', 'marnie') ORDER BY username
                 """)
@@ -86,7 +74,6 @@ def seed():
                 else:
                     raise Exception(f"Expected 2 users, found {len(user_ids)}")
 
-                # Insert portfolio_stocks using the same transaction data
                 print("🌱 Seeding portfolio_stocks...")
                 cursor.execute(f"""
                     INSERT INTO {SCHEMA}.portfolio_stocks (portfolio_id, stock_id, quantity, purchase_price, purchase_date)
@@ -101,7 +88,6 @@ def seed():
                 """)
                 print("✅ Portfolio stocks seeded")
 
-                # Insert transactions using the same transaction data
                 print("🌱 Seeding transactions...")
                 cursor.execute(f"""
                     INSERT INTO {SCHEMA}.transactions (user_id, portfolio_id, stock_id, transaction_type, quantity, price, total_value, status, date)
@@ -116,7 +102,6 @@ def seed():
                 """)
                 print("✅ Transactions seeded")
 
-                # Commit everything at once
                 cursor.execute("COMMIT")
                 print("✅ All seeding completed successfully!")
 
@@ -134,16 +119,11 @@ def seed():
                     conn.close()
                 except:
                     pass
+
         else:
-            # Use separate transactions for development
+            # Development seeding using SQLAlchemy ORM
             print("🌱 Seeding users...")
-            users_table = "users"
-            db.session.execute(text(f"""
-                INSERT INTO {users_table} (username, email, phone, hashed_password) VALUES
-                ('Demo', 'demo@aa.io', '+11234567890', 'pbkdf2:sha256:260000$demo$hashedpassword'),
-                ('marnie', 'marnie@aa.io', '+18675309', 'pbkdf2:sha256:260000$marnie$hashedpassword'),
-                ('bobbie', 'bobbie@aa.io', '+19999999999', 'pbkdf2:sha256:260000$bobbie$hashedpassword')
-            """))
+            seed_users()
             db.session.commit()
             print("✅ Users seeded")
 
