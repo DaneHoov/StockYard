@@ -8,7 +8,7 @@ def seed_portfolios():
         portfolio1 = Portfolio(user_id=demo.id, balance=10000.0)
         portfolio2 = Portfolio(user_id=marnie.id, balance=5000.0)
         db.session.add_all([portfolio1, portfolio2])
-        # db.session.commit()
+        db.session.commit()
 
 def undo_portfolios():
     if environment == "production":

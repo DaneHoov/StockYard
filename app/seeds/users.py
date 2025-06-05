@@ -15,7 +15,7 @@ def seed_users():
     bobbie.password = 'password'
 
     db.session.add_all([demo, marnie, bobbie])
-    # db.session.commit()
+    db.session.commit()
     db.session.expire_all()
 
 
