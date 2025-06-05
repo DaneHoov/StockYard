@@ -38,10 +38,16 @@ def seed():
                     RETURNING id, username
                 """)
                 users = cursor.fetchall()
-                user_id_map = {username: id for id, username in users}
+                print(f"🔍 Users returned from INSERT: {users}")
+
+                # Create user ID mapping
+                user_id_map = {username: user_id for user_id, username in users}
                 demo_id = user_id_map.get("Demo")
                 marnie_id = user_id_map.get("marnie")
-                print("✅ Users seeded and IDs retrieved:", user_id_map)
+                bobbie_id = user_id_map.get("bobbie")
+
+                print(f"✅ Users seeded. ID mapping: {user_id_map}")
+                print(f"🔍 Demo ID: {demo_id}, Marnie ID: {marnie_id}")
 
                 print("🌱 Seeding stocks...")
                 cursor.execute(f"""
@@ -57,42 +63,47 @@ def seed():
                 print("✅ Stocks seeded")
 
                 print("🌱 Seeding portfolios...")
-                if demo_id and marnie_id:
-                    cursor.execute(f"""
-                        INSERT INTO {SCHEMA}.portfolios (user_id, balance) VALUES
-                        ({demo_id}, 10000.0),
-                        ({marnie_id}, 5000.0)
-                    """)
-                    print("✅ Portfolios seeded")
-                else:
-                    raise Exception("Demo and Marnie user IDs not found")
+                # Verify we have the user IDs before proceeding
+                if demo_id is None or marnie_id is None:
+                    raise Exception(f"Missing user IDs - Demo: {demo_id}, Marnie: {marnie_id}")
+
+                # Use parameterized queries for safety
+                cursor.execute(f"""
+                    INSERT INTO {SCHEMA}.portfolios (user_id, balance) VALUES
+                    (%s, %s),
+                    (%s, %s)
+                    RETURNING id, user_id
+                """, (demo_id, 10000.0, marnie_id, 5000.0))
+
+                portfolios = cursor.fetchall()
+                portfolio_id_map = {user_id: portfolio_id for portfolio_id, user_id in portfolios}
+                print(f"✅ Portfolios seeded. Portfolio mapping: {portfolio_id_map}")
 
                 print("🌱 Seeding portfolio_stocks...")
                 cursor.execute(f"""
                     INSERT INTO {SCHEMA}.portfolio_stocks (portfolio_id, stock_id, quantity, purchase_price, purchase_date)
-                    SELECT p.id, s.id, ps.quantity, ps.purchase_price, ps.purchase_date
+                    SELECT p.id, s.id, ps.quantity, ps.purchase_price, ps.purchase_date::date
                     FROM (VALUES
-                        ('Demo', 'AAPL', 10, 190.42, '2023-10-01'::date),
-                        ('marnie', 'GOOG', 5, 155.37, '2023-10-02'::date)
-                    ) AS ps(username, ticker, quantity, purchase_price, purchase_date)
-                    JOIN {SCHEMA}.users u ON u.username = ps.username
-                    JOIN {SCHEMA}.portfolios p ON p.user_id = u.id
+                        (%s, 'AAPL', 10, 190.42, '2023-10-01'),
+                        (%s, 'GOOG', 5, 155.37, '2023-10-02')
+                    ) AS ps(user_id, ticker, quantity, purchase_price, purchase_date)
+                    JOIN {SCHEMA}.portfolios p ON p.user_id = ps.user_id
                     JOIN {SCHEMA}.stocks s ON s.ticker = ps.ticker
-                """)
+                """, (demo_id, marnie_id))
                 print("✅ Portfolio stocks seeded")
 
                 print("🌱 Seeding transactions...")
                 cursor.execute(f"""
                     INSERT INTO {SCHEMA}.transactions (user_id, portfolio_id, stock_id, transaction_type, quantity, price, total_value, status, date)
-                    SELECT u.id, p.id, s.id, t.transaction_type, t.quantity, t.price, t.total_value, t.status, t.date
+                    SELECT u.id, p.id, s.id, t.transaction_type, t.quantity, t.price, t.total_value, t.status, t.date::date
                     FROM (VALUES
-                        ('Demo', 'AAPL', 'buy', 10, 190.42, 1904.2, 'completed', '2023-10-01'::date),
-                        ('marnie', 'GOOG', 'sell', 5, 155.37, 776.85, 'completed', '2023-10-02'::date)
-                    ) AS t(username, ticker, transaction_type, quantity, price, total_value, status, date)
-                    JOIN {SCHEMA}.users u ON u.username = t.username
+                        (%s, 'AAPL', 'buy', 10, 190.42, 1904.2, 'completed', '2023-10-01'),
+                        (%s, 'GOOG', 'sell', 5, 155.37, 776.85, 'completed', '2023-10-02')
+                    ) AS t(user_id, ticker, transaction_type, quantity, price, total_value, status, date)
+                    JOIN {SCHEMA}.users u ON u.id = t.user_id
                     JOIN {SCHEMA}.portfolios p ON p.user_id = u.id
                     JOIN {SCHEMA}.stocks s ON s.ticker = t.ticker
-                """)
+                """, (demo_id, marnie_id))
                 print("✅ Transactions seeded")
 
                 cursor.execute("COMMIT")
