@@ -38,7 +38,7 @@ def seed():
                     RETURNING id, username
                 """)
                 users = cursor.fetchall()
-                user_id_map = {username: id for id, username in returned_users}
+                user_id_map = {username: id for id, username in users}
                 demo_id = user_id_map.get("Demo")
                 marnie_id = user_id_map.get("marnie")
                 print("✅ Users seeded and IDs retrieved:", user_id_map)
