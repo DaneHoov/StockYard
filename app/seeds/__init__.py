@@ -6,11 +6,11 @@ from .stocks import seed_stocks, undo_stocks
 from .portfolio_stocks import seed_portfolio_stocks, undo_portfolio_stocks
 from .transactions import seed_transactions, undo_transactions
 from sqlalchemy import text
-import time
 import psycopg2
 import os
 
 seed_commands = AppGroup('seed')
+
 
 @seed_commands.command('all')
 def seed():
@@ -23,7 +23,6 @@ def seed():
 
     try:
         if environment == "production":
-            # Production seeding using raw SQL in a single transaction
             database_url = os.environ.get('DATABASE_URL')
             conn = psycopg2.connect(database_url)
             cursor = conn.cursor()
@@ -36,12 +35,13 @@ def seed():
                     ('Demo', 'demo@aa.io', '+11234567890', 'pbkdf2:sha256:260000$demo$hashedpassword'),
                     ('marnie', 'marnie@aa.io', '+18675309', 'pbkdf2:sha256:260000$marnie$hashedpassword'),
                     ('bobbie', 'bobbie@aa.io', '+19999999999', 'pbkdf2:sha256:260000$bobbie$hashedpassword')
+                    RETURNING id, username
                 """)
-                print("✅ Users seeded")
-
-                cursor.execute(f"SELECT id, username FROM {SCHEMA}.users")
                 users = cursor.fetchall()
-                print(f"🔍 User data: {users}")
+                user_id_map = {username: id for id, username in users}
+                demo_id = user_id_map.get("Demo")
+                marnie_id = user_id_map.get("marnie")
+                print("✅ Users seeded and IDs retrieved:", user_id_map)
 
                 print("🌱 Seeding stocks...")
                 cursor.execute(f"""
@@ -57,22 +57,15 @@ def seed():
                 print("✅ Stocks seeded")
 
                 print("🌱 Seeding portfolios...")
-                cursor.execute(f"""
-                    SELECT id FROM {SCHEMA}.users WHERE username IN ('Demo', 'marnie') ORDER BY username
-                """)
-                user_ids = cursor.fetchall()
-                print(f"🔍 Found user IDs for portfolios: {user_ids}")
-
-                if len(user_ids) >= 2:
-                    demo_id, marnie_id = user_ids[0][0], user_ids[1][0]
+                if demo_id and marnie_id:
                     cursor.execute(f"""
                         INSERT INTO {SCHEMA}.portfolios (user_id, balance) VALUES
                         ({demo_id}, 10000.0),
                         ({marnie_id}, 5000.0)
                     """)
-                    print("✅ Portfolios seeded with explicit IDs")
+                    print("✅ Portfolios seeded")
                 else:
-                    raise Exception(f"Expected 2 users, found {len(user_ids)}")
+                    raise Exception("Demo and Marnie user IDs not found")
 
                 print("🌱 Seeding portfolio_stocks...")
                 cursor.execute(f"""
@@ -121,7 +114,6 @@ def seed():
                     pass
 
         else:
-            # Development seeding using SQLAlchemy ORM
             print("🌱 Seeding users...")
             seed_users()
             db.session.commit()
@@ -153,6 +145,7 @@ def seed():
         db.session.rollback()
         print(f"❌ Seeding failed: {e}")
         raise
+
 
 @seed_commands.command('undo')
 def undo():
